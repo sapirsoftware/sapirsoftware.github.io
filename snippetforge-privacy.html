@@ -34,8 +34,8 @@
   <p>Your snippets (triggers and their expansion text), your settings, and your license status are stored locally in your browser using <code>chrome.storage.local</code>. They are never transmitted to us or anyone else. A count of expansions in your current browser session is kept in <code>chrome.storage.session</code> and disappears when you close the browser.</p>
 
   <h2>Clipboard access</h2>
-  <p>SnippetForge requests clipboard read permission for one feature: the Pro <code>{clipboard}</code> placeholder, which pastes your current clipboard contents into a snippet as it expands.</p>
-  <p>Your clipboard is read <strong>only</strong> at the moment a snippet containing <code>{clipboard}</code> actually expands — not in the background, not continuously, and not at all unless you have a Pro license and have written a snippet that uses it. The value is inserted into the text field you are typing in and is never stored or sent anywhere.</p>
+  <p>Clipboard read is an <strong>optional</strong> permission — it is not requested when you install the extension. SnippetForge asks for it only if you are a Pro user and you save (or activate a license already holding) a snippet that uses the <code>{clipboard}</code> placeholder, which pastes your current clipboard contents into a snippet as it expands. If you decline, everything keeps working; <code>{clipboard}</code> just inserts literally.</p>
+  <p>Your clipboard is read <strong>only</strong> at the moment a snippet containing <code>{clipboard}</code> actually expands — not in the background, not continuously, and not at all unless you have granted the optional permission and have a snippet that uses it. The value is inserted into the text field you are typing in and is never stored or sent anywhere. You can revoke the permission at any time in Chrome's extension settings.</p>
 
   <h2>The only network request we ever make</h2>
   <p>If you choose to activate Pro, the extension sends your license key — once, when you click "Activate" in Settings — to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. This is the only outbound network request the extension makes, it happens only at your explicit action, and it never happens from the part of the extension that watches your typing. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status.</p>
@@ -56,7 +56,7 @@
   <p>We want to be straightforward about this, because SnippetForge asks for more access than our other extensions do — and it should, because it does a fundamentally different job.</p>
   <ul>
     <li><strong>Access to all websites</strong> — a text expander has to work in every text field you use, so its script runs on every page. Chrome describes this as reading and changing data on all sites. What the script actually does is narrow: watch for your triggers in editable fields, and insert your own snippet text when one matches. It does not read page content, scrape data, or communicate with anything.</li>
-    <li><strong>Clipboard read</strong> — used only for the Pro <code>{clipboard}</code> placeholder, at the moment of expansion. See above.</li>
+    <li><strong>Clipboard read (optional)</strong> — not requested at install; asked for only when a Pro user first uses the <code>{clipboard}</code> placeholder, and used only at the moment of expansion. See above.</li>
     <li><strong>Storage</strong> — saves your snippets, settings and license status locally.</li>
   </ul>
   <p>If broad page access is not something you're comfortable granting, that is a completely reasonable position — and our other extensions (<a href="fullpageshot-privacy.html">Full Page Screenshot</a> and <a href="headerforge-privacy.html">HeaderForge</a>) are built to avoid it. A text expander genuinely cannot be.</p>
