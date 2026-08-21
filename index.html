@@ -4,32 +4,61 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sapir Software — Privacy-first browser tools</title>
+  <meta name="description" content="Small, privacy-first Chrome extensions that do one job well. Nothing is uploaded, nothing is tracked.">
   <style>
-    body { font: 16px/1.6 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a1a2e; max-width: 680px; margin: 0 auto; padding: 48px 20px; }
-    h1 { font-size: 26px; margin-bottom: 8px; }
-    .tag { color: #666; margin-bottom: 32px; }
-    .product { border: 1px solid #e2e2ea; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-    .product h2 { font-size: 18px; margin-bottom: 6px; }
-    .product p { color: #555; font-size: 14px; }
-    a { color: #4f46e5; }
-    footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #eee; font-size: 13px; color: #888; }
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #4f46e5; }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.6 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); max-width: 680px; margin: 0 auto; padding: 48px 20px; background: #fff; }
+    h1 { font-size: 30px; margin: 0 0 10px; letter-spacing: -0.01em; }
+    .tag { color: var(--muted); font-size: 17px; margin: 0 0 10px; }
+    .creed { color: var(--muted); font-size: 15px; margin: 0 0 40px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+    .product { border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; }
+    .product h2 { font-size: 19px; margin: 0 0 4px; }
+    .product .what { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
+    .product ul { margin: 0 0 16px; padding-left: 20px; }
+    .product li { font-size: 14.5px; margin-bottom: 5px; }
+    .links { font-size: 14px; }
+    .links a { margin-right: 16px; white-space: nowrap; }
+    .soon { color: var(--muted); }
+    a { color: var(--accent); }
+    .help { margin-top: 34px; font-size: 15px; color: var(--muted); }
+    footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: #888; }
   </style>
 </head>
 <body>
   <h1>Sapir Software</h1>
-  <p class="tag">Small, privacy-first browser extensions that do one job well.</p>
-
-  <div class="product">
-    <h2>HeaderForge: Modify HTTP Headers</h2>
-    <p>Create rules to set, append, or remove HTTP request and response headers. Built for developers and QA. Local-only — no tracking, no telemetry.</p>
-    <p><a href="headerforge-privacy.html">Privacy policy</a></p>
-  </div>
+  <p class="tag">Small tools, done right, with nothing to hide.</p>
+  <p class="creed">Browser extensions that do one job properly. Everything runs on your own machine — no uploads, no analytics, no tracking, no accounts. The only network request any of these tools makes is a single license check, and only if you choose to buy the paid version.</p>
 
   <div class="product">
     <h2>Full Page Screenshot</h2>
-    <p>Capture an entire webpage in one click and save it as PNG, JPEG, or PDF. Local-only — screenshots never leave your machine.</p>
-    <p><a href="fullpageshot-privacy.html">Privacy policy</a></p>
+    <p class="what">Capture an entire webpage in one click — PNG, JPEG, or PDF.</p>
+    <ul>
+      <li>Actually captures the whole page — lazy-loaded images resolved, sticky headers shown once instead of repeating</li>
+      <li>Pro: real paginated A4 PDFs with smart page breaks and clickable links, not one giant image strip</li>
+      <li>Only ever sees the tab you're capturing — no access to the other sites you visit</li>
+    </ul>
+    <p class="links">
+      <a href="fullpageshot-privacy.html">Privacy policy</a>
+      <span class="soon">Chrome Web Store — pending review</span>
+    </p>
   </div>
+
+  <div class="product">
+    <h2>Modify HTTP Headers — HeaderForge</h2>
+    <p class="what">Set, remove, and override HTTP headers for testing and debugging.</p>
+    <ul>
+      <li>Works on XHR, fetch, and POST requests — not just page loads</li>
+      <li>Shows you when a rule actually fires, so you're never guessing whether it worked</li>
+      <li>Unlimited rules free. Pro adds response headers and named profiles for switching environments</li>
+    </ul>
+    <p class="links">
+      <a href="headerforge-privacy.html">Privacy policy</a>
+      <span class="soon">Chrome Web Store — pending review</span>
+    </p>
+  </div>
+
+  <p class="help">Bought Pro and need to switch it on? <a href="activate.html">How to activate</a>.</p>
 
   <footer>
     Contact: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>
