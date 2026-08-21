@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Full Page Screenshot Privacy Policy — Sapir Software</title>
+  <style>
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a1a2e; max-width: 680px; margin: 0 auto; padding: 48px 20px; }
+    h1 { font-size: 24px; } h2 { font-size: 17px; margin-top: 28px; }
+    a { color: #4f46e5; }
+  </style>
+</head>
+<body>
+  <h1>Full Page Screenshot Privacy Policy</h1>
+  <p><em>Last updated: August 20, 2026</em></p>
+
+  <h2>The short version</h2>
+  <p>Full Page Screenshot runs entirely in your browser. Your screenshots never leave your machine. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
+
+  <h2>What happens to your screenshots</h2>
+  <p>When you click capture, the extension scrolls the page, captures each section, and stitches them together into one image — all locally, inside your own browser. The finished file is saved straight to your computer through Chrome's own download dialog. <strong>Your screenshots are never uploaded, never stored by us, and never seen by anyone but you.</strong> We have no servers that receive images, because we have no servers at all.</p>
+
+  <h2>What the extension stores</h2>
+  <p>Your format preference (PNG, JPEG, or PDF) and your license status are stored locally in your browser using <code>chrome.storage.local</code>. They are never transmitted to us or anyone else.</p>
+
+  <h2>The only network request we ever make</h2>
+  <p>If you choose to activate Pro, the extension sends your license key — once, when you click "Activate" — to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. This is the only outbound network request the extension makes, and it only happens at your explicit action. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status.</p>
+
+  <h2>What we never do</h2>
+  <ul>
+    <li>No uploading of screenshots, page content, or images — ever</li>
+    <li>No browsing history collection</li>
+    <li>No analytics or usage tracking</li>
+    <li>No advertising or third-party trackers</li>
+    <li>No remotely hosted code — every line ships in the extension package and is reviewed by the Chrome Web Store</li>
+    <li>No sale or sharing of any data, ever</li>
+  </ul>
+
+  <h2>Permissions</h2>
+  <p>Full Page Screenshot deliberately avoids blanket access to the sites you visit. It does not request <code>&lt;all_urls&gt;</code> or any host permissions. Instead it uses:</p>
+  <ul>
+    <li><code>activeTab</code> — access to the page you are currently viewing, granted only at the moment you click capture, and only for that tab</li>
+    <li><code>scripting</code> — to scroll and measure the page during capture, injected only after you click capture</li>
+    <li><code>offscreen</code> — to stitch the captured sections together on a canvas inside your browser</li>
+    <li><code>downloads</code> — to save the finished file where you choose</li>
+    <li><code>storage</code> — to remember your format preference and license status locally</li>
+  </ul>
+  <p>The extension has no standing access to any website. It can only see a page in the moment you ask it to capture that page.</p>
+
+  <h2>Contact</h2>
+  <p>Questions: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a></p>
+</body>
+</html>
