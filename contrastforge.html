@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ContrastForge — WCAG contrast audits your clients can read</title>
+  <meta name="description" content="Find every colour contrast failure on a page, then hand your client a report that explains each one. A Chrome extension for freelance and agency accessibility auditors.">
+  <style>
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #4f46e5; --paper: #fbfbfd; --fail: #b42318; --pass: #067647; }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.6 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); max-width: 680px; margin: 0 auto; padding: 48px 20px; background: #fff; }
+    h1 { font-size: 30px; margin: 0 0 10px; letter-spacing: -0.01em; }
+    h2 { font-size: 19px; margin: 38px 0 10px; }
+    .tag { color: var(--muted); font-size: 17px; margin: 0 0 10px; }
+    .creed { color: var(--muted); font-size: 15px; margin: 0 0 34px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+    .status { display: inline-block; font-size: 13px; font-weight: 600; color: #7a4b00; background: #fff5e0; border: 1px solid #f0d9a8; border-radius: 999px; padding: 3px 12px; margin-bottom: 18px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 7px; }
+    a { color: var(--accent); }
+    .cta { border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin: 32px 0; background: var(--paper); }
+    .cta h2 { margin-top: 0; }
+    .btn { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; padding: 11px 22px; border-radius: 8px; margin: 6px 0 10px; }
+    .fineprint { font-size: 13.5px; color: var(--muted); margin: 0; }
+    .price { font-size: 15px; color: var(--muted); margin: 0 0 6px; }
+    .price b { color: var(--ink); font-size: 17px; }
+
+    /* mock report */
+    .mockwrap { margin: 26px 0 8px; }
+    .mocklabel { font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .report { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 14px; background: #fff; box-shadow: 0 1px 3px rgba(20,20,50,.06); }
+    .rhead { padding: 16px 18px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+    .rbrand { font-weight: 700; font-size: 15px; }
+    .rbrand span { display: block; font-weight: 400; font-size: 12.5px; color: var(--muted); }
+    .rmeta { font-size: 12.5px; color: var(--muted); text-align: right; }
+    .rsum { padding: 13px 18px; border-bottom: 1px solid var(--line); font-size: 13.5px; color: var(--muted); background: var(--paper); }
+    .rsum b { color: var(--fail); }
+    .issue { padding: 15px 18px; border-bottom: 1px solid var(--line); }
+    .issue:last-child { border-bottom: 0; }
+    .itop { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 7px; }
+    .badge { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; border-radius: 4px; background: #fdeceb; color: var(--fail); }
+    .crit { font-size: 12px; color: var(--muted); }
+    .swatches { display: flex; gap: 7px; align-items: center; margin: 9px 0; flex-wrap: wrap; }
+    .sw { font-size: 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace; padding: 5px 9px; border-radius: 5px; border: 1px solid var(--line); }
+    .ratio { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+    .ratio b { color: var(--fail); }
+    .fix { font-size: 13px; color: var(--muted); margin: 7px 0 0; }
+    .fix b { color: var(--pass); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-weight: 600; }
+    code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; background: #f4f4f8; padding: 1px 5px; border-radius: 4px; }
+    footer { margin-top: 44px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+  <p class="status">In development — early access list open</p>
+  <h1>Your contrast audit, already written up.</h1>
+  <p class="tag">Find every colour contrast failure on a page. Then hand your client a report that explains each one.</p>
+  <p class="creed">ContrastForge is a Chrome extension for the people who get paid to do accessibility work — freelance auditors, agency designers, and the developers who inherit the remediation ticket.</p>
+
+  <h2>The problem isn't finding the failures</h2>
+  <p>Checking a colour pair takes seconds. Producing the deliverable is the part that eats an afternoon: screenshotting each failure, looking up which WCAG criterion it breaches, writing the plain-English explanation, working out a passing colour that still looks like the brand, and assembling it into something a client will actually read.</p>
+  <p>ContrastForge scans the whole page and writes that document for you.</p>
+
+  <div class="mockwrap">
+    <p class="mocklabel">Example of the exported report</p>
+    <div class="report">
+      <div class="rhead">
+        <div class="rbrand">Your Studio Name<span>Accessibility audit — prepared for Northwind Retail</span></div>
+        <div class="rmeta">northwind.example.com/checkout<br>21 August 2026 · WCAG 2.2 AA</div>
+      </div>
+      <div class="rsum"><b>7 contrast failures</b> across 41 text elements. 3 high severity, affecting primary calls to action.</div>
+
+      <div class="issue">
+        <div class="itop"><span class="badge">HIGH</span><span class="crit">WCAG 2.2 · 1.4.3 Contrast (Minimum)</span></div>
+        <div>Primary button label — <code>.btn-checkout</code></div>
+        <div class="swatches">
+          <span class="sw" style="background:#7aa7ff;color:#fff">Text #FFFFFF</span>
+          <span class="sw" style="background:#7aa7ff;color:#1a1a2e">Background #7AA7FF</span>
+        </div>
+        <div class="ratio">Measured <b>2.31 : 1</b> · requires 4.5 : 1 for normal text</div>
+        <p class="fix">White text on this blue fails for anyone with low vision, and this is the button that completes a purchase. Darkening the background to <b>#3B6FD4</b> reaches 5.12 : 1 and keeps the same hue.</p>
+      </div>
+
+      <div class="issue">
+        <div class="itop"><span class="badge">HIGH</span><span class="crit">WCAG 2.2 · 1.4.11 Non-text Contrast</span></div>
+        <div>Form field border — <code>input.email</code></div>
+        <div class="swatches">
+          <span class="sw" style="background:#fff;color:#c9ced6;border-color:#c9ced6">Border #C9CED6</span>
+          <span class="sw" style="background:#fff;color:#1a1a2e">Background #FFFFFF</span>
+        </div>
+        <div class="ratio">Measured <b>1.72 : 1</b> · requires 3 : 1 for UI components</div>
+        <p class="fix">The input boundary is hard to locate, so users can't tell where to type. <b>#767F8C</b> gives 4.03 : 1 and still reads as a light grey.</p>
+      </div>
+
+      <div class="issue">
+        <div class="itop"><span class="badge">MEDIUM</span><span class="crit">WCAG 2.2 · 1.4.3 Contrast (Minimum)</span></div>
+        <div>Helper text over a gradient hero — <code>.hero p</code></div>
+        <div class="swatches">
+          <span class="sw" style="background:linear-gradient(90deg,#4a4a6a,#8b8bb0);color:#d8d8e4">Text #D8D8E4</span>
+          <span class="sw" style="background:#8b8bb0;color:#fff">Worst-case background #8B8BB0</span>
+        </div>
+        <div class="ratio">Measured <b>2.04 : 1</b> at the lightest point of the gradient</div>
+        <p class="fix">The text passes on the left of the hero and fails on the right — the kind of thing a single-point colour picker misses entirely. ContrastForge tests against the worst point behind the text.</p>
+      </div>
+    </div>
+  </div>
+  <p class="fineprint">Exports as a PDF report — with your own logo and business name on it — or as CSV for your issue tracker. Colours, ratios and element selectors shown here are illustrative.</p>
+
+  <h2>What it does</h2>
+  <ul>
+    <li><b>Scans the whole page</b> — every text and background pair, not one colour at a time.</li>
+    <li><b>Gets the hard cases right.</b> Semi-transparent overlays, stacked layers and gradients are where other tools report the wrong colour. Gradients are measured at their worst point, not one arbitrary pixel. Text over a background <em>image</em> is listed as unchecked rather than guessed at — those pixels aren't knowable from the page's styles, and a made-up number in a client report is worse than an honest gap.</li>
+    <li><b>Click any failure to highlight the element</b> on the page.</li>
+    <li><b>Suggests a passing colour that keeps the hue</b>, so the fix survives the brand conversation.</li>
+    <li><b>Audits a whole list of pages at once</b> — paste the URLs, get one combined report with every finding labelled by the page it came from. (This one asks permission to open the pages you list; decline and everything else still works.)</li>
+    <li><b>Keeps a local scan history</b> — re-scan after the developers have been through, and you can see the failure count come down.</li>
+    <li><b>Checks form controls too</b> — input and button boundaries that are too faint to see (WCAG 1.4.11), not just text.</li>
+    <li><b>Exports a white-labelled report</b> as PDF, or a CSV for your issue tracker.</li>
+  </ul>
+
+  <h2>What it doesn't do</h2>
+  <p>It checks colour contrast. It is not a full WCAG audit — it won't test keyboard navigation, focus order, headings, alt text or ARIA, and it won't tell you a site is compliant. Tools like axe and WAVE cover the broader ruleset and are free; use them alongside this. ContrastForge exists because none of them turn what they find into something you can put in front of a client.</p>
+
+  <h2>Privacy</h2>
+  <p>The scan runs entirely in your browser, on the tab you're looking at. Nothing about the pages you audit is uploaded, stored by us, or seen by anyone. The extension requests access only to the tab you're actively scanning — not to every site you visit. There are no accounts, no analytics and no tracking.</p>
+
+  <div class="cta">
+    <h2>Tell us if you'd use this</h2>
+    <p class="price">Planned pricing: a free contrast checker and eyedropper for everyone, with the full-page scan and report export at <b>$49/month</b>.</p>
+    <p>It isn't finished yet, and we'd rather hear from working auditors before it is. If the report above is something you'd hand to a client — or if it's missing the thing that would make it useful — tell us.</p>
+    <p><a class="btn" href="mailto:sapirsoftware@gmail.com?subject=ContrastForge%20early%20access&amp;body=I%27d%20use%20this.%20Here%27s%20what%20my%20audit%20workflow%20looks%20like%3A%0A%0A">Join the early access list</a></p>
+    <p class="fineprint">Opens your email app. We'll write once when it ships, and we won't pass your address to anyone. Say what you'd want changed and we'll read it properly.</p>
+  </div>
+
+  <footer>
+    <a href="index.html">Sapir Software</a> — small tools, done right, with nothing to hide.<br>
+    Contact: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>
+  </footer>
+</body>
+</html>
