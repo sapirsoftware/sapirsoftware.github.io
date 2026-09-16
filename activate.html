@@ -3,61 +3,153 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How to activate Pro — Sapir Software</title>
+  <meta name="robots" content="noindex">
+  <title>Activating Pro — Sapir Software</title>
   <style>
-    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a1a2e; max-width: 680px; margin: 0 auto; padding: 48px 20px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1a1a2e; max-width: 640px; margin: 0 auto; padding: 48px 20px; }
     h1 { font-size: 24px; margin-bottom: 8px; }
     h2 { font-size: 17px; margin-top: 32px; }
-    .tag { color: #666; margin-bottom: 32px; }
+    .tag { color: #555; margin-bottom: 28px; }
     a { color: #4f46e5; }
-    ol { padding-left: 22px; }
-    ol li { margin-bottom: 14px; }
-    .note { background: #f6f6fb; border: 1px solid #e2e2ea; border-radius: 10px; padding: 16px 20px; margin: 24px 0; font-size: 15px; }
-    .trouble { border-left: 3px solid #e2e2ea; padding-left: 18px; margin-top: 12px; }
-    .trouble p { margin: 0 0 6px; }
-    .trouble strong { display: block; margin-top: 14px; }
+    .card { border: 1px solid #e2e2ea; border-radius: 12px; padding: 22px 24px; margin: 20px 0; }
+    .card.ok { border-color: #1b6b3a; background: #f2faf5; }
+    .card.bad { border-color: #a11b1b; background: #fdf4f4; }
+    .card.wait { background: #f6f6fb; }
+    .big { font-size: 20px; font-weight: 700; margin: 0 0 6px; }
+    .key { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; background: #f6f6fb; border: 1px solid #e2e2ea; border-radius: 8px; padding: 10px 12px; word-break: break-all; user-select: all; }
+    .btn { display: inline-block; background: #4f46e5; color: #fff; border: 0; border-radius: 8px; padding: 10px 16px; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn.secondary { background: #fff; color: #4f46e5; border: 1.5px solid #4f46e5; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    ol { padding-left: 22px; } ol li { margin-bottom: 12px; }
+    .muted { color: #666; font-size: 14px; }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #eee; font-size: 13px; color: #888; }
+    [hidden] { display: none !important; }
   </style>
 </head>
 <body>
-  <h1>How to activate Pro</h1>
-  <p class="tag">Takes about thirty seconds. Works the same for Full Page Screenshot and HeaderForge.</p>
+  <h1>Activating Pro</h1>
+  <p class="tag">Thanks for buying. This page hands your licence to the extension so you don't have to type anything.</p>
 
-  <ol>
-    <li><strong>Buy Pro.</strong> Use the upgrade link inside the extension, or the checkout link from the store listing. Payment is handled by Lemon Squeezy.</li>
-    <li><strong>Check your email for the license key.</strong> It usually arrives within a minute of paying. The key is in the email itself — a long string of letters, numbers and dashes.</li>
-    <li><strong>Open the extension's settings.</strong> Right-click the extension icon in your Chrome toolbar and choose <em>Options</em>. (If you don't see the icon, click the puzzle-piece button and pin the extension first.)</li>
-    <li><strong>Paste the key and activate.</strong> Paste the whole key into the license field and click Activate. Pro features switch on straight away — no restart, no re-install.</li>
-  </ol>
-
-  <div class="note">
-    <strong>What activation actually does:</strong> the extension sends your key once to Lemon Squeezy to check it's valid, then stores the result on your machine. That's the only network request either extension ever makes. Your rules and screenshots never leave your computer — see the privacy policy for
-    <a href="fullpageshot-privacy.html">Full Page Screenshot</a> or <a href="headerforge-privacy.html">HeaderForge</a>.
+  <div id="auto" class="card wait" hidden>
+    <p class="big">Switching Pro on…</p>
+    <p class="muted" id="auto-note">Talking to the extension in this browser.</p>
   </div>
 
-  <h2>If the key doesn't work</h2>
-  <div class="trouble">
-    <strong>Nothing arrived by email</strong>
-    <p>Check your spam and promotions folders first — that's where it usually is. If it's genuinely missing, the most common cause is a typo in the email address at checkout. Email me and I'll look it up and resend it.</p>
-
-    <strong>"Invalid or expired license key"</strong>
-    <p>Usually a copy-paste problem. Make sure you've got the entire key with no trailing space and no line break in the middle — selecting it by double-clicking sometimes grabs only part of it. Try copying it again from the email.</p>
-
-    <strong>"Network error — try again"</strong>
-    <p>The activation check couldn't reach Lemon Squeezy. Usually a VPN, a corporate firewall, or a brief outage. Try again in a minute, or from a different network.</p>
-
-    <strong>It activated before but stopped working</strong>
-    <p>If your subscription is still active, just paste the key again. If it lapsed, renewing restores Pro — and anything you made while subscribed is yours regardless. Free features never stop working.</p>
-
-    <strong>Still stuck</strong>
-    <p>Email <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> with the email address you bought under and what you're seeing. A real person reads it and I'd rather fix it than leave you with something you paid for and can't use.</p>
+  <div id="done" class="card ok" hidden>
+    <p class="big">Pro is on. You're done.</p>
+    <p id="done-note">Open the extension from the toolbar — the Pro features are already unlocked. You can close this tab.</p>
   </div>
+
+  <div id="manual" class="card" hidden>
+    <p class="big" id="manual-title">Pro couldn't switch on automatically</p>
+    <p id="manual-why" class="muted"></p>
+    <p>Your licence key:</p>
+    <div class="key" id="key-box"></div>
+    <div class="row">
+      <button class="btn secondary" id="copy">Copy key</button>
+      <button class="btn" id="retry">Try again</button>
+    </div>
+    <ol style="margin-top:18px">
+      <li>Right-click the extension's icon in the toolbar and choose <em>Options</em>.</li>
+      <li>Paste the key into the licence field and click <strong>Activate</strong>.</li>
+    </ol>
+    <p class="muted">The key is also in your receipt email, so nothing is lost if you close this tab.</p>
+  </div>
+
+  <div id="nokey" class="card" hidden>
+    <p class="big">No licence key on this link</p>
+    <p>This page activates Pro automatically right after checkout. If you bought earlier, use the <strong>Activate Pro</strong> button in your receipt email — it carries your key. Or open the extension's Options and paste the key from that email.</p>
+  </div>
+
+  <h2>What this page does</h2>
+  <p class="muted">It passes the key from the link to the extension, which checks it with Lemon Squeezy (our payment provider) and stores the result on your machine. The extension re-checks it at most once a day so Pro can end if the subscription does. Your licence key is the only thing it sends. Your pages, rules and screenshots never leave your computer — see the privacy policy for
+    <a href="fullpageshot-privacy.html">Full Page Screenshot</a> or <a href="headerforge-privacy.html">HeaderForge</a>.</p>
 
   <h2>Cancelling</h2>
-  <p>Manage or cancel your subscription from the receipt email Lemon Squeezy sent you. Cancelling stops future billing and leaves the free features working exactly as they do now — nothing is taken away and nothing gets locked.</p>
+  <p class="muted">Manage or cancel from the receipt email Lemon Squeezy sent you. Cancelling stops future billing; free features keep working exactly as before.</p>
 
   <footer>
-    <a href="index.html">Sapir Software</a> · Contact: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>
+    <a href="index.html">Sapir Software</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>
   </footer>
+
+  <script>
+    // Published extension IDs. Order matters only for the "which one did we
+    // reach" message; the key itself is checked by the extension against the
+    // licence server, so sending it to a sibling is harmless — the sibling
+    // refuses a key for another product.
+    const EXTENSIONS = {
+      fullpageshot:  { id: "mmnagdplojeknlbdcpmiakebcfmhcloh", label: "Full Page Screenshot" },
+      headerforge:   { id: "pbeicicjoakomplogkjbkbmggidmmlcd", label: "HeaderForge" },
+      // Filled in when these are published:
+      snippetforge:  { id: "", label: "SnippetForge" },
+      contrastforge: { id: "", label: "ContrastForge" }
+    };
+
+    const q = new URLSearchParams(location.search);
+    const key = (q.get("key") || "").trim();
+    const product = (q.get("product") || "").trim().toLowerCase();
+    const $ = (id) => document.getElementById(id);
+
+    function show(id) {
+      for (const s of ["auto", "done", "manual", "nokey"]) $(s).hidden = s !== id;
+    }
+    function manual(why) {
+      $("manual-why").textContent = why || "";
+      $("key-box").textContent = key;
+      show("manual");
+    }
+
+    function send(extId, msg) {
+      return new Promise((resolve) => {
+        try {
+          chrome.runtime.sendMessage(extId, msg, (resp) => {
+            if (chrome.runtime.lastError) return resolve({ ok: false, unreachable: true, error: chrome.runtime.lastError.message });
+            resolve(resp || { ok: false, error: "No answer from the extension." });
+          });
+        } catch (e) {
+          resolve({ ok: false, unreachable: true, error: (e && e.message) || String(e) });
+        }
+      });
+    }
+
+    async function activate() {
+      if (!key || key === "[license_key]") return show("nokey");
+      // Strip the placeholder that shows up if the link was opened from a test
+      // receipt where Lemon Squeezy did not substitute the variable.
+      if (!(window.chrome && chrome.runtime && chrome.runtime.sendMessage)) {
+        return manual("This browser can't talk to Chrome extensions. Open this link in the Chrome profile where the extension is installed, or paste the key by hand.");
+      }
+      show("auto");
+      const order = [];
+      if (EXTENSIONS[product] && EXTENSIONS[product].id) order.push(EXTENSIONS[product]);
+      for (const k of Object.keys(EXTENSIONS)) {
+        const e = EXTENSIONS[k];
+        if (e.id && !order.includes(e)) order.push(e);
+      }
+      let reached = 0, lastErr = "";
+      for (const ext of order) {
+        $("auto-note").textContent = "Talking to " + ext.label + "…";
+        const r = await send(ext.id, { type: "activate-license", key });
+        if (r.unreachable) continue;
+        reached++;
+        if (r.ok) {
+          $("done-note").textContent = ext.label + " Pro is unlocked" + (r.email ? " for " + r.email : "") + ". Open it from the toolbar — nothing else to do. You can close this tab.";
+          return show("done");
+        }
+        lastErr = r.error || "";
+      }
+      if (!reached) {
+        return manual("The extension isn't installed in this browser profile (or this tab was opened in a different browser). Install it, then click Try again — or paste the key by hand.");
+      }
+      manual(lastErr || "The extension refused the key.");
+    }
+
+    $("retry").addEventListener("click", activate);
+    $("copy").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(key); $("copy").textContent = "Copied"; }
+      catch (e) { $("copy").textContent = "Select the key and copy it"; }
+    });
+    activate();
+  </script>
 </body>
 </html>

@@ -12,7 +12,7 @@
 </head>
 <body>
   <h1>HeaderForge Privacy Policy</h1>
-  <p><em>Last updated: August 20, 2026</em></p>
+  <p><em>Last updated: September 15, 2026</em></p>
 
   <h2>The short version</h2>
   <p>HeaderForge runs entirely in your browser. Your rules never leave your machine. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
@@ -20,8 +20,25 @@
   <h2>What the extension stores</h2>
   <p>Your header rules (header names, values, URL patterns) are stored locally in your browser using <code>chrome.storage.local</code>. They are never transmitted to us or anyone else.</p>
 
+  <h2>The live request list (Pro)</h2>
+  <p>HeaderForge Pro can show you, in the popup, the requests the tab you are looking at is making, and which of your own header rules touched each one. Because this is the one place where the extension observes network activity, here is exactly what it does.</p>
+  <ul>
+    <li><strong>Only while the popup is open.</strong> The popup opens a connection to the extension's background worker and names the one tab it is showing. Nothing is observed before that connection exists, and nothing is observed for any other tab.</li>
+    <li><strong>Memory only.</strong> The list is held in the background worker's memory, at most 200 requests per tab. It is never written to <code>chrome.storage</code>, never synced to your other computers, and never sent over the network to us or anyone else.</li>
+    <li><strong>Discarded when you close the popup.</strong> When the last popup watching a tab closes, everything recorded for that tab is deleted immediately.</li>
+    <li><strong>What is kept per request:</strong> the host and path of the address, the method (GET, POST…), the kind of request (page, script, fetch…), the status code or error, the time, and for each of your rules that matched: the header <em>name</em> and a single true/false — did your change actually go out.</li>
+    <li><strong>What is never kept:</strong> header values, cookies, anything from the query string (only whether there was one), request or response bodies, and page content.</li>
+    <li><strong>Free users</strong> see the number of requests and a blurred placeholder. The details are not sent to a free popup at all.</li>
+  </ul>
+  <p>The list is honest about what it can prove. Chrome reports request headers to the extension <em>after</em> your rule has changed them, so a row can truthfully say a header was sent. Chrome reports response headers <em>before</em> your rule changes them, so for a response-header rule the list only says the rule matched that response — it never claims the header was present, changed or removed.</p>
+
+  <h2>Limited Use</h2>
+  <p>HeaderForge's handling of user data complies with the <a href="https://developer.chrome.com/docs/webstore/program-policies/limited-use/">Chrome Web Store User Data Policy</a>, including its Limited Use requirements. The data described above is used for one purpose only — showing you which of your own rules affected which request, on your own screen. It is never transferred off your device, never sold, never used for advertising or profiling, never used to train models, and never read by a human.</p>
+
   <h2>The only network request we ever make</h2>
-  <p>If you choose to activate HeaderForge Pro, the extension sends your license key — once, when you click "Activate" — to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. This is the only outbound network request the extension makes, and it only happens at your explicit action. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status.</p>
+  <p>If you choose to activate HeaderForge Pro, the extension sends your license key to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. That happens when you activate, and then at most once a day while Pro is on, so that Pro switches off if your subscription ends. If you never activate Pro, the extension never sends it. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status. The request goes to exactly one address, <code>https://api.lemonsqueezy.com/v1/licenses/validate</code>, and contains exactly one thing: your licence key. No page data, no identifiers, nothing about what you were doing.</p>
+  <h2>The optional test on the welcome page</h2>
+  <p>The welcome page has a button labelled "Send 3 test requests to httpbin.org". Only if you click it, the page sends three test requests to <code>https://httpbin.org/anything</code>, a public service that echoes back what it received. They exist to prove your test rule works, and they carry the test header <code>X-HeaderForge-Test: hello</code> and nothing else about you. Apart from these and the licence check, the extension makes no network requests. You can confirm this by searching the extension's source for <code>fetch(</code>: it appears in <code>common.js</code> for the licence check and in <code>welcome.js</code> for the test.</p>
 
   <h2>What we never do</h2>
   <ul>
@@ -34,6 +51,7 @@
 
   <h2>Permissions</h2>
   <p>HeaderForge requests access to all websites (<code>&lt;all_urls&gt;</code>) for one reason only: modifying HTTP headers requires the browser's network-layer permission on the sites you target. Header rules are applied locally by Chrome itself; the extension does not read page content.</p>
+  <p>It also requests <code>webRequest</code>, which it uses in observe-only mode for the live request list described above. Headers are still modified by <code>declarativeNetRequest</code>, not by this permission. Because HeaderForge already has access to all websites, adding it does not widen what the extension can reach, and Chrome shows no additional permission warning.</p>
 
   <h2>Contact</h2>
   <p>Questions: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a></p>

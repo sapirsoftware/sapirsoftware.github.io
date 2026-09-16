@@ -24,7 +24,7 @@
   <p>Your format preference (PNG, JPEG, or PDF) and your license status are stored locally in your browser using <code>chrome.storage.local</code>. They are never transmitted to us or anyone else.</p>
 
   <h2>The only network request we ever make</h2>
-  <p>If you choose to activate Pro, the extension sends your license key — once, when you click "Activate" — to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. This is the only outbound network request the extension makes, and it only happens at your explicit action. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status.</p>
+  <p>If you choose to activate Pro, the extension sends your license key to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. That happens when you activate, and then at most once a day while Pro is on, so that Pro switches off if your subscription ends. If you never activate Pro, the extension never sends it. This is the only outbound network request the extension makes. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status. The request goes to exactly one address, <code>https://api.lemonsqueezy.com/v1/licenses/validate</code>, and contains exactly one thing: your licence key. No page data, no identifiers, nothing about what you were doing. You can confirm this by searching the extension's source for <code>fetch(</code> — there is a single occurrence, in <code>common.js</code>.</p>
 
   <h2>What we never do</h2>
   <ul>

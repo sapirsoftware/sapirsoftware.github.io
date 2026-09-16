@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Demo invoice — try Full Page Screenshot</title>
+  <style>
+    :root { --ink: #1d1b26; --muted: #6b6879; --line: #e3e1ec; --accent: #6d4ce8; --tint: #ece7fd; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.6 "Segoe UI", system-ui, -apple-system, sans-serif; color: var(--ink); background: #f1f0f6; }
+    .bar { position: sticky; top: 0; z-index: 5; background: var(--ink); color: #fff; padding: 12px 20px;
+           display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .bar b { font-size: 15px; }
+    .bar span { color: #cfc9e8; font-size: 14px; }
+    main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+    .note { background: var(--tint); border-radius: 16px; padding: 18px 20px; margin-bottom: 20px; }
+    .note h1 { font-size: 22px; margin: 0 0 6px; }
+    .note p { margin: 6px 0; }
+    .note ol { margin: 8px 0 0; padding-left: 22px; }
+    .paper { background: #fff; border-radius: 16px; padding: 28px; margin-bottom: 18px; border: 1px solid var(--line); }
+    .head { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
+    .head h2 { margin: 0 0 4px; font-size: 20px; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .who { margin-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .who h3 { font-size: 13px; text-transform: none; letter-spacing: 0; margin: 0 0 4px; color: var(--muted); font-weight: 600; }
+    .private { background: #fff8e6; border-radius: 6px; padding: 0 4px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; font-size: 13px; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    tfoot td { font-weight: 700; border-bottom: none; }
+    .rows { margin-top: 24px; }
+    .rows section { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; }
+    .rows h3 { margin: 0 0 6px; font-size: 16px; }
+    .rows p { margin: 0; color: var(--muted); font-size: 15px; }
+    footer { color: var(--muted); font-size: 14px; text-align: center; padding: 24px 0 0; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <b>Demo invoice</b>
+    <span>Everything on this page is made up. It exists so you can try Full Page Screenshot on a long page with private-looking details.</span>
+  </div>
+
+  <main>
+    <div class="note">
+      <h1>Try a capture here</h1>
+      <p>This page is taller than your screen and has a bar that sticks to the top, which is exactly where other capture tools go wrong.</p>
+      <ol>
+        <li>Click the Full Page Screenshot icon in your toolbar.</li>
+        <li>Press <b>Capture full page</b>. The whole invoice lands in your Downloads folder, with the sticky bar appearing once.</li>
+        <li>Then try <b>Hide private info</b>: drag over the highlighted name, email and card line and capture again. On this page that is free for everyone, as many times as you like.</li>
+      </ol>
+      <p class="muted">The names, email, address and card number below are invented. Nothing here is real, and nothing you do on this page is sent anywhere.</p>
+    </div>
+
+    <div class="paper">
+      <div class="head">
+        <div>
+          <h2>Invoice NP-2026-0184</h2>
+          <div class="muted">Issued 14 September 2026 &middot; Due 28 September 2026</div>
+        </div>
+        <div class="muted">Northpaper Supplies Ltd<br>Unit 4, Example Estate<br>Nowhere NW1 0AA</div>
+      </div>
+
+      <div class="who">
+        <div>
+          <h3>Billed to</h3>
+          <div><span class="private">Dana Example-Testerson</span></div>
+          <div><span class="private">dana.testerson@example-invoice.test</span></div>
+          <div class="muted"><span class="private">18 Imaginary Lane, Nowhere NW1 2ZZ</span></div>
+        </div>
+        <div>
+          <h3>Paid with</h3>
+          <div><span class="private">Card ending 4242</span> (test card, not a real account)</div>
+          <div class="muted">Customer reference <span class="private">CUST-0000-1234-5678</span></div>
+          <div class="muted">Phone <span class="private">+44 7700 900123</span> (Ofcom fictional range)</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Item</th><th class="num">Quantity</th><th class="num">Unit</th><th class="num">Total</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A4 recycled paper, 500 sheets</td><td class="num">12</td><td class="num">£4.20</td><td class="num">£50.40</td></tr>
+          <tr><td>Archive boxes, pack of 10</td><td class="num">6</td><td class="num">£9.90</td><td class="num">£59.40</td></tr>
+          <tr><td>Black ink cartridges</td><td class="num">4</td><td class="num">£18.75</td><td class="num">£75.00</td></tr>
+          <tr><td>Desk lamp, warm white</td><td class="num">2</td><td class="num">£29.00</td><td class="num">£58.00</td></tr>
+          <tr><td>Delivery</td><td class="num">1</td><td class="num">£7.50</td><td class="num">£7.50</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3">Total due</td><td class="num">£250.30</td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="rows">
+      <section><h3>Delivery note</h3><p>Two parcels, left with reception on 15 September. Signed for by a name that is also invented.</p></section>
+      <section><h3>Payment terms</h3><p>Fourteen days from the invoice date. Late payment would attract interest, if any of this were real.</p></section>
+      <section><h3>Returns</h3><p>Unopened stationery can be returned within 30 days. Ink cartridges are excluded once opened.</p></section>
+      <section><h3>Account history</h3><p>Order NP-2026-0139 on 2 August 2026, £198.10, paid. Order NP-2026-0102 on 19 July 2026, £64.00, paid.</p></section>
+      <section><h3>Support</h3><p>This invoice is fictional, so there is nobody to call. The extension that brought you here is real: <a href="https://sapirsoftware.github.io/">sapirsoftware.github.io</a>.</p></section>
+      <section><h3>Notes for the buyer</h3><p>A page like this is the reason hiding private info before capturing matters: the black boxes are painted on before the file is written, so the uncensored picture never exists.</p></section>
+      <section><h3>Small print</h3><p>All names, addresses, card numbers and references on this page are invented for the demo. Any resemblance to a real account is a coincidence.</p></section>
+      <section><h3>Another row, to make the page longer</h3><p>Full-page capture is only interesting when the page does not fit on one screen. This one does not.</p></section>
+    </div>
+
+    <footer>Full Page Screenshot. Captures are made and saved on your own computer.</footer>
+  </main>
+</body>
+</html>
