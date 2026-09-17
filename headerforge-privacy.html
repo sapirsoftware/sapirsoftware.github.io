@@ -12,13 +12,15 @@
 </head>
 <body>
   <h1>HeaderForge Privacy Policy</h1>
-  <p><em>Last updated: September 15, 2026</em></p>
+  <p><em>Last updated: September 16, 2026</em></p>
 
   <h2>The short version</h2>
-  <p>HeaderForge runs entirely in your browser. Your rules never leave your machine. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
+  <p>HeaderForge runs entirely in your browser. Your rules stay on your machine unless you turn on sync. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
 
   <h2>What the extension stores</h2>
-  <p>Your header rules (header names, values, URL patterns) are stored locally in your browser using <code>chrome.storage.local</code>. They are never transmitted to us or anyone else.</p>
+  <p>Your header rules (header names, values, URL patterns), profiles, settings and license status are stored locally in your browser using <code>chrome.storage.local</code>. They are never sent to us.</p>
+<p><strong>Match history (Pro).</strong> When you use "Test a URL" in the popup, the address you typed is kept in a list of your last 50 tests, without its query string, so you can see what matched. It stays in <code>chrome.storage.local</code> and you can clear it at any time in Settings.</p>
+<p><strong>Optional sync.</strong> If you switch on sync in Settings, your rules and profiles are also copied to <code>chrome.storage.sync</code>, which Chrome's own Sync carries to your other computers signed in to the same Chrome profile. That goes through Google's Chrome Sync, not through us. Rules can contain secrets such as tokens, so sync is off until you turn it on.</p>
 
   <h2>The live request list (Pro)</h2>
   <p>HeaderForge Pro can show you, in the popup, the requests the tab you are looking at is making, and which of your own header rules touched each one. Because this is the one place where the extension observes network activity, here is exactly what it does.</p>

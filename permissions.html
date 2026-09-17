@@ -37,8 +37,8 @@
           <td><code>activeTab</code>, <code>scripting</code>, <code>storage</code>, <code>downloads</code>, <code>offscreen</code></td>
           <td>Captures the tab you are on and saves the file. The offscreen document exists only to stitch the image together.</td></tr>
       <tr><td><b>Modify HTTP Headers &mdash; HeaderForge</b></td>
-          <td><code>declarativeNetRequest</code>, <code>storage</code>, host access</td>
-          <td>Header rules are applied by Chrome itself at the network layer. The extension never reads page content.</td></tr>
+          <td><code>declarativeNetRequest</code>, <code>declarativeNetRequestFeedback</code>, <code>webRequest</code>, <code>storage</code>, access to all sites</td>
+          <td>Header rules are applied by Chrome itself at the network layer. The feedback permission shows you when your own rule fired. <code>webRequest</code> is used observe-only for the Pro live request list, only while its popup is open. The extension never reads page content.</td></tr>
       <tr><td><b>Text Expander &mdash; SnippetForge</b></td>
           <td>Access to all sites, <code>storage</code></td>
           <td>A text expander has to see typing in whatever field you are using. This is the broadest access we ask for anywhere, and the reason is explained in full on its privacy page.</td></tr>
@@ -52,11 +52,16 @@
   <ul>
     <li><b>ContrastForge &mdash; multi-page audits.</b> Opening a list of pages you supply needs access
         to those pages. Single-page scanning never asks.</li>
-    <li><b>Full Page Screenshot &mdash; batch capture.</b> Capturing a list of pages you supply needs access to those pages. Single captures and region captures never ask.</li>
+    <li><b>Full Page Screenshot &mdash; capturing a list of pages (Pro).</b> Opening and capturing pages you did not click needs access to all sites, because Chrome allows screenshots of such pages only with that access. It is asked for when you start a list, never at install. Single captures and region captures never ask.</li>
     <li><b>SnippetForge &mdash; clipboard read.</b> Asked for only if you save a snippet using the
         <code>{clipboard}</code> placeholder.</li>
   </ul>
   <p class="muted">You can revoke any of these at any time in Chrome&rsquo;s extension settings.</p>
+
+  <h2>Optional settings sync</h2>
+  <p>HeaderForge and Full Page Screenshot can copy their settings to your other computers through
+     Chrome&rsquo;s own Sync, if you switch that on. For HeaderForge that includes your rules, which can
+     contain tokens, so it is off until you turn it on. It goes through Google&rsquo;s Chrome Sync, not through us.</p>
 
   <h2>The only network request any of them makes</h2>
   <p>One address: <code>https://api.lemonsqueezy.com/v1/licenses/validate</code>. It is sent
