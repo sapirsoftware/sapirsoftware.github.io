@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to change your user agent in Chrome (and what it really changes)</title>
+  <meta name="description" content="Change Chrome&#x27;s user agent with DevTools or an extension to test mobile layouts, bots or browser checks, and what each method does and doesn&#x27;t change.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/change-user-agent-chrome.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to change your user agent in Chrome (and what it really changes)">
+  <meta property="og:description" content="Change Chrome&#x27;s user agent with DevTools or an extension to test mobile layouts, bots or browser checks, and what each method does and doesn&#x27;t change.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/change-user-agent-chrome.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to change your user agent in Chrome (and what it really changes)","datePublished":"2026-09-19","dateModified":"2026-09-19","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+</head>
+<body>
+  <h1>How to change your user agent in Chrome</h1>
+  <p class="lede">The user agent is the text your browser sends to say what it is, like "Chrome on Windows" or "Safari on iPhone". Changing it helps you test mobile layouts, browser checks, or what a search-engine bot sees. There are two ways, and they change different things.</p>
+
+  <h2>1. DevTools (free, built in)</h2>
+  <ol>
+    <li>Press <kbd>F12</kbd> to open DevTools.</li>
+    <li>Click the <b>⋮</b> menu, then <b>More tools</b>, then <b>Network conditions</b>.</li>
+    <li>Under <b>User agent</b>, untick <b>Use browser default</b> and choose one, or paste your own.</li>
+    <li>Reload the page.</li>
+  </ol>
+  <p>This changes both the <code>User-Agent</code> header sent to servers <em>and</em> what the page's JavaScript sees in <code>navigator.userAgent</code>. It only lasts while DevTools is open, and only for that tab. For mobile layouts, DevTools' device toolbar (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd>) also sets the screen size, which usually matters more than the user agent.</p>
+
+  <h2>2. A header rule (stays on, per site)</h2>
+  <p>If you need a different user agent every time you visit certain sites, a header extension can set the <code>User-Agent</code> request header with a rule that stays on.</p>
+  <div class="tool">
+    <b>HeaderForge: User-Agent presets</b>
+    <p>Pick "Chrome on Windows", "iPhone Safari" or "Googlebot" from the presets, limit it to the sites you choose, and switch it on or off in one click. It also does request and response headers, one-click CORS, and blocking or redirecting requests. Free, with no analytics.</p>
+    <p class="note">A header rule changes what <b>servers</b> receive. It does not change <code>navigator.userAgent</code> inside the page, so a site that checks the browser with JavaScript still sees your real browser. Use DevTools for that case.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2>Which should I use?</h2>
+  <table>
+    <thead><tr><th>You want to…</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Check a mobile layout once</td><td>DevTools device toolbar</td></tr>
+      <tr><td>Test what the server returns for a bot or old browser</td><td>Either; a header rule stays on</td></tr>
+      <tr><td>Fool a JavaScript browser check</td><td>DevTools (it changes <code>navigator.userAgent</code>)</td></tr>
+      <tr><td>Always send a custom user agent to certain sites</td><td>A header rule</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Also worth knowing</h2>
+  <p>Chrome also sends <code>Sec-CH-UA</code> "client hint" headers that describe the browser. Some sites read those instead of the user agent. A header rule can remove or set them too.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
