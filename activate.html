@@ -127,17 +127,31 @@
         const e = EXTENSIONS[k];
         if (e.id && !order.includes(e)) order.push(e);
       }
-      let reached = 0, lastErr = "";
+      // A bundle key (product=bundle) unlocks every installed extension, so keep
+      // going after the first success; a single-product key stops at its own.
+      const bundle = product === "bundle";
+      let reached = 0, lastErr = "", email = "";
+      const unlocked = [];
       for (const ext of order) {
         $("auto-note").textContent = "Talking to " + ext.label + "…";
         const r = await send(ext.id, { type: "activate-license", key });
         if (r.unreachable) continue;
         reached++;
         if (r.ok) {
-          $("done-note").textContent = ext.label + " Pro is unlocked" + (r.email ? " for " + r.email : "") + ". Open it from the toolbar — nothing else to do. You can close this tab.";
-          return show("done");
+          unlocked.push(ext.label);
+          email = email || r.email || "";
+          if (!bundle) break;
+        } else {
+          lastErr = r.error || "";
         }
-        lastErr = r.error || "";
+      }
+      if (unlocked.length) {
+        const names = unlocked.length === 1 ? unlocked[0]
+          : unlocked.slice(0, -1).join(", ") + " and " + unlocked[unlocked.length - 1];
+        $("done-note").textContent = names + " Pro " + (unlocked.length === 1 ? "is" : "are") + " unlocked" + (email ? " for " + email : "") +
+          ". Open " + (unlocked.length === 1 ? "it" : "them") + " from the toolbar — nothing else to do." +
+          (bundle ? " Install more of our extensions later and open this same link again to unlock them too." : " You can close this tab.");
+        return show("done");
       }
       if (!reached) {
         return manual("The extension isn't installed in this browser profile (or this tab was opened in a different browser). Install it, then click Try again — or paste the key by hand.");
