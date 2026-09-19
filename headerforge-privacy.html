@@ -12,7 +12,7 @@
 </head>
 <body>
   <h1>HeaderForge Privacy Policy</h1>
-  <p><em>Last updated: September 16, 2026</em></p>
+  <p><em>Last updated: September 18, 2026</em></p>
 
   <h2>The short version</h2>
   <p>HeaderForge runs entirely in your browser. Your rules stay on your machine unless you turn on sync. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
@@ -20,6 +20,9 @@
   <h2>What the extension stores</h2>
   <p>Your header rules (header names, values, URL patterns), profiles, settings and license status are stored locally in your browser using <code>chrome.storage.local</code>. They are never sent to us.</p>
 <p><strong>Match history (Pro).</strong> When you use "Test a URL" in the popup, the address you typed is kept in a list of your last 50 tests, without its query string, so you can see what matched. It stays in <code>chrome.storage.local</code> and you can clear it at any time in Settings.</p>
+<p><strong>Variables (Pro).</strong> Values you give to variables such as <code>{{token}}</code> are stored in <code>chrome.storage.local</code> on your computer. They are not synced unless you separately turn on syncing variable values, and exported rule files contain only the variable names.</p>
+<p><strong>Block and redirect rules</strong> are carried out by Chrome itself. HeaderForge never fetches, reads or forwards the requests they affect.</p>
+<p><strong>Small counters.</strong> The number of free URL tests used this month and the days your rules were used (so we can ask once whether you'd like to leave a review) are kept on your computer and never sent.</p>
 <p><strong>Optional sync.</strong> If you switch on sync in Settings, your rules and profiles are also copied to <code>chrome.storage.sync</code>, which Chrome's own Sync carries to your other computers signed in to the same Chrome profile. That goes through Google's Chrome Sync, not through us. Rules can contain secrets such as tokens, so sync is off until you turn it on.</p>
 
   <h2>The live request list (Pro)</h2>

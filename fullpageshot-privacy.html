@@ -12,7 +12,7 @@
 </head>
 <body>
   <h1>Full Page Screenshot Privacy Policy</h1>
-  <p><em>Last updated: September 16, 2026</em></p>
+  <p><em>Last updated: September 18, 2026</em></p>
 
   <h2>The short version</h2>
   <p>Full Page Screenshot runs entirely in your browser. Your screenshots never leave your machine. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
@@ -24,7 +24,10 @@
   <p>Your settings (format, whether to show the save dialog, display choices), your license status, and whether you have used your one free try of hiding private info are stored locally in your browser using <code>chrome.storage.local</code>. A capture in progress is tracked in <code>chrome.storage.session</code>, which Chrome clears when the browser closes. None of this is sent to us.</p>
 <p><strong>Optional settings sync.</strong> If you switch on "Keep settings in sync", your format and save-dialog choice are also copied to <code>chrome.storage.sync</code>, which Chrome's own Sync carries to your other computers signed in to the same Chrome profile. That goes through Google's Chrome Sync, not through us. It is off until you turn it on, and it never includes screenshots, pages or your license.</p>
 <h2>Hiding private info (redaction)</h2>
-<p>When you black out an area before capturing, the box is painted over the image before the file is created, so an unredacted copy is never saved. In a Pro PDF, links that sit under a blacked-out box are left out of the file too.</p>
+<p>When you black out an area before capturing, the box is painted over the image before the file is created, so an unredacted copy is never saved. In a PDF, links that sit under a blacked-out box are left out of the file too.</p>
+<p><strong>Find private info</strong> reads the text of the page you are on, only when you press it, and looks for patterns such as email addresses, phone numbers and card numbers. This happens entirely in your browser; the text is never stored or sent anywhere. It only suggests boxes, which you review before capturing.</p>
+<h2>Copy and the monthly counter</h2>
+<p>The Copy button puts the finished image on your clipboard, only when you click it. The number of free redacted captures and smart PDFs you have used this month, and how many captures you have made (so we can ask once whether you'd like to leave a review), are counted in <code>chrome.storage.local</code> on your computer and never sent.</p>
 
   <h2>The only network request we ever make</h2>
   <p>If you choose to activate Pro, the extension sends your license key to Lemon Squeezy (our payment provider, <a href="https://www.lemonsqueezy.com">lemonsqueezy.com</a>) to verify it. That happens when you activate, and then at most once a day while Pro is on, so that Pro switches off if your subscription ends. If you never activate Pro, the extension never sends it. This is the only outbound network request the extension makes. Your email address, if returned by Lemon Squeezy during validation, is stored locally to display your license status. The request goes to exactly one address, <code>https://api.lemonsqueezy.com/v1/licenses/validate</code>, and contains exactly one thing: your licence key. No page data, no identifiers, nothing about what you were doing. You can confirm this by searching the extension's source for <code>fetch(</code> — there is a single occurrence, in <code>common.js</code>.</p>

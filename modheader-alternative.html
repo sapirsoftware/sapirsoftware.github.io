@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ModHeader alternative after the July 2026 removal — HeaderForge</title>
+  <meta name="description" content="ModHeader was removed from the Chrome Web Store and Edge Add-ons in July 2026. How to move your header rules to HeaderForge, a local-only header editor, in three steps.">
+  <style>
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #e8e8f0; --muted: #a3a9b3; --line: #2e3140; --accent: #8fb6f5; --tint: #1b2740; --bg: #14151c; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 720px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 21px; margin: 34px 0 8px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 700; text-decoration: none; margin: 8px 0; }
+    @media (prefers-color-scheme: dark) { .cta { color: #14151c; } }
+    .box { background: var(--tint); border-radius: 12px; padding: 14px 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 10px 0; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    ol li { margin-bottom: 8px; }
+    code { background: var(--tint); padding: 1px 5px; border-radius: 5px; }
+    .fine { color: var(--muted); font-size: 14px; }
+    a { color: var(--accent); }
+    footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>Looking for a ModHeader alternative?</h1>
+  <p class="lede">ModHeader was removed from the Chrome Web Store and Microsoft Edge Add-ons in July 2026. If you used it to set request headers for testing, here is what happened and how to move your rules to HeaderForge in a few minutes.</p>
+  <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome — free</a>
+
+  <h2>What happened</h2>
+  <p>According to reporting by <a href="https://thehackernews.com/2026/07/google-and-microsoft-pull-modheader.html">The Hacker News</a> and <a href="https://www.techradar.com/pro/security/experts-get-google-microsoft-to-pull-trusted-modheader-with-1-6-million-installs-after-finding-it-could-harvest-all-kinds-of-data">TechRadar</a>, security firm Stripe OLT found code inside the published extension that could fingerprint the browser and collect the domains a user visited. Microsoft removed ModHeader from Edge Add-ons on July 3, 2026 and Google removed it from the Chrome Web Store on July 10, 2026. The reports put its installs at about 1.6 million across both stores.</p>
+  <p>The same reports say the collector only switched on for browsers on an internal list, and that list shipped empty, so it was not seen sending data. The developer had not responded publicly at the time of those reports. We have not tested ModHeader ourselves; this summary is theirs.</p>
+
+  <h2>How HeaderForge is different</h2>
+  <ul>
+    <li><b>Nothing to phone home to.</b> No analytics, no ads, no account. The only network request it makes is a licence check if you buy Pro, and three test requests to httpbin.org if you press the test button on its welcome page. Details: <a href="headerforge-privacy.html">privacy policy</a> and <a href="permissions.html">permissions</a>.</li>
+    <li><b>Changing headers is free for good.</b> Request and response headers, regex patterns, profiles, one-click CORS for a site, block and redirect rules.</li>
+    <li><b>It shows whether a rule actually ran.</b> Each rule says in plain words what it does, and Pro shows how often it fired on the tab and a live list of the requests it touched.</li>
+  </ul>
+
+  <table>
+    <thead><tr><th></th><th>HeaderForge free</th><th>HeaderForge Pro</th></tr></thead>
+    <tbody>
+      <tr><td>Set, add to or remove request and response headers</td><td>Yes, unlimited</td><td>Yes</td></tr>
+      <tr><td>URL patterns and regular expressions</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Profiles, pause, this tab only</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Import ModHeader profile exports</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>One-click CORS, presets, block and redirect</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Did my rule fire? (counts and live request list)</td><td>Preview</td><td>Yes</td></tr>
+      <tr><td>Test a URL against your rules</td><td>5 a month</td><td>Unlimited</td></tr>
+      <tr><td>Variables such as <code>{{token}}</code></td><td>—</td><td>Yes</td></tr>
+    </tbody>
+  </table>
+  <p class="fine">Pro prices are on the <a href="pricing.html?product=headerforge">pricing page</a>.</p>
+
+  <h2>Move your rules in three steps</h2>
+  <div class="box">
+    <ol>
+      <li><b>Find a ModHeader export.</b> If you saved one before, use it. If ModHeader is still installed somewhere (another computer or browser), open it and export your profile to a JSON file.</li>
+      <li><b>Install HeaderForge</b> from the <a href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Chrome Web Store</a>, open its <b>Settings</b>, and go to <b>Import</b>.</li>
+      <li><b>Paste or choose the file.</b> HeaderForge turns each header into a rule. Profiles that only applied to certain sites come in switched off, because a rule meant for one site shouldn't suddenly go to every site; add a site pattern and switch them on.</li>
+    </ol>
+  </div>
+  <p><b>Change any secrets you kept in ModHeader.</b> If your profiles held API keys, tokens or passwords, treat them as exposed and rotate them, whatever tool you use next.</p>
+  <p>No export? Recreate your rules in HeaderForge's popup; each one takes a few seconds, and the popup describes it back to you in a sentence so you can check it.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="headerforge-privacy.html">HeaderForge privacy</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · ModHeader is a trademark of its owner; this page is not affiliated with it.</footer>
+</body>
+</html>

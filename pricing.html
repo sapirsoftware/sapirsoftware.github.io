@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing — Sapir Software</title>
+  <meta name="description" content="Pro pricing for Full Page Screenshot and HeaderForge: monthly, yearly or once. Everything runs on your own computer.">
+  <style>
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #4f46e5; --tint: #eef0ff; --bg: #fff; --card: #fff; --ok: #0f7a3d; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #e8e8f0; --muted: #a3a9b3; --line: #2e3140; --accent: #a5a0ff; --tint: #23254a; --bg: #14151c; --card: #1b1d27; --ok: #6fd39a; }
+    }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.6 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 860px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 30px; margin: 0 0 6px; }
+    .lede { color: var(--muted); margin: 0 0 28px; }
+    .product { border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin-bottom: 24px; background: var(--card); }
+    .product.focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--tint); }
+    .product h2 { margin: 0 0 4px; font-size: 21px; }
+    .what { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+    .split h3 { font-size: 14px; margin: 0 0 6px; color: var(--muted); font-weight: 600; }
+    .split ul { margin: 0; padding-left: 18px; font-size: 14.5px; }
+    .split li { margin-bottom: 4px; }
+    .plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .plan { border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+    .plan.best { border-color: var(--accent); background: var(--tint); }
+    .plan .name { font-weight: 700; }
+    .plan .price { font-size: 26px; font-weight: 800; }
+    .plan .price small { font-size: 14px; font-weight: 500; color: var(--muted); }
+    .plan .note { font-size: 13px; color: var(--muted); flex: 1; }
+    .badge { display: inline-block; font-size: 12px; font-weight: 700; color: var(--ok); }
+    .btn { display: block; text-align: center; background: var(--accent); color: #fff; border-radius: 10px; padding: 10px 12px; font-weight: 700; text-decoration: none; }
+    @media (prefers-color-scheme: dark) { .btn { color: #14151c; } }
+    .plan:not(.best) .btn { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+    .fine { color: var(--muted); font-size: 13.5px; }
+    a { color: var(--accent); }
+    [hidden] { display: none !important; }
+    @media (max-width: 640px) { .split, .plans { grid-template-columns: 1fr; } }
+    footer { margin-top: 32px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <h1>Pricing</h1>
+  <p class="lede">Both extensions are useful free, for good. Pro removes the monthly limits and adds a few tools for people who use them every week. Pay monthly, yearly, or once.</p>
+
+  <section class="product" id="fullpageshot">
+    <h2>Full Page Screenshot</h2>
+    <p class="what">Capture a whole web page, and black out private details before the picture exists.</p>
+    <div class="split">
+      <div>
+        <h3>Free</h3>
+        <ul>
+          <li>Whole page, part of a page, or a scrolling panel</li>
+          <li>PNG, JPEG and PDF, copy to clipboard, capture delay, your own file names</li>
+          <li>3 captures a month with private info blacked out, including finding it automatically</li>
+          <li>10 PDFs a month with smart page breaks and clickable links</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Pro</h3>
+        <ul>
+          <li>Unlimited blacked-out captures and automatic finding of emails, card numbers, phone numbers and keys</li>
+          <li>Unlimited smart PDFs</li>
+          <li>Capture a whole list of pages in one run</li>
+        </ul>
+      </div>
+    </div>
+    <div class="plans" data-product="fullpageshot"></div>
+  </section>
+
+  <section class="product" id="headerforge">
+    <h2>HeaderForge</h2>
+    <p class="what">Modify HTTP request and response headers, unblock CORS, block or redirect requests, and see which rule fired.</p>
+    <div class="split">
+      <div>
+        <h3>Free</h3>
+        <ul>
+          <li>Unlimited request and response header rules, regex patterns, profiles</li>
+          <li>One-click CORS for a site, ready-made presets, block and redirect rules</li>
+          <li>ModHeader and JSON import, pause, this-tab-only, optional sync</li>
+          <li>5 URL tests a month</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Pro</h3>
+        <ul>
+          <li>How often each rule ran on this tab</li>
+          <li>A live list of this tab's requests and which rule touched each</li>
+          <li>Unlimited URL tests and a history of them</li>
+          <li>Variables like <code>{{token}}</code> in your rules</li>
+        </ul>
+      </div>
+    </div>
+    <div class="plans" data-product="headerforge"></div>
+  </section>
+
+  <p class="fine">Payments are handled by Lemon Squeezy, which also handles sales tax. After checkout, click <b>Activate Pro</b> and the extension switches on by itself; your licence key is also in the receipt email. Monthly and yearly plans can be cancelled any time and stay on until the end of the period. A lifetime licence is one payment and never expires. Questions or refunds: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="permissions.html">Permissions &amp; security</a></footer>
+
+  <script>
+    // One place for prices and checkout links. A plan with no link is not shown,
+    // so the page never offers something that can't be bought.
+    const PLANS = {
+      fullpageshot: [
+        { id: "year",     name: "Yearly",   price: "$19", per: "/year",  note: "About $1.60 a month.", best: true,
+          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/af3e4844-7012-4712-a539-fca9b07b3b4f?enabled=2041546" },
+        { id: "month",    name: "Monthly",  price: "$3",  per: "/month", note: "Cancel any time.",
+          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/7ff05e3f-a882-4502-ab0a-a15bd64f2418?enabled=2136765" },
+        { id: "lifetime", name: "Lifetime", price: "$39", per: " once",  note: "One payment, yours for good.",
+          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/3b013be5-58fe-459f-8698-ecd4594e540c?enabled=2136763" }
+      ],
+      headerforge: [
+        { id: "year",     name: "Yearly",   price: "$39", per: "/year",  note: "About $3.25 a month.", best: true,
+          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/3b58cbae-3548-48e5-a6c8-bfd916cd89d5?enabled=2136784" },
+        { id: "month",    name: "Monthly",  price: "$5",  per: "/month", note: "Cancel any time.",
+          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/03c6ace6-101f-4036-8c25-d2a44a84d977?enabled=2041308" },
+        { id: "lifetime", name: "Lifetime", price: "$59", per: " once",  note: "One payment, yours for good.",
+          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/f63a4763-2ea3-4c35-a08d-4477e9be2c5c?enabled=2136785" }
+      ]
+    };
+
+    function el(tag, cls, text) {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+
+    for (const box of document.querySelectorAll(".plans")) {
+      const plans = PLANS[box.dataset.product].filter(p => p.url);
+      // If only one plan is buyable, it is simply "the" plan; no "best value" label.
+      const single = plans.length === 1;
+      box.style.gridTemplateColumns = window.matchMedia("(max-width: 640px)").matches ? "1fr" : `repeat(${plans.length}, 1fr)`;
+      for (const p of plans) {
+        const card = el("div", "plan" + (p.best || single ? " best" : ""));
+        if (p.best && !single) card.appendChild(el("span", "badge", "Best value"));
+        card.appendChild(el("div", "name", p.name));
+        const price = el("div", "price", p.price);
+        price.appendChild(el("small", null, p.per));
+        card.appendChild(price);
+        card.appendChild(el("div", "note", p.note));
+        const a = el("a", "btn", "Get Pro " + p.name.toLowerCase());
+        a.href = p.url;
+        a.rel = "noopener";
+        card.appendChild(a);
+        box.appendChild(card);
+      }
+    }
+
+    const want = new URLSearchParams(location.search).get("product");
+    const target = want && document.getElementById(want);
+    if (target) {
+      target.classList.add("focus");
+      target.scrollIntoView({ block: "start" });
+    }
+  </script>
+</body>
+</html>
