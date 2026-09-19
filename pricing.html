@@ -95,7 +95,7 @@
     <div class="plans" data-product="headerforge"></div>
   </section>
 
-  <p class="fine">Payments are handled by Lemon Squeezy, which also handles sales tax. After checkout, click <b>Activate Pro</b> and the extension switches on by itself; your licence key is also in the receipt email. Monthly and yearly plans can be cancelled any time and stay on until the end of the period. A lifetime licence is one payment and never expires. Questions or refunds: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>.</p>
+  <p class="fine">Pay with Google Pay, Apple Pay, PayPal or a card. Payments are handled by Lemon Squeezy, which also handles sales tax. After checkout, click <b>Activate Pro</b> and the extension switches on by itself; your licence key is also in the receipt email. Monthly and yearly plans can be cancelled any time and stay on until the end of the period. A lifetime licence is one payment and never expires. Questions or refunds: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>.</p>
 
   <footer><a href="index.html">Sapir Software</a> · <a href="permissions.html">Permissions &amp; security</a></footer>
 
@@ -141,8 +141,10 @@
         price.appendChild(el("small", null, p.per));
         card.appendChild(price);
         card.appendChild(el("div", "note", p.note));
-        const a = el("a", "btn", "Get Pro " + p.name.toLowerCase());
-        a.href = p.url;
+        const a = el("a", "btn lemonsqueezy-button", "Get Pro " + p.name.toLowerCase());
+        // embed=1 opens Lemon Squeezy's checkout on top of this page (lemon.js
+        // below); without the script the same link simply opens the checkout.
+        a.href = p.url + (p.url.includes("?") ? "&" : "?") + "embed=1";
         a.rel = "noopener";
         card.appendChild(a);
         box.appendChild(card);
@@ -156,5 +158,6 @@
       target.scrollIntoView({ block: "start" });
     }
   </script>
+  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
 </body>
 </html>
