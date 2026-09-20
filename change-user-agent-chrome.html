@@ -9,6 +9,8 @@
     :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
     @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
     * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
     body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
     h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
     h2 { font-size: 22px; margin: 36px 0 8px; }
@@ -38,9 +40,11 @@
   <meta property="og:url" content="https://sapirsoftware.github.io/change-user-agent-chrome.html">
   <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to change your user agent in Chrome (and what it really changes)","datePublished":"2026-09-19","dateModified":"2026-09-19","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to change your user agent in Chrome (and what it really changes)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+
 </head>
 <body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
   <h1>How to change your user agent in Chrome</h1>
   <p class="lede">The user agent is the text your browser sends to say what it is, like "Chrome on Windows" or "Safari on iPhone". Changing it helps you test mobile layouts, browser checks, or what a search-engine bot sees. There are two ways, and they change different things.</p>
 

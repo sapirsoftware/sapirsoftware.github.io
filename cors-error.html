@@ -9,6 +9,8 @@
     :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
     @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
     * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
     body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
     h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
     h2 { font-size: 22px; margin: 36px 0 8px; }
@@ -38,9 +40,11 @@
   <meta property="og:url" content="https://sapirsoftware.github.io/cors-error.html">
   <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"CORS error: what it means and how to fix it (including localhost)","datePublished":"2026-09-19","dateModified":"2026-09-19","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"CORS error: what it means and how to fix it (including localhost)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What causes a CORS error?", "acceptedAnswer": {"@type": "Answer", "text": "The browser blocked your page from reading another origin's response because that server did not send an Access-Control-Allow-Origin header naming your page's origin. The request itself usually reached the server."}}, {"@type": "Question", "name": "Why do I get a CORS error on localhost?", "acceptedAnswer": {"@type": "Answer", "text": "http://localhost:3000 and http://localhost:8080 are different origins because the ports differ, so calls between them are cross-origin. 127.0.0.1 and localhost are different origins too."}}, {"@type": "Question", "name": "How do I fix a CORS error?", "acceptedAnswer": {"@type": "Answer", "text": "Send Access-Control-Allow-Origin from the server, answer the OPTIONS preflight with a 2xx status before any authentication check, or route the call through your dev server's proxy so the browser only sees one origin."}}, {"@type": "Question", "name": "Can a Chrome extension fix CORS?", "acceptedAnswer": {"@type": "Answer", "text": "It can add the Access-Control headers in your own browser, which is useful for testing against a server you cannot change. It does not fix anything for your users, and it cannot rescue a preflight the server rejects."}}]}</script>
 </head>
 <body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
   <h1>CORS error: what it means and how to fix it</h1>
   <p class="lede">You call an API from your web page and the console says the request was <b>blocked by CORS policy</b>. The request often reached the server just fine; the browser simply won't let your page read the answer. Here's why, and the fixes in order of how permanent they are.</p>
   <div class="toc"><b>On this page</b><ol>

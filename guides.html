@@ -9,6 +9,8 @@
     :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
     @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
     * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
     body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
     h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
     h2 { font-size: 22px; margin: 36px 0 8px; }
@@ -38,14 +40,22 @@
   <meta property="og:url" content="https://sapirsoftware.github.io/guides.html">
   <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Guides: CORS, full-page screenshots, PDFs and headers — Sapir Software","datePublished":"2026-09-19","dateModified":"2026-09-19","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Guides: CORS, full-page screenshots, PDFs and headers — Sapir Software","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+
 </head>
 <body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
   <h1>Guides</h1>
   <p class="lede">Practical fixes for everyday web problems. Each guide starts with what you can do for free, with no install.</p>
+  <h2>Free tools</h2>
+  <ul>
+    <li><a href="what-is-my-user-agent.html">What is my user agent?</a> — your browser's user agent, explained, plus common strings to copy</li>
+    <li><a href="cors-tester.html">CORS tester</a> — run a real request and see exactly what CORS does with it</li>
+  </ul>
   <h2>Developers</h2>
   <ul>
     <li><a href="cors-error.html">CORS error: what it means and how to fix it, including localhost</a></li>
+    <li><a href="what-is-cors.html">What is CORS? Cross-Origin Resource Sharing in plain words</a></li>
     <li><a href="change-user-agent-chrome.html">How to change your user agent in Chrome</a></li>
     <li><a href="modheader-alternative.html">Moving from ModHeader after its removal</a></li>
   </ul>

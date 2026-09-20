@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is my user agent? — see and understand your browser's user agent string</title>
+  <meta name="description" content="Your user agent string, explained: browser, engine, operating system and device, plus the client-hint headers Chrome sends. Nothing is uploaded; it all runs in your browser.">
+  <style>
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f4f8; --ok: #0f7a3d; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #e8e8f0; --muted: #a3a9b3; --line: #2e3140; --accent: #8fb6f5; --tint: #18243a; --bg: #14151c; --code: #1c1e28; --ok: #6fd39a; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+    nav.top { font-size: 14px; margin-bottom: 20px; }
+    nav.top a { margin-right: 14px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 8px; }
+    .lede { color: var(--muted); }
+    .ua { background: var(--code); border: 1px solid var(--line); border-radius: 12px; padding: 16px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; word-break: break-all; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+    button { font: inherit; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); padding: 8px 14px; cursor: pointer; }
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    @media (prefers-color-scheme: dark) { button.primary { color: #14151c; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; width: 34%; }
+    td.val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-word; }
+    .note { background: var(--tint); border-radius: 12px; padding: 12px 16px; font-size: 15px; }
+    .copy-list td:first-child { white-space: nowrap; }
+    code { background: var(--code); padding: 1px 5px; border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 20px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #14151c; } }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    .said { color: var(--ok); font-weight: 600; }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/what-is-my-user-agent.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="What is my user agent?">
+  <meta property="og:description" content="Your user agent string, explained: browser, engine, operating system and device. Runs entirely in your browser.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/what-is-my-user-agent.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What is a user agent?","acceptedAnswer":{"@type":"Answer","text":"The user agent is a line of text your browser sends with every request to say what it is: browser, version, rendering engine and operating system. Servers use it to decide what to send back."}},
+  {"@type":"Question","name":"Why does my user agent mention Mozilla and Safari when I use Chrome?","acceptedAnswer":{"@type":"Answer","text":"For historical compatibility. Browsers copied each other's user agent strings for decades so that servers checking for a rival browser would still serve them the modern page. Chrome's string therefore contains Mozilla, AppleWebKit, KHTML, Safari and Chrome all at once."}},
+  {"@type":"Question","name":"Can I change my user agent?","acceptedAnswer":{"@type":"Answer","text":"Yes. Chrome DevTools can override it for one tab while DevTools is open, which also changes what JavaScript on the page sees. A header extension can set the User-Agent request header permanently for chosen sites, which changes what servers receive but not what page JavaScript sees."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>What is my user agent?</h1>
+  <p class="lede">This is the line your browser sends to every website you visit. Everything below is read in your own browser and nothing is sent anywhere.</p>
+
+  <div class="ua" id="ua">Reading…</div>
+  <div class="row">
+    <button class="primary" id="copy">Copy</button>
+    <span id="copied" class="said" hidden>Copied</span>
+  </div>
+
+  <h2>What it says about you</h2>
+  <table id="parsed"><tbody></tbody></table>
+  <p class="lede" id="hints-note" hidden></p>
+
+  <h2>Why it looks so strange</h2>
+  <p>Almost every browser's user agent starts with <code>Mozilla/5.0</code>, and Chrome's also mentions <code>AppleWebKit</code>, <code>KHTML</code> and <code>Safari</code>. That's history, not confusion: for decades browsers copied each other's strings so that servers checking for a rival wouldn't send them a stripped-down page. The result is a string that names four browsers and means one.</p>
+  <p>Modern Chrome also freezes parts of the string (a "reduced" user agent) and sends the real detail in separate <code>Sec-CH-UA</code> client-hint headers instead. That's why the version numbers above may look rounder than you expect.</p>
+
+  <h2>Common user agent strings</h2>
+  <p>Useful when you want to test how a site answers a different browser or a crawler. Click to copy.</p>
+  <table class="copy-list"><tbody id="common"></tbody></table>
+
+  <h2>Changing your user agent</h2>
+  <p>Two ways, and they do different things:</p>
+  <ul>
+    <li><b>Chrome DevTools</b> (free, built in): F12 → ⋮ → More tools → Network conditions → untick "Use browser default". Changes what servers receive <em>and</em> what page JavaScript sees, for that tab while DevTools is open.</li>
+    <li><b>A header rule</b>: changes the <code>User-Agent</code> header sent to chosen sites, permanently, without DevTools open. Page JavaScript still sees your real browser.</li>
+  </ul>
+  <p>Full steps for both, with screenshots of where each option lives: <a href="change-user-agent-chrome.html">how to change your user agent in Chrome</a>.</p>
+
+  <div class="tool">
+    <b>HeaderForge</b>
+    <p>A Chrome extension for setting request and response headers, with ready-made User-Agent presets (Chrome on Windows, iPhone Safari, Googlebot), one-click CORS, and rules that show whether they actually fired. Free, no analytics, no ads, no account.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <div class="note">Nothing on this page is uploaded. Your user agent is read with JavaScript in your browser and shown back to you; we run no analytics and keep no logs.</div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">Guides</a> · <a href="permissions.html">Permissions &amp; security</a> · Last updated September 20, 2026</footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const ua = navigator.userAgent || "";
+    $("ua").textContent = ua || "Your browser did not report a user agent.";
+
+    $("copy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(ua);
+        $("copied").hidden = false;
+        setTimeout(() => { $("copied").hidden = true; }, 2000);
+      } catch (e) {
+        const r = document.createRange();
+        r.selectNodeContents($("ua"));
+        const s = getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+      }
+    });
+
+    // Order matters: the first match wins, so the browsers that impersonate
+    // others (Edge, Opera, Samsung) are tested before Chrome and Safari.
+    const BROWSERS = [
+      [/Edg(?:A|iOS)?\/([\d.]+)/, "Microsoft Edge"],
+      [/OPR\/([\d.]+)/, "Opera"],
+      [/SamsungBrowser\/([\d.]+)/, "Samsung Internet"],
+      [/Firefox\/([\d.]+)/, "Firefox"],
+      [/CriOS\/([\d.]+)/, "Chrome on iOS"],
+      [/Chrome\/([\d.]+)/, "Chrome"],
+      [/Version\/([\d.]+).*Safari/, "Safari"]
+    ];
+    const OSES = [
+      [/Windows NT 10\.0/, "Windows 10 or 11"],
+      [/Windows NT ([\d.]+)/, "Windows"],
+      [/Android ([\d.]+)/, "Android"],
+      [/(?:iPhone|iPad).*OS ([\d_]+)/, "iOS"],
+      [/Mac OS X ([\d_.]+)/, "macOS"],
+      [/CrOS/, "ChromeOS"],
+      [/Linux/, "Linux"]
+    ];
+    const ENGINES = [[/Gecko\/|rv:/, "Gecko"], [/AppleWebKit/, "WebKit or Blink"]];
+
+    function first(list, s) {
+      for (const [re, name] of list) {
+        const m = re.exec(s);
+        if (m) return { name, version: (m[1] || "").replace(/_/g, ".") };
+      }
+      return null;
+    }
+
+    const rows = [];
+    const b = first(BROWSERS, ua);
+    rows.push(["Browser", b ? b.name + (b.version ? " " + b.version : "") : "Not recognised"]);
+    const os = first(OSES, ua);
+    rows.push(["Operating system", os ? os.name + (os.version ? " " + os.version : "") : "Not recognised"]);
+    const eng = first(ENGINES, ua);
+    rows.push(["Engine", eng ? eng.name : "Not recognised"]);
+    rows.push(["Device type", /Mobi|Android|iPhone/.test(ua) ? "Phone or tablet" : "Desktop or laptop"]);
+    rows.push(["Screen", screen.width + " × " + screen.height + " CSS px, " + (window.devicePixelRatio || 1) + "× pixel ratio"]);
+    rows.push(["Languages", (navigator.languages || [navigator.language]).join(", ")]);
+    rows.push(["Touch points", String(navigator.maxTouchPoints ?? 0)]);
+
+    const tbody = document.querySelector("#parsed tbody");
+    function addRow(k, v) {
+      const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.textContent = k;
+      const td = document.createElement("td");
+      td.className = "val";
+      td.textContent = v;
+      tr.append(th, td);
+      tbody.appendChild(tr);
+    }
+    rows.forEach(([k, v]) => addRow(k, v));
+
+    // Client hints: the modern, more honest source. Chrome-only for now.
+    if (navigator.userAgentData) {
+      const d = navigator.userAgentData;
+      const brands = (d.brands || []).map(x => x.brand + " " + x.version).join(", ");
+      if (brands) addRow("Sec-CH-UA brands", brands);
+      addRow("Sec-CH-UA-Mobile", d.mobile ? "?1 (mobile)" : "?0 (not mobile)");
+      if (d.platform) addRow("Sec-CH-UA-Platform", d.platform);
+      if (d.getHighEntropyValues) {
+        d.getHighEntropyValues(["platformVersion", "architecture", "model", "uaFullVersion"]).then(v => {
+          if (v.uaFullVersion) addRow("Full browser version", v.uaFullVersion);
+          if (v.platformVersion) addRow("Platform version", v.platformVersion);
+          if (v.architecture) addRow("CPU architecture", v.architecture + (v.bitness ? " " + v.bitness + "-bit" : ""));
+          if (v.model) addRow("Device model", v.model);
+        }).catch(() => {});
+      }
+      $("hints-note").textContent = "Your browser also sends Sec-CH-UA client hints, listed above. Sites can ask for the detailed ones, which is what the last rows show.";
+      $("hints-note").hidden = false;
+    }
+
+    const COMMON = [
+      ["Chrome on Windows", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"],
+      ["Chrome on macOS", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"],
+      ["Safari on iPhone", "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1"],
+      ["Firefox on Windows", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0"],
+      ["Googlebot", "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"],
+      ["curl", "curl/8.6.0"]
+    ];
+    const common = $("common");
+    COMMON.forEach(([label, string]) => {
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      const btn = document.createElement("button");
+      btn.textContent = label;
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(string);
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = label; }, 1500);
+        } catch (e) { /* the string is on screen to copy by hand */ }
+      });
+      td1.appendChild(btn);
+      const td2 = document.createElement("td");
+      td2.className = "val";
+      td2.textContent = string;
+      tr.append(td1, td2);
+      common.appendChild(tr);
+    });
+  </script>
+</body>
+</html>

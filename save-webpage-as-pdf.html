@@ -9,6 +9,8 @@
     :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
     @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
     * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
     body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
     h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
     h2 { font-size: 22px; margin: 36px 0 8px; }
@@ -38,9 +40,11 @@
   <meta property="og:url" content="https://sapirsoftware.github.io/save-webpage-as-pdf.html">
   <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to save a webpage as a PDF (the whole page, as it looks)","datePublished":"2026-09-19","dateModified":"2026-09-19","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to save a webpage as a PDF (the whole page, as it looks)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+
 </head>
 <body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
   <h1>How to save a webpage as a PDF</h1>
   <p class="lede">Chrome can save any page as a PDF with no extra software. Often that's all you need. When the PDF comes out looking different from the page on screen, the second method keeps it the way you see it.</p>
 
@@ -61,6 +65,10 @@
     <p>It captures the whole scrolling page and saves it as a multi-page A4 PDF. Page breaks land between sections instead of cutting through them, and links on the page stay clickable in the PDF: 10 of these a month free, unlimited with Pro. Plain PDF export is free without limits. You can also black out private details before the PDF is made. Nothing is uploaded.</p>
     <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot, free</a>
   </div>
+
+  <h2>Converting a page to PDF without installing anything</h2>
+  <p>"Convert webpage to PDF" and "print to PDF" are the same job in Chrome: the Print dialog does the converting, and no upload or online converter is needed. Avoid pasting a private URL into an online converter; the page is fetched by their server, and anything behind a login won't come out right anyway.</p>
+  <p>For a page you're signed in to, always convert from your own browser, which already has the session.</p>
 
   <h2>Which one should I use?</h2>
   <table>
