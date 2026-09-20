@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chrome screenshot extensions compared, honestly (2026)</title>
+  <meta name="description" content="GoFullPage, FireShot, Awesome Screenshot, FullPage Capture and Full Page Screenshot compared on what they actually do, what they cost and what they can see. Checked September 2026.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/screenshot-extension-comparison.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Chrome screenshot extensions compared, honestly (2026)">
+  <meta property="og:description" content="GoFullPage, FireShot, Awesome Screenshot, FullPage Capture and Full Page Screenshot compared on what they actually do, what they cost and what they can see. Checked September 2026.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/screenshot-extension-comparison.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Chrome screenshot extensions compared, honestly (2026)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the best screenshot extension for Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on the job. For a quick full-page capture, Chrome's built-in DevTools command is free and needs no install. GoFullPage is the most popular extension. FireShot has the most editing features. Full Page Screenshot is the one that blacks out private details before the image is created."}}, {"@type": "Question", "name": "Can Chrome take a full page screenshot without an extension?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Open DevTools with F12, press Ctrl+Shift+P, type 'full size' and choose Capture full size screenshot. It saves a PNG of the whole page."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Chrome screenshot extensions compared, honestly</h1>
+  <p class="lede">We make one of these, so read this knowing that. What follows is what each tool does best, checked on the Chrome Web Store on 20 September 2026, and where ours is the wrong choice.</p>
+
+  <h2>First: you may not need one</h2>
+  <p>Chrome can capture a whole page by itself. Press <kbd>F12</kbd>, then <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type <b>full size</b> and pick <b>Capture full size screenshot</b>. Free, nothing installed. It struggles with lazy-loaded images, sticky headers and pages that scroll inside a panel. <a href="screenshot-whole-page.html">Step by step here</a>.</p>
+
+  <h2>The extensions</h2>
+  <table>
+    <thead><tr><th>Extension</th><th>Users</th><th>Rating</th><th>Best at</th></tr></thead>
+    <tbody>
+      <tr><td><b>GoFullPage</b></td><td>10,000,000</td><td>4.9 (84K)</td><td>One-click full-page capture. The default choice, and the one most people mean by "the screenshot extension".</td></tr>
+      <tr><td><b>Awesome Screenshot</b></td><td>4,000,000</td><td>4.7 (29.5K)</td><td>Screen recording and team sharing, with cloud storage.</td></tr>
+      <tr><td><b>FireShot</b></td><td>3,000,000</td><td>4.8 (52.2K)</td><td>Editing and PDF output. Paid: $39.95/year or $99.95 once, for two devices, per <a href="https://getfireshot.com/buy.php">its site</a>.</td></tr>
+      <tr><td><b>FullPage Capture</b></td><td>100,000</td><td>4.8 (968)</td><td>Free blur and PDF export, no account.</td></tr>
+      <tr><td><b>Full Page Screenshot</b> (ours)</td><td>15</td><td>5.0 (1)</td><td>Blacking out private details <em>before</em> the image exists, and capturing a list of pages in one run.</td></tr>
+    </tbody>
+  </table>
+  <p class="fine">Users and ratings read from each Chrome Web Store listing on 20 September 2026. Ours is new: one rating, from someone we know, which is why we say so here.</p>
+
+  <h2>Pick by what you're doing</h2>
+  <table>
+    <thead><tr><th>You want to…</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td>Grab a whole page, once, nothing fancy</td><td>Chrome DevTools, or GoFullPage</td></tr>
+      <tr><td>Record your screen or share to a team</td><td>Awesome Screenshot</td></tr>
+      <tr><td>Annotate heavily and export polished PDFs</td><td>FireShot</td></tr>
+      <tr><td>Share a page that contains customer data</td><td>Ours, or any tool plus careful manual editing</td></tr>
+      <tr><td>Capture 50 pages from a list</td><td>Ours (Pro), or a scripting tool like Playwright</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The part we care about: what the tool can see</h2>
+  <p>A screenshot extension reads the page you capture. That is unavoidable. What differs is what happens next:</p>
+  <ul>
+    <li><b>Where the image goes.</b> Cloud tools upload captures to their servers, which is how sharing links work. If your page has customer data on it, that upload is a decision, not a detail.</li>
+    <li><b>What else the extension does.</b> Awesome Screenshot was <a href="https://www.omgchrome.com/awesome-screenshot-chrome-extension-spyware-possibly/">accused in 2014</a> of collecting browsing data; it has changed hands and versions many times since, and we have not tested it ourselves.</li>
+    <li><b>Redaction order.</b> Most tools capture first and let you paint over afterwards, so an uncensored file exists at least briefly. Ours paints the boxes in while the image is being built, so it never exists. <a href="screenshot-redact.html">How that works</a>.</li>
+  </ul>
+
+  <h2>Where ours is the wrong choice</h2>
+  <ul>
+    <li>You want annotation tools, arrows and callouts: FireShot is better.</li>
+    <li>You want shareable links and team libraries: we deliberately have no cloud, so Awesome Screenshot fits better.</li>
+    <li>You want the safest, most-reviewed option: GoFullPage has 10 million users; we have 15.</li>
+  </ul>
+
+  <div class="tool">
+    <b>Full Page Screenshot</b>
+    <p>Whole page, part of a page or a scrolling panel, as PNG, JPEG or PDF, free. It finds emails, phone numbers, card numbers and API keys and blacks them out before the file is written: 3 such captures a month free, unlimited with Pro. Everything runs on your computer, and it has no analytics, no ads and no account.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot, free</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
