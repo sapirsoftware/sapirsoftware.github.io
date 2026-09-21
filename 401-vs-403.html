@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>401 vs 403: which status code means what, and how to fix each</title>
+  <meta name="description" content="401 means the request was not authenticated; 403 means it was, and is still not allowed. How to tell them apart, what headers belong with each, and how to debug both.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/401-vs-403.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="401 vs 403: which status code means what, and how to fix each">
+  <meta property="og:description" content="401 means the request was not authenticated; 403 means it was, and is still not allowed. How to tell them apart, what headers belong with each, and how to debug both.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/401-vs-403.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"401 vs 403: which status code means what, and how to fix each","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between 401 and 403?", "acceptedAnswer": {"@type": "Answer", "text": "401 Unauthorized means the request carried no valid credentials, so the right answer is to authenticate and try again. 403 Forbidden means the server knows who you are and still refuses; sending credentials again will not help."}}, {"@type": "Question", "name": "Should a 401 include a WWW-Authenticate header?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The HTTP specification requires a 401 response to include a WWW-Authenticate header describing how to authenticate, for example Bearer realm=\"api\"."}}, {"@type": "Question", "name": "Which status should I return for a missing API token?", "acceptedAnswer": {"@type": "Answer", "text": "401, with a WWW-Authenticate header. Use 403 when the token is valid but lacks the rights for that action."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>401 vs 403</h1>
+  <p class="lede">Both look like "you can't have this". The difference is whether the server knows who you are.</p>
+
+  <table>
+    <thead><tr><th></th><th>401 Unauthorized</th><th>403 Forbidden</th></tr></thead>
+    <tbody>
+      <tr><td>Means</td><td>Not authenticated. The request had no credentials, or they were wrong or expired.</td><td>Authenticated, but not allowed. Who you are is known; this action isn't yours to take.</td></tr>
+      <tr><td>Retrying with credentials</td><td>Can work</td><td>Won't help</td></tr>
+      <tr><td>Required header</td><td><code>WWW-Authenticate</code></td><td>None</td></tr>
+      <tr><td>Typical cause</td><td>Missing or expired token, wrong API key, expired session</td><td>Wrong role, another tenant's record, read-only key, IP or region rule</td></tr>
+      <tr><td>Good response body</td><td>"Authentication required"</td><td>"You don't have access to this project"</td></tr>
+    </tbody>
+  </table>
+  <p>The names are historical: <b>401 should have been called "Unauthenticated"</b>, and 403 "Unauthorized". Read them that way and the rest follows.</p>
+
+  <h2>When a 401 is the right answer</h2>
+  <pre><code>HTTP/1.1 401 Unauthorized
+WWW-Authenticate: Bearer realm="api", error="invalid_token"</code></pre>
+  <p>Send it when no token arrived, the token is malformed, its signature fails, or it has expired. The <code>WWW-Authenticate</code> header is required by the specification and tells the client how to try again. Browsers show their own login box for <code>Basic</code>, which is why APIs normally use <code>Bearer</code>.</p>
+
+  <h2>When a 403 is the right answer</h2>
+  <p>The credentials are good and the answer is still no: a viewer trying to delete, a key scoped to read-only, one customer's data asked for by another. Say which permission is missing, without leaking whether the record exists.</p>
+  <p>For "this doesn't exist, and I won't tell you whether it does", <b>404</b> is the honest choice, and many APIs return 404 instead of 403 for records in another account.</p>
+
+  <h2>Debugging both</h2>
+  <ol class="steps">
+    <li>Look at the request in DevTools → Network → Headers. Is the <code>Authorization</code> header actually there? A redirect, a service worker or a fetch without <code>credentials</code> can drop it.</li>
+    <li>Decode the token: is it expired, for the wrong audience, or missing a scope? Our <a href="jwt-decoder.html">JWT decoder</a> runs in your browser.</li>
+    <li>Check the response's <code>WWW-Authenticate</code> header: real APIs put the reason in <code>error=</code>.</li>
+    <li>Compare against a request you know works, for example from curl, one header at a time.</li>
+    <li>A 401 on a cross-origin call is sometimes just a <a href="cors-error.html">failed preflight</a>: the browser sends <code>OPTIONS</code> without your token, and an authentication check rejects it. Let <code>OPTIONS</code> through.</li>
+  </ol>
+
+  <div class="tool">
+    <b>Send the header and see whether it arrived</b>
+    <p>HeaderForge sets <code>Authorization</code> on the sites you choose, keeps the value in a variable so it stays out of exported rules, and shows whether the rule actually fired on this tab. Free, no analytics, no account.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2>Related codes worth knowing</h2>
+  <ul>
+    <li><b>400</b> — the request itself is malformed.</li>
+    <li><b>404</b> — nothing here, or we won't say.</li>
+    <li><b>405</b> — that method isn't allowed on this path.</li>
+    <li><b>429</b> — slow down; read <code>Retry-After</code>.</li>
+  </ul>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
