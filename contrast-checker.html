@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Colour contrast checker — WCAG AA and AAA, with a fix suggestion</title>
+  <meta name="description" content="Check the contrast ratio between two colours against WCAG 2.2 AA and AAA for normal text, large text and interface parts, and get the nearest colour that passes.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e2e2ea; --accent: #7a2f6b; --tint: #f7e9f4; --bg: #fff; --code: #f5f4f8; --ok: #0f7a3d; --bad: #b4232a; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ece9f2; --muted: #a8a4b8; --line: #302c3c; --accent: #e9a6dc; --tint: #2b1f2a; --bg: #141219; --code: #1d1b26; --ok: #6fd39a; --bad: #ff9a9a; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 780px; margin: 0 auto; padding: 32px 16px 64px; }
+    nav.top { font-size: 14px; margin-bottom: 20px; } nav.top a { margin-right: 14px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 8px; }
+    .lede { color: var(--muted); }
+    .pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    label { font-size: 14px; font-weight: 600; display: block; margin-bottom: 6px; }
+    .field { display: flex; gap: 8px; align-items: center; }
+    input[type=text] { font: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+    input[type=color] { width: 46px; height: 42px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 2px; }
+    .ratio { font-size: 46px; font-weight: 800; line-height: 1.1; margin: 18px 0 2px; }
+    .ratio small { font-size: 18px; font-weight: 600; color: var(--muted); }
+    .preview { border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-top: 14px; }
+    .preview p { margin: 0 0 8px; } .preview .big { font-size: 24px; font-weight: 700; margin: 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 8px; display: block; overflow-x: auto; }
+    th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    .pass { color: var(--ok); font-weight: 700; } .fail { color: var(--bad); font-weight: 700; }
+    .fix { background: var(--tint); border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 15px; }
+    button { font: inherit; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); padding: 7px 12px; cursor: pointer; }
+    code { background: var(--code); padding: 1px 5px; border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    @media (max-width: 620px) { .pickers { grid-template-columns: 1fr; } }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/contrast-checker.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Colour contrast checker (WCAG AA and AAA)">
+  <meta property="og:description" content="Contrast ratio between two colours, what it passes, and the nearest colour that would pass.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/contrast-checker.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What contrast ratio does WCAG require?","acceptedAnswer":{"@type":"Answer","text":"WCAG 2.2 level AA needs 4.5:1 for normal text and 3:1 for large text (18.66px bold or 24px and above) and for interface parts such as icons and input borders. Level AAA needs 7:1 for normal text and 4.5:1 for large text."}},
+  {"@type":"Question","name":"How is the contrast ratio calculated?","acceptedAnswer":{"@type":"Answer","text":"Each colour's relative luminance is computed from its red, green and blue channels after removing gamma, then the ratio is (lighter + 0.05) divided by (darker + 0.05). It ranges from 1:1 to 21:1."}},
+  {"@type":"Question","name":"Does contrast apply to icons and borders?","acceptedAnswer":{"@type":"Answer","text":"Yes. WCAG 2.2 asks for at least 3:1 for the parts of a control that identify it, such as an input border or an icon carrying meaning, against what is next to it."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Colour contrast checker</h1>
+  <p class="lede">Put in a text colour and a background colour. You get the contrast ratio, what it passes under WCAG 2.2, and the nearest colour that would pass. It runs in your browser; nothing is sent anywhere.</p>
+
+  <div class="pickers">
+    <div>
+      <label for="fg">Text colour</label>
+      <div class="field"><input type="color" id="fgPick" value="#767676" aria-label="Pick text colour"><input type="text" id="fg" value="#767676" spellcheck="false"></div>
+    </div>
+    <div>
+      <label for="bg">Background colour</label>
+      <div class="field"><input type="color" id="bgPick" value="#ffffff" aria-label="Pick background colour"><input type="text" id="bg" value="#ffffff" spellcheck="false"></div>
+    </div>
+  </div>
+  <p class="lede" style="margin-top:8px">Hex, <code>rgb()</code>, <code>hsl()</code> and colour names all work. <button id="swap" type="button">Swap</button></p>
+
+  <div class="ratio" id="ratio">—</div>
+  <div class="lede" id="ratioNote"></div>
+
+  <table>
+    <thead><tr><th>Rule</th><th>Needs</th><th>Result</th></tr></thead>
+    <tbody id="rules"></tbody>
+  </table>
+
+  <div class="preview" id="preview">
+    <p class="big" id="pvBig">Large text, 24px</p>
+    <p id="pvNormal">Normal body text at 16px, which is what most of a page is made of.</p>
+    <p id="pvSmall" style="font-size:13px;margin:0">Small print at 13px</p>
+  </div>
+
+  <div class="fix" id="fix" hidden></div>
+
+  <h2>What the levels mean</h2>
+  <table>
+    <thead><tr><th>Content</th><th>AA</th><th>AAA</th></tr></thead>
+    <tbody>
+      <tr><td>Normal text (under 18.66px bold / 24px)</td><td>4.5:1</td><td>7:1</td></tr>
+      <tr><td>Large text (18.66px bold or 24px and up)</td><td>3:1</td><td>4.5:1</td></tr>
+      <tr><td>Interface parts: icons, input borders, focus rings</td><td>3:1</td><td>—</td></tr>
+      <tr><td>Disabled controls and decoration</td><td colspan="2">No requirement, but people still have to read them</td></tr>
+    </tbody>
+  </table>
+  <p>The ratio compares the two colours' relative luminance: <code>(lighter + 0.05) / (darker + 0.05)</code>, from 1:1 to 21:1. Semi-transparent colours are blended over the background first, which is what browsers show.</p>
+
+  <h2>Checking a whole page, not one pair</h2>
+  <p>Picking colours by hand misses the ones you forgot: placeholder text, disabled buttons, a hover state, text over an image. ContrastForge, our Chrome extension, scans a live page and lists every failing pair with the smallest change that fixes it. It's finished and waiting for a Chrome Web Store slot; <a href="index.html">the site</a> says when it's out.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">Guides</a> · Colour maths shared with ContrastForge · Last updated September 20, 2026</footer>
+
+  <script src="color.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const C = window.CFColor;
+    const LEVELS = [
+      ["Normal text, AA", 4.5],
+      ["Large text, AA", 3],
+      ["Interface parts, AA", 3],
+      ["Normal text, AAA", 7],
+      ["Large text, AAA", 4.5]
+    ];
+
+    function read(id) { return C.parse($(id).value); }
+
+    function render() {
+      const fg = read("fg"), bg = read("bg");
+      const rules = $("rules");
+      rules.innerHTML = "";
+      if (!fg || !bg) {
+        $("ratio").textContent = "—";
+        $("ratioNote").textContent = "That colour isn't one I can read. Try #1a1a2e, rgb(26,26,46) or midnightblue.";
+        $("fix").hidden = true;
+        return;
+      }
+      const solidBg = { r: bg.r, g: bg.g, b: bg.b, a: 1 };
+      const shown = fg.a < 1 ? C.over(fg, solidBg) : fg;
+      const ratio = C.contrastRatio(shown, solidBg);
+      $("ratio").innerHTML = ratio.toFixed(2) + "<small>:1</small>";
+      $("ratioNote").textContent = fg.a < 1
+        ? "The text colour is semi-transparent, so it is blended over the background first, as a browser would."
+        : "";
+
+      for (const [name, need] of LEVELS) {
+        const tr = document.createElement("tr");
+        const ok = ratio >= need;
+        tr.innerHTML = "<td>" + name + "</td><td>" + need + ":1</td>";
+        const td = document.createElement("td");
+        td.className = ok ? "pass" : "fail";
+        td.textContent = ok ? "Passes" : "Fails";
+        tr.appendChild(td);
+        rules.appendChild(tr);
+      }
+
+      const pv = $("preview");
+      pv.style.background = C.toHex(solidBg);
+      pv.style.color = C.toHex(shown);
+
+      const target = ratio >= 4.5 ? 7 : 4.5;
+      const fix = C.suggestForeground(shown, solidBg, target);
+      if (fix && Math.abs(fix.ratio - ratio) > 0.01) {
+        $("fix").hidden = false;
+        $("fix").innerHTML = "Nearest text colour that reaches <b>" + target + ":1</b>: <code>" + fix.hex +
+          "</code> (" + fix.ratio.toFixed(2) + ":1). <button type='button' id='useFix'>Use it</button>";
+        $("useFix").addEventListener("click", () => { setColor("fg", fix.hex); });
+      } else {
+        $("fix").hidden = true;
+      }
+    }
+
+    function setColor(which, value) {
+      $(which).value = value;
+      const parsed = C.parse(value);
+      if (parsed) $(which + "Pick").value = C.toHex(parsed);
+      render();
+    }
+
+    for (const which of ["fg", "bg"]) {
+      $(which).addEventListener("input", () => {
+        const parsed = C.parse($(which).value);
+        if (parsed) $(which + "Pick").value = C.toHex(parsed);
+        render();
+      });
+      $(which + "Pick").addEventListener("input", () => setColor(which, $(which + "Pick").value));
+    }
+    $("swap").addEventListener("click", () => {
+      const a = $("fg").value, b = $("bg").value;
+      setColor("fg", b);
+      setColor("bg", a);
+    });
+
+    const q = new URLSearchParams(location.search);
+    if (q.get("fg")) setColor("fg", q.get("fg"));
+    if (q.get("bg")) setColor("bg", q.get("bg"));
+    render();
+  </script>
+</body>
+</html>
