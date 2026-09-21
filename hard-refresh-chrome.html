@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hard refresh in Chrome, and how to really bypass the cache</title>
+  <meta name="description" content="The hard refresh shortcuts for Chrome on Windows and Mac, when they are not enough, and how to make sure you are seeing the newest version of a page.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/hard-refresh-chrome.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Hard refresh in Chrome, and how to really bypass the cache">
+  <meta property="og:description" content="The hard refresh shortcuts for Chrome on Windows and Mac, when they are not enough, and how to make sure you are seeing the newest version of a page.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/hard-refresh-chrome.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Hard refresh in Chrome, and how to really bypass the cache","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I hard refresh in Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "Press Ctrl+Shift+R on Windows and Linux, or Cmd+Shift+R on a Mac. Shift+F5 works too. That reloads the page while ignoring the cached copies of its files."}}, {"@type": "Question", "name": "What is the difference between refresh and hard refresh?", "acceptedAnswer": {"@type": "Answer", "text": "A normal refresh may reuse files the browser already has. A hard refresh asks the server for them again. Neither clears storage such as cookies, localStorage or a service worker's own cache."}}, {"@type": "Question", "name": "Why does a hard refresh still show the old page?", "acceptedAnswer": {"@type": "Answer", "text": "Usually a service worker is serving its own copy, or a CDN is caching the file. Empty cache and hard reload in DevTools handles the first; a cache-busting query or the right Cache-Control headers handle the second."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Hard refresh in Chrome</h1>
+  <p class="lede">You changed a file, reloaded, and the browser still shows yesterday's page. Here are the shortcuts, then what to do when they aren't enough.</p>
+
+  <h2>The shortcuts</h2>
+  <table>
+    <thead><tr><th>System</th><th>Hard refresh</th></tr></thead>
+    <tbody>
+      <tr><td>Windows and Linux</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> or <kbd>Shift</kbd>+<kbd>F5</kbd></td></tr>
+      <tr><td>macOS</td><td><kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd></td></tr>
+    </tbody>
+  </table>
+  <p>This reloads the page and asks the server for its files again instead of reusing cached copies. It does <em>not</em> clear cookies, localStorage, IndexedDB or a service worker's caches.</p>
+
+  <h2>When that isn't enough</h2>
+  <h3>Empty cache and hard reload</h3>
+  <p>Open DevTools (<kbd>F12</kbd>), then <b>right-click the reload button</b> and choose <b>Empty cache and hard reload</b>. It appears only while DevTools is open.</p>
+  <h3>Disable cache while you work</h3>
+  <p>DevTools → Network → tick <b>Disable cache</b>. It applies while DevTools stays open, which is the setting most developers want all day.</p>
+  <h3>A service worker is serving the old files</h3>
+  <p>DevTools → Application → Service Workers. Tick <b>Update on reload</b>, or press <b>Unregister</b> and reload. This is the usual reason a hard refresh "doesn't work" on a modern app.</p>
+  <h3>A CDN or proxy is holding the file</h3>
+  <p>Your browser isn't the only cache. Check the response headers for <code>Cache-Control</code>, <code>Age</code> and any CDN header. Fix it at the source with sensible headers:</p>
+  <pre><code>Cache-Control: no-store            # never cache (HTML you always want fresh)
+Cache-Control: max-age=31536000, immutable   # hashed asset files</code></pre>
+
+  <h2>Testing as if the cache were empty, repeatedly</h2>
+  <p>Instead of reaching for the shortcut every time, you can send <code>Cache-Control: no-cache</code> with your requests to a chosen site, so you keep getting fresh answers while you work.</p>
+  <div class="tool">
+    <b>HeaderForge</b>
+    <p>A one-click preset sets <code>Cache-Control: no-cache</code> for the sites you pick, and you can switch it off when you're done. It also removes CSP or X-Frame-Options, unblocks CORS, and shows whether each rule actually fired. Free, no analytics.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2>Quick answers</h2>
+  <ul>
+    <li><b>Incognito</b> starts with an empty cache and no service workers, which makes it a fast sanity check.</li>
+    <li><b>Ctrl+F5</b> behaves like a hard refresh in Chrome; in some other browsers it is the same as a normal reload.</li>
+    <li><b>Still stale?</b> Confirm you're hitting the server you think: check the address, any proxy, and the <code>Age</code> response header.</li>
+  </ul>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

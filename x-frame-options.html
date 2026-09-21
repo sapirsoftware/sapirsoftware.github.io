@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>X-Frame-Options: why the page &quot;refused to connect&quot; in your iframe</title>
+  <meta name="description" content="What X-Frame-Options does, why an iframe shows &#x27;refused to connect&#x27;, how to set it for your own site, and how to test locally when a header blocks you.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/x-frame-options.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="X-Frame-Options: why the page &quot;refused to connect&quot; in your iframe">
+  <meta property="og:description" content="What X-Frame-Options does, why an iframe shows &#x27;refused to connect&#x27;, how to set it for your own site, and how to test locally when a header blocks you.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/x-frame-options.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"X-Frame-Options: why the page \"refused to connect\" in your iframe","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does X-Frame-Options do?", "acceptedAnswer": {"@type": "Answer", "text": "It tells the browser whether a page may be shown inside a frame on another site. DENY blocks all framing; SAMEORIGIN allows it only on pages from the same origin. It exists to stop clickjacking."}}, {"@type": "Question", "name": "Why does my iframe say refused to connect?", "acceptedAnswer": {"@type": "Answer", "text": "Because the page you are framing sends X-Frame-Options: DENY or SAMEORIGIN, or a Content-Security-Policy frame-ancestors rule that does not include your site. The browser then refuses to render it."}}, {"@type": "Question", "name": "Can I bypass X-Frame-Options?", "acceptedAnswer": {"@type": "Answer", "text": "You can remove the header in your own browser for local testing. You cannot remove it for your visitors, and you should not: the header is the site owner's decision and it protects their users from clickjacking."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>X-Frame-Options and "refused to connect"</h1>
+  <p class="lede">You put a page in an <code>&lt;iframe&gt;</code> and get a blank box with <b>refused to connect</b>. Nothing is broken: the other site told your browser not to frame it. Here is what the header does, how to set it for your own site, and what you can honestly do when it isn't your site.</p>
+
+  <h2>What the header says</h2>
+  <pre><code>X-Frame-Options: DENY        # no site may frame this page
+X-Frame-Options: SAMEORIGIN  # only pages from the same origin may</code></pre>
+  <p>It exists to stop <b>clickjacking</b>: someone frames a real, logged-in page, covers it with their own buttons, and gets a click that goes to the real site. Browsers enforce it before the page renders, which is why you see the error and no content.</p>
+
+  <h2>The modern replacement: frame-ancestors</h2>
+  <p>Content-Security-Policy does the same job with more control, and where both are present, <code>frame-ancestors</code> wins in modern browsers:</p>
+  <pre><code>Content-Security-Policy: frame-ancestors 'self' https://partner.example.com;</code></pre>
+  <p>If your iframe is still refused after you removed <code>X-Frame-Options</code>, check for this header too.</p>
+
+  <h2>Your own site: allow the framing you want</h2>
+  <p>Send one header, from the server that serves the page being framed.</p>
+  <pre><code># nginx
+add_header Content-Security-Policy "frame-ancestors 'self' https://partner.example.com" always;
+
+# Apache
+Header always set Content-Security-Policy "frame-ancestors 'self' https://partner.example.com"
+
+# Express
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "frame-ancestors 'self' https://partner.example.com");
+  next();
+});</code></pre>
+  <p>Name the origins you actually want. <code>frame-ancestors *</code> allows everyone, which brings back the clickjacking risk the header exists to stop.</p>
+
+  <h2>Not your site: what's honest</h2>
+  <ul>
+    <li><b>For local testing</b>, you can strip the header in your own browser to see how your layout behaves. It changes nothing for anyone else.</li>
+    <li><b>For your users</b>, you can't. If you need to embed a third-party page in production, ask them to allow your origin, or use whatever embed or API they publish.</li>
+    <li><b>Ask first</b> when the page is behind a login. Framing someone's logged-in page is exactly the attack the header blocks.</li>
+  </ul>
+
+  <div class="tool">
+    <b>Removing the header while you test</b>
+    <p>HeaderForge has a one-click preset that removes <code>X-Frame-Options</code> (and one for <code>Content-Security-Policy</code>) for the sites you choose, in your browser only, with a switch to turn it off again. Free, no analytics, no account.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2>Checklist when an iframe won't load</h2>
+  <ol class="steps">
+    <li>Open DevTools → Console: the message names the header that blocked it.</li>
+    <li>Check the framed page's response headers in the Network tab for <code>X-Frame-Options</code> and <code>Content-Security-Policy</code>.</li>
+    <li>If it's your page, set <code>frame-ancestors</code> and drop <code>X-Frame-Options</code>.</li>
+    <li>If it isn't, ask the owner, or use their embed. <a href="cors-error.html">CORS errors</a> are a different problem with a similar feel.</li>
+  </ol>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
