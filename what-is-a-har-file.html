@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is a HAR file, how to open one, and what it exposes</title>
+  <meta name="description" content="A HAR file is a JSON recording of every request your browser made. How to export one, how to read it, and why an un-redacted HAR is as sensitive as a password.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/what-is-a-har-file.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="What is a HAR file, how to open one, and what it exposes">
+  <meta property="og:description" content="A HAR file is a JSON recording of every request your browser made. How to export one, how to read it, and why an un-redacted HAR is as sensitive as a password.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/what-is-a-har-file.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"What is a HAR file, how to open one, and what it exposes","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a HAR file?", "acceptedAnswer": {"@type": "Answer", "text": "A HAR (HTTP Archive) file is a JSON recording of everything the browser requested while a page was open: each URL, its request and response headers, the timings, the sizes, and often the response bodies. It is the format the Network tab exports, and the thing support teams ask for when they need to see what your browser actually did."}}, {"@type": "Question", "name": "How do I open a HAR file?", "acceptedAnswer": {"@type": "Answer", "text": "It is JSON, so any text editor will open it, but nothing about it is readable that way. Use a viewer that shows one row per request: drag the file onto Chrome DevTools' Network tab, or open it in a browser-based viewer that parses it locally."}}, {"@type": "Question", "name": "Is it safe to send a HAR file?", "acceptedAnswer": {"@type": "Answer", "text": "Not as exported. A HAR usually contains your session cookies, Authorization headers and anything typed into a form, including passwords, so whoever receives it can often sign in as you. Redact those values first and treat the original like a credential."}}, {"@type": "Question", "name": "What does a HAR file contain?", "acceptedAnswer": {"@type": "Answer", "text": "For every request: method, URL, query string, all request and response headers, cookies, any posted form data, the status code, sizes, and a timing breakdown of DNS, connect, TLS, send, wait and receive. If it was exported 'with content', it also contains the response bodies."}}, {"@type": "Question", "name": "How do I read HAR file timings?", "acceptedAnswer": {"@type": "Answer", "text": "Each entry has a timings object in milliseconds. 'blocked' is time queued, 'dns' and 'connect' are connection setup, 'ssl' is inside connect, 'send' is uploading the request, 'wait' is the server thinking (time to first byte), and 'receive' is downloading the response. A large 'wait' points at the server; a large 'blocked' points at too many parallel requests."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>What is a HAR file?</h1>
+  <p class="lede">A <b>HAR file</b> (HTTP Archive) is a JSON recording of every request your browser made while a page was open &mdash; each URL, its headers, how long it took, and often the response itself. Support teams ask for one when they need to see what actually happened on your machine. It is also one of the most sensitive files you can email, and almost nobody says so.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#what">What is actually inside one</a></li>
+    <li><a href="#export">How to export a HAR file</a></li>
+    <li><a href="#open">How to open and read one</a></li>
+    <li><a href="#timings">Reading the timings</a></li>
+    <li><a href="#danger">Why you should redact it first</a></li>
+  </ol></div>
+
+  <h2 id="what">What is actually inside one</h2>
+  <p>A HAR is a single JSON object with a <code>log</code> containing an array of <code>entries</code>, one per request, in the order the browser made them. Each entry holds:</p>
+  <table><tbody>
+    <tr><td class="k">request</td><td>Method, full URL, the query string broken out, every request header, cookies, and <code>postData</code> if anything was sent.</td></tr>
+    <tr><td class="k">response</td><td>Status code, every response header, <code>Set-Cookie</code> values, the MIME type, sizes, and the body if the export included content.</td></tr>
+    <tr><td class="k">timings</td><td>How long each phase took, in milliseconds.</td></tr>
+    <tr><td class="k">startedDateTime</td><td>When the request began, which is how a viewer reconstructs the waterfall.</td></tr>
+    <tr><td class="k">serverIPAddress, connection</td><td>Which server answered and which TCP connection was reused.</td></tr>
+  </tbody></table>
+  <p>The format is a W3C draft that never became a standard, which is why exports differ slightly between browsers. Every viewer worth using tolerates that.</p>
+
+  <h2 id="export">How to export a HAR file</h2>
+  <h3>Chrome or Edge</h3>
+  <ol>
+    <li>Open DevTools with <kbd>F12</kbd> and go to <b>Network</b>.</li>
+    <li>Tick <b>Preserve log</b> so a redirect or reload does not wipe what you captured.</li>
+    <li>Reproduce the problem.</li>
+    <li>Right-click any row &rarr; <b>Save all as HAR with content</b>, or <b>Save all as HAR</b> to leave response bodies out (smaller, and much less sensitive).</li>
+  </ol>
+  <h3>Firefox</h3>
+  <p>Network tab &rarr; the gear icon at the right &rarr; <b>Save All As HAR</b>.</p>
+  <h3>Safari</h3>
+  <p>Enable the Develop menu in Settings &rarr; Advanced, open the Web Inspector's Network tab, then <b>Export</b>.</p>
+
+  <h2 id="open">How to open and read one</h2>
+  <p>Opening it in a text editor tells you almost nothing: a minute of browsing is megabytes of JSON. Use something that shows one row per request.</p>
+  <ul>
+    <li><b>Chrome DevTools</b> imports a HAR: open the Network tab and drag the file onto it. You get the same waterfall you would have seen live.</li>
+    <li><b>Our <a href="har-viewer.html">HAR viewer</a></b> reads it in the page, with no upload, and additionally lists which requests carry cookies, tokens or a posted password &mdash; and saves a redacted copy.</li>
+  </ul>
+  <p>Whatever you use, read it in this order: filter to the failing request, check its status, then its response headers, then its timings. Most investigations end at the status code and the first header.</p>
+
+  <h2 id="timings">Reading the timings</h2>
+  <p>Every entry has a <code>timings</code> object, in milliseconds. <code>-1</code> means "does not apply".</p>
+  <table><tbody>
+    <tr><td class="k">blocked</td><td>Queued in the browser, usually waiting for a free connection. Large numbers mean too many parallel requests to one host.</td></tr>
+    <tr><td class="k">dns</td><td>Name lookup. Only on the first request to a host.</td></tr>
+    <tr><td class="k">connect / ssl</td><td>TCP and TLS setup. <code>ssl</code> is counted inside <code>connect</code>.</td></tr>
+    <tr><td class="k">send</td><td>Writing the request. Big only when uploading.</td></tr>
+    <tr><td class="k">wait</td><td>Time to first byte &mdash; the server thinking. This is the number to quote when you report a slow API.</td></tr>
+    <tr><td class="k">receive</td><td>Downloading the response body.</td></tr>
+  </tbody></table>
+
+  <h2 id="danger">Why you should redact it first</h2>
+  <p>A HAR captures the headers as they were sent, which means it captures your <code>Cookie</code> header, your <code>Authorization</code> bearer token, any <code>api_key</code> in a URL, and the body of the login form you submitted &mdash; password included. Anyone holding that file can usually act as you until those credentials expire. Support inboxes are shared, ticket systems are searchable, and attachments outlive the ticket.</p>
+  <div class="note"><b>Before you send one:</b> open it, find every request carrying a credential, replace the values, and send the copy. Our <a href="har-viewer.html">HAR viewer</a> does exactly that in your browser &mdash; it flags the requests that carry credentials and saves a redacted copy that keeps the URLs, statuses, header names and timings a support engineer actually needs.</div>
+
+  <div class="tool">
+    <b>Debugging the headers themselves?</b>
+    <p>HeaderForge sets and removes request and response headers for the sites you choose, unblocks CORS for local testing, and shows which of your rules actually fired &mdash; so you can tell a rule that did nothing from a server that ignored it. Free, local only, no account and no analytics.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

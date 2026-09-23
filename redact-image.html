@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redact an image in your browser — black boxes that cannot be undone</title>
+  <meta name="description" content="Black out private parts of a screenshot or photo. The pixels are replaced, not covered, and the saved copy carries no metadata. Nothing is uploaded.">
+  <style>
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f4f8; --ok: #0f7a3d; --bad: #b4232a; --warn: #8a5a00; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #e8e8f0; --muted: #a3a9b3; --line: #2e3140; --accent: #8fb6f5; --tint: #18243a; --bg: #14151c; --code: #1c1e28; --ok: #6fd39a; --bad: #ff9a9a; --warn: #f0c070; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 820px; margin: 0 auto; padding: 32px 16px 64px; }
+    nav.top { font-size: 14px; margin-bottom: 20px; } nav.top a { margin-right: 14px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 8px; }
+    h3 { font-size: 16px; margin: 18px 0 6px; color: var(--muted); }
+    .lede { color: var(--muted); }
+    textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; width: 100%; min-height: 120px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); word-break: break-all; }
+    .parts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow-x: auto; font-size: 14px; margin: 0; }
+    .banner { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 15px; border: 1px solid var(--line); }
+    .banner.ok { border-color: var(--ok); } .banner.bad { border-color: var(--bad); } .banner.warn { border-color: var(--warn); }
+    .banner b.ok { color: var(--ok); } .banner b.bad { color: var(--bad); } .banner b.warn { color: var(--warn); }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 6px; display: block; overflow-x: auto; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    td.k { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+    input[type=text] { font: inherit; padding: 9px 11px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100%; }
+    button { font: inherit; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); padding: 8px 14px; cursor: pointer; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+    code { background: var(--code); padding: 1px 5px; border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; overflow-wrap: anywhere; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 20px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #14151c; } }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    @media (max-width: 640px) { .parts { grid-template-columns: 1fr; } }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/redact-image.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Redact an image in your browser">
+  <meta property="og:description" content="Black out private parts of an image. The pixels are replaced, not covered, and nothing is uploaded.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/redact-image.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I redact an image?","acceptedAnswer":{"@type":"Answer","text":"Cover each private area with a solid block, then export a new file from the edited pixels. The safe part is the export: the saved copy must be built from the pixels you can see, so there is no original layer underneath to recover. This page draws solid black rectangles onto a canvas and saves a PNG of that canvas, so the covered pixels no longer exist in the file."}},
+  {"@type":"Question","name":"Is blurring the same as redacting?","acceptedAnswer":{"@type":"Answer","text":"No. A blur is a reversible transformation of the original pixels, and pixelated text can often be recovered by brute force because only a limited set of words produces a given pattern. Both have exposed real documents. For anything that matters, cover it with a solid block instead."}},
+  {"@type":"Question","name":"Does this image redactor upload my picture?","acceptedAnswer":{"@type":"Answer","text":"No. The image is read with the browser's FileReader, drawn into a canvas in the page, and saved back to your computer. There is no server involved; you can watch the Network tab while you use it."}},
+  {"@type":"Question","name":"Does redacting remove image metadata?","acceptedAnswer":{"@type":"Answer","text":"Here, yes. The saved file is re-encoded from the canvas, and a canvas export carries no EXIF, so the location, camera and timestamp that a photo may have carried are not in the copy you save."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="har-viewer.html">HAR viewer</a><a href="screenshot-redact.html">Redacting screenshots</a></nav>
+  <h1>Redact an image</h1>
+  <p class="lede">Drag a box over anything private. The pixels underneath are <b>replaced</b>, not covered by a layer, and the file you save is re-encoded from what you can see &mdash; so there is no original underneath and no metadata carried along. The picture never leaves this page.</p>
+
+  <div class="row">
+    <input type="file" id="file" accept="image/*">
+    <button id="undo" type="button" disabled>Undo last box</button>
+    <button id="clear" type="button" disabled>Start over</button>
+    <button id="save" type="button" disabled>Save the redacted copy</button>
+  </div>
+  <div id="status" class="banner" hidden></div>
+
+  <div class="tool" id="stage" hidden style="padding:10px">
+    <canvas id="canvas" style="max-width:100%;cursor:crosshair;border-radius:8px;display:block"></canvas>
+  </div>
+
+  <h2>Why a solid box, and not a blur</h2>
+  <ul>
+    <li><b>Blur is reversible often enough to matter.</b> It is a transformation of the original
+      pixels, not a removal of them, and newsrooms and courts have both been embarrassed by it.</li>
+    <li><b>Pixelated text can be brute-forced.</b> There are only so many words that pixelate to a
+      given pattern, and recovering them is a published technique, not a theory.</li>
+    <li><b>A layer is not a redaction.</b> In editors that keep layers, "flattening" sometimes keeps
+      the original, and some formats store a preview image of the unedited picture.</li>
+    <li><b>Metadata outlives the edit.</b> A photo can carry the location, the device and a
+      thumbnail of the original frame. Re-encoding, as this page does, drops all of it.</li>
+  </ul>
+
+  <h2>The better version: never create the exposure</h2>
+  <p>Redacting afterwards means the unredacted image existed, at least on your disk and often in
+  whatever tool made it. When the picture is a screenshot you are about to take, the safer order is
+  to black the values out <i>before</i> the capture, so the full-resolution original is never
+  written anywhere.</p>
+
+  <div class="tool">
+    <b>That is what Full Page Screenshot does.</b>
+    <p>It captures the whole page, finds emails, card numbers, API keys and IBANs on it, and blacks
+    them out before the image exists. In PDFs it also drops any clickable link that sits under a
+    black box, so the address cannot give away what the box hides. Nothing is uploaded, and it
+    installs without asking for any permission at all.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot for Chrome</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> &middot; <a href="guides.html">Guides</a> &middot; Nothing on this page is uploaded &middot; Last updated September 23, 2026</footer>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const canvas = $("canvas"), ctx = canvas.getContext("2d", { willReadFrequently: true });
+    let image = null;          // the decoded original, redrawn under every box
+    let boxes = [];            // rectangles in image coordinates, so zoom never matters
+    let start = null;
+
+    function say(text, kind) {
+      const box = $("status");
+      box.hidden = !text;
+      box.className = "banner" + (kind ? " " + kind : "");
+      box.textContent = text;
+    }
+
+    function draw(preview) {
+      if (!image) return;
+      ctx.drawImage(image, 0, 0);
+      ctx.fillStyle = "#000";
+      for (const b of boxes) ctx.fillRect(b.x, b.y, b.w, b.h);
+      if (preview) {
+        ctx.fillStyle = "rgba(0,0,0,.55)";
+        ctx.fillRect(preview.x, preview.y, preview.w, preview.h);
+      }
+      const has = boxes.length > 0;
+      $("undo").disabled = !has;
+      $("clear").disabled = !has;
+      $("save").disabled = false;
+    }
+
+    // Pointer position in the image's own pixels, not the displayed size.
+    function at(ev) {
+      const r = canvas.getBoundingClientRect();
+      return { x: (ev.clientX - r.left) * (canvas.width / r.width),
+               y: (ev.clientY - r.top) * (canvas.height / r.height) };
+    }
+
+    const rect = (a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y),
+                              w: Math.abs(a.x - b.x), h: Math.abs(a.y - b.y) });
+
+    canvas.addEventListener("pointerdown", (ev) => {
+      if (!image) return;
+      canvas.setPointerCapture(ev.pointerId);
+      start = at(ev);
+    });
+    canvas.addEventListener("pointermove", (ev) => {
+      if (start) draw(rect(start, at(ev)));
+    });
+    canvas.addEventListener("pointerup", (ev) => {
+      if (!start) return;
+      const box = rect(start, at(ev));
+      start = null;
+      if (box.w < 3 || box.h < 3) return draw();   // a click, not a drag
+      boxes.push(box);
+      draw();
+      say(boxes.length + (boxes.length === 1 ? " area blacked out." : " areas blacked out.")
+          + " The pixels underneath are gone from the picture you save.", "ok");
+    });
+
+    $("file").addEventListener("change", (ev) => {
+      const f = ev.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          image = img;
+          boxes = [];
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          $("stage").hidden = false;
+          draw();
+          say("Drag across anything private. " + img.naturalWidth + " by " + img.naturalHeight
+              + " pixels, read in this page and not uploaded.");
+        };
+        img.onerror = () => say("That file could not be read as an image.", "bad");
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(f);
+    });
+
+    $("undo").addEventListener("click", () => { boxes.pop(); draw(); say(""); });
+    $("clear").addEventListener("click", () => { boxes = []; draw(); say(""); });
+    $("save").addEventListener("click", () => {
+      // toBlob re-encodes the canvas, so the saved file contains only the pixels
+      // drawn here: no hidden layer, and no EXIF from the original.
+      canvas.toBlob((blob) => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "redacted.png";
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        say("Saved. Open it and check the covered areas before you send it.", "ok");
+      }, "image/png");
+    });
+  </script>
+</body>
+</html>
