@@ -23,20 +23,45 @@
      twenty seconds, knowing <em>why</em> is genuinely the most useful thing anyone can send us.</p>
 
   <p class="muted">This page has collected nothing. There is no tracking on it, no analytics, and no
-     record that you arrived. We don&rsquo;t know which extension you removed, or that you were here
-     at all, unless you choose to tell us.</p>
+     record that you arrived. The only thing it knows is which of our extensions sent you, because
+     that name is written in the link itself &mdash; and it is used for one thing, putting the name
+     in the subject line if you write to us. Nothing is stored, here or anywhere.</p>
 
   <p>The most useful thing you can say is what you were actually trying to do:</p>
-  <ul>
-    <li>It didn&rsquo;t work on a particular site &mdash; which one?</li>
-    <li>It was missing something you needed</li>
-    <li>Something about the permissions bothered you</li>
-    <li>You found a better tool &mdash; which one? We&rsquo;d honestly like to know</li>
-    <li>You just didn&rsquo;t need it any more (a completely good answer)</li>
+  <p>One click sends an email with that reason already in the subject line. Add a sentence if you
+     can; the sentence is the part that actually changes what we build.</p>
+  <ul id="reasons">
+    <li><a href="#" data-why="It did not work on a site">It didn&rsquo;t work on a particular site</a> &mdash; please say which one</li>
+    <li><a href="#" data-why="It was missing something I needed">It was missing something you needed</a></li>
+    <li><a href="#" data-why="The permissions bothered me">Something about the permissions bothered you</a></li>
+    <li><a href="#" data-why="I found a better tool">You found a better tool</a> &mdash; which one? We&rsquo;d honestly like to know</li>
+    <li><a href="#" data-why="It was confusing to use">It was confusing to use</a></li>
+    <li><a href="#" data-why="I did not need it any more">You just didn&rsquo;t need it any more</a> (a completely good answer)</li>
   </ul>
 
   <p><a class="btn" href="mailto:sapirsoftware@gmail.com?subject=Why%20I%20uninstalled&amp;body=I%20removed%20it%20because%3A%0A%0AWhat%20I%20was%20trying%20to%20do%3A%0A%0A">Tell us in an email</a></p>
   <p class="muted">Opens your email app. We read every one, and we reply.</p>
+
+  <script>
+    // Each reason opens the same email with its own subject, so a reply costs one
+    // click plus a sentence. The product name comes from the link the extension
+    // sent you here with, if it sent one; nothing else is read, and nothing is stored.
+    const which = new URLSearchParams(location.search).get("p") || "";
+    const named = { headerforge: "HeaderForge", fullpageshot: "Full Page Screenshot",
+                    contrastforge: "ContrastForge", snippetforge: "SnippetForge" }[which] || "";
+    for (const a of document.querySelectorAll("#reasons a")) {
+      const why = a.dataset.why;
+      a.href = "mailto:sapirsoftware@gmail.com"
+        + "?subject=" + encodeURIComponent((named ? named + ": " : "") + why)
+        + "&body=" + encodeURIComponent(why + ".\n\nWhat I was trying to do:\n\n");
+    }
+    if (named) {
+      const p = document.createElement("p");
+      p.className = "muted";
+      p.textContent = "You removed " + named + ". The link brought that name with it; nothing else.";
+      document.querySelector("h1").insertAdjacentElement("afterend", p);
+    }
+  </script>
 
   <p class="muted">If it was a bug, it may already be fixed &mdash; reinstalling from the store gets
      you the current version. Either way, thanks for trying it.</p>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How to screenshot a web page without showing private info — Full Page Screenshot</title>
+  <title>Redact a screenshot or image: black out private info safely — Full Page Screenshot</title>
   <meta name="description" content="Take a full-page screenshot with emails, names, card numbers and API keys blacked out before the image is created. Runs in Chrome, nothing uploaded.">
   <style>
     :root { --ink: #1d1b26; --muted: #6b6879; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; }
@@ -36,7 +36,7 @@
   <script type="application/ld+json">{"@type": "SoftwareApplication", "name": "Full Page Screenshot – Redact Private Info Before Capture", "applicationCategory": "BrowserApplication", "operatingSystem": "Chrome", "url": "https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh", "description": "Full-page screenshots as PNG, JPEG or PDF. Finds and blacks out emails, card numbers and keys before capture. Nothing is uploaded.", "offers": [{"@type": "Offer", "price": "0", "priceCurrency": "USD", "name": "Free"}, {"@type": "Offer", "price": "19", "priceCurrency": "USD", "name": "Pro yearly"}, {"@type": "Offer", "price": "39", "priceCurrency": "USD", "name": "Pro lifetime"}], "@context": "https://schema.org"}</script>
 </head>
 <body>
-  <h1>Screenshot a web page without showing private info</h1>
+  <h1>Redact a screenshot: black out private info before it exists</h1>
   <p class="lede">Bug reports, invoices, dashboards and support tickets are full of names, emails and account numbers. The usual way is to take the screenshot, then paint over it in an editor. That leaves an uncensored copy on your disk first, and it's easy to miss a spot on a long page.</p>
   <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot — free</a>
   <a class="cta alt" href="fps-demo.html">Try it on a demo invoice</a>
@@ -60,6 +60,23 @@
     <li>Full-page, part-of-page and scrolling-panel captures as PNG, JPEG or PDF, without limits.</li>
     <li>3 redacted captures a month, including automatic finding. Redacting on the <a href="fps-demo.html">demo invoice</a> is always free.</li>
     <li>Pro removes the limit and adds capturing a list of pages in one run. See <a href="pricing.html?product=fullpageshot">pricing</a>.</li>
+  </ul>
+
+  <h2>Redacting an image you already have</h2>
+  <p>Blacking out an existing image is a different job, and it has a trap in it: many photo editors
+  draw the box as a layer, and "flattening" or exporting sometimes keeps the original pixels
+  underneath, or leaves them in the file's metadata. Blurring is worse — a blur is reversible
+  often enough that courts and newsrooms have been embarrassed by it, and pixelation of text can
+  be undone by brute force because there are only so many words that pixelate the same way.</p>
+  <ul>
+    <li><b>Safest:</b> cover the area with a solid black rectangle, export to a <i>new</i> PNG or
+      JPEG, then open that file and check the covered area is genuinely gone.</li>
+    <li><b>Strip the metadata</b> as well: an exported photo can still carry the location, the
+      device and sometimes a thumbnail of the <i>original</i> frame.</li>
+    <li><b>Never blur</b> a password, a card number or a face you actually need hidden. Cover it.</li>
+    <li><b>Best of all, don't create the exposure:</b> if the image is a screenshot you are about to
+      take, black the values out before the picture exists, which is what the extension below does.
+      There is then no original underneath to recover.</li>
   </ul>
 
   <h2>Tips for safer screenshots</h2>

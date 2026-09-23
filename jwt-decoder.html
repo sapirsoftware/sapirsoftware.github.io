@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JWT decoder that runs in your browser — nothing is uploaded</title>
+  <title>JWT decoder and debugger that runs in your browser — nothing is uploaded</title>
   <meta name="description" content="Decode a JSON Web Token locally: header, payload, expiry and what each claim means, plus optional HS256 signature checking. The token never leaves your browser.">
   <style>
     :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f4f8; --ok: #0f7a3d; --bad: #b4232a; --warn: #8a5a00; }
@@ -51,8 +51,8 @@
 </head>
 <body>
   <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
-  <h1>JWT decoder</h1>
-  <p class="lede">Paste a JSON Web Token to read its header and payload, see whether it has expired, and check an HS256 signature if you have the secret. Everything happens in this page: the token is never sent anywhere, and you can watch the Network tab to confirm it.</p>
+  <h1>JWT decoder and debugger</h1>
+  <p class="lede">Paste a JSON Web Token to debug it: read its header and payload, see whether it has expired, and check an HS256 signature if you have the secret. Everything happens in this page: the token is never sent anywhere, and you can watch the Network tab to confirm it.</p>
 
   <textarea id="token" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
   <div class="row">
