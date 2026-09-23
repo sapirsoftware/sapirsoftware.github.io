@@ -81,9 +81,30 @@
   <p>A screenshot extension reads the page you capture. That is unavoidable. What differs is what happens next:</p>
   <ul>
     <li><b>Where the image goes.</b> Cloud tools upload captures to their servers, which is how sharing links work. If your page has customer data on it, that upload is a decision, not a detail.</li>
-    <li><b>What else the extension does.</b> Awesome Screenshot was <a href="https://www.omgchrome.com/awesome-screenshot-chrome-extension-spyware-possibly/">accused in 2014</a> of collecting browsing data; it has changed hands and versions many times since, and we have not tested it ourselves.</li>
+    <li><b>What else the extension loads.</b> We stopped guessing and read the code. On 23 September 2026 we downloaded each extension's package from Chrome's own update service and searched it for third-party services. The table below is what we found.</li>
     <li><b>Redaction order.</b> Most tools capture first and let you paint over afterwards, so an uncensored file exists at least briefly. Ours paints the boxes in while the image is being built, so it never exists. <a href="screenshot-redact.html">How that works</a>.</li>
   </ul>
+
+
+  <h2 id="what-they-load">What each one loads, measured</h2>
+  <p>Downloaded from Chrome's update service on 23 September 2026 and read. "Install warning" is what
+  Chrome itself shows on the install dialog, asked of Chrome through its own permissions API &mdash;
+  not our summary of it.</p>
+  <table>
+    <thead><tr><th>Extension</th><th>Third-party services in the code</th><th>Install warning Chrome shows</th></tr></thead>
+    <tbody>
+      <tr><td><b>GoFullPage</b></td><td>Google Analytics</td><td><b>None at all</b></td></tr>
+      <tr><td><b>Awesome Screenshot</b></td><td>Google Analytics, Meta Pixel</td><td>Read and change all your data on all websites; Capture content of your screen</td></tr>
+      <tr><td><b>FireShot</b></td><td>Sentry</td><td>Communicate with cooperating native applications</td></tr>
+      <tr><td><b>Full Page Screenshot</b> (ours)</td><td>None</td><td><b>None at all</b></td></tr>
+    </tbody>
+  </table>
+  <p class="fine">Credit where it is due: GoFullPage, the most popular one by a distance, asks for no
+  permissions at install either &mdash; it says so in its own listing, and it is true. It does embed
+  Google Analytics; ours embeds nothing. Awesome Screenshot holds access to every site plus your
+  cookies and carries a Meta Pixel, which is a lot of machinery for taking a picture.</p>
+  <p class="fine">Anyone can repeat this: the packages are public, and the scripts we used are in our
+  repository (<code>tools/competitor_teardown.py</code> and <code>tools/install_warnings.py</code>).</p>
 
   <h2>Where ours is the wrong choice</h2>
   <ul>
@@ -98,6 +119,6 @@
     <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot, free</a>
   </div>
 
-  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 23, 2026</footer>
 </body>
 </html>
