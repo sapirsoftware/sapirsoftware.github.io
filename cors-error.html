@@ -101,6 +101,18 @@ export default { server: { proxy: { "/api": "http://localhost:8080" } } };</code
   <h2 id="flag">Why not just disable web security?</h2>
   <p>You can start Chrome with <code>--disable-web-security</code>, but only together with a separate throwaway profile, for example <code>--user-data-dir=/tmp/chrome-dev</code>. It switches off protections for <em>every</em> site in that window, including the ones you're logged in to. If you use it, never browse normally in that window. A per-site header rule is much narrower.</p>
 
+  <h2 id="read-yours">Read your own error</h2>
+  <p>Chrome&rsquo;s CORS messages all look alike, and the useful part is one clause in the middle.
+     Paste the whole red line from your console and this will say which of the causes above it is.
+     It runs in your browser; nothing is sent anywhere.</p>
+  <div class="tool">
+    <label for="err"><b>The error from your console</b></label>
+    <textarea id="err" rows="3" spellcheck="false" style="width:100%;margin-top:6px;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace"
+      placeholder="Access to fetch at 'https://api.example.com/v1' from origin 'http://localhost:3000' has been blocked by CORS policy: ..."></textarea>
+    <div style="margin-top:8px"><button type="button" id="err-go" class="cta" style="border:0;cursor:pointer;font:inherit;font-weight:700">What is this one?</button></div>
+    <div id="err-out" style="margin-top:12px"></div>
+  </div>
+
   <h2>Quick checklist</h2>
   <ul>
     <li>Does the response include <code>Access-Control-Allow-Origin</code> with your page's exact origin, port included?</li>
@@ -108,6 +120,73 @@ export default { server: { proxy: { "/api": "http://localhost:8080" } } };</code
     <li>Using credentials? Then no <code>*</code>, and add <code>Access-Control-Allow-Credentials: true</code>.</li>
     <li>Is a redirect happening? A redirect to another origin needs CORS headers on every hop.</li>
   </ul>
+
+  <script>
+    // Chrome writes one of a handful of CORS messages, and which one it is
+    // decides the fix. The phrases below are the stable part of each; the rest
+    // of the sentence changes with the URL and is not matched on.
+    //
+    // Nothing leaves the page: the text is read from the textarea, matched here,
+    // and never sent anywhere. That is worth saying out loud on a page about a
+    // security feature.
+    var CAUSES = [
+      { when: /does not pass access control check|no 'access-control-allow-origin' header/i,
+        title: "The response carried no Access-Control-Allow-Origin",
+        what: "The server answered, but without the header that permits your page to read the answer. The request happened; the browser is refusing to hand you the result.",
+        fix: "#server", fixName: "Send the right headers from the server" },
+      { when: /response to preflight request|preflight request does not pass|method .* is not allowed by access-control-allow-methods|request header field .* is not allowed by access-control-allow-headers/i,
+        title: "The preflight (OPTIONS) request was rejected",
+        what: "Before the real request, the browser asked permission with an OPTIONS request and did not get a clean answer. Often the server requires a login on every route, including OPTIONS, or does not list your method or header.",
+        fix: "#preflight", fixName: "Handle the preflight" },
+      { when: /wildcard '\*'|credentials flag is 'true'|access-control-allow-credentials/i,
+        title: "Credentials and a wildcard cannot be combined",
+        what: "With credentials: 'include', the browser refuses Access-Control-Allow-Origin: *. The server has to name your exact origin and add Access-Control-Allow-Credentials: true.",
+        fix: "#server", fixName: "Send the right headers from the server" },
+      { when: /redirect is not allowed for a preflight|has been redirected/i,
+        title: "A redirect broke it",
+        what: "The request was redirected, and CORS headers are needed on every hop. A preflight may not be redirected at all.",
+        fix: "#server", fixName: "Send the right headers from the server" },
+      { when: /from origin 'null'/i,
+        title: "Your page's origin is null",
+        what: "The page was opened from a file:// path or a sandboxed frame, so it has no origin to allow. Serve it over http://localhost instead of double-clicking the file.",
+        fix: "#localhost", fixName: "Why it happens on localhost" }
+    ];
+
+    document.getElementById("err-go").addEventListener("click", function () {
+      var text = document.getElementById("err").value || "";
+      var out = document.getElementById("err-out");
+      out.textContent = "";
+      if (!text.trim()) {
+        out.innerHTML = '<p class="note">Paste the whole line, including the part after &ldquo;blocked by CORS policy:&rdquo;. That clause is the bit that says which case this is.</p>';
+        return;
+      }
+      var hit = null;
+      for (var i = 0; i < CAUSES.length; i++) { if (CAUSES[i].when.test(text)) { hit = CAUSES[i]; break; } }
+      if (!hit) {
+        out.innerHTML = '<p class="note"><b>That one is not a message I recognise.</b> If it mentions CORS at all, work down the checklist below &mdash; and the four questions there catch nearly everything. If it does not, the request may have failed for an ordinary reason (the server is down, the address is wrong) and CORS is a red herring.</p>';
+        return;
+      }
+      var p1 = document.createElement("p");
+      p1.className = "note";
+      var b = document.createElement("b");
+      b.textContent = hit.title;
+      p1.appendChild(b);
+      p1.appendChild(document.createTextNode(" — " + hit.what));
+      out.appendChild(p1);
+      // Built with DOM calls rather than a string: an href written into markup
+      // here would read as a broken link to tools/check_site.py, which scans the
+      // source for them, and it is right to.
+      var p2 = document.createElement("p");
+      p2.appendChild(document.createTextNode("Go to: "));
+      var a = document.createElement("a");
+      a.setAttribute("href", hit.fix);
+      a.textContent = hit.fixName;
+      p2.appendChild(a);
+      p2.appendChild(document.createTextNode("."));
+      out.appendChild(p2);
+    });
+  </script>
+
 
   <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
 </body>
