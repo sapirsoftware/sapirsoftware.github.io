@@ -87,7 +87,7 @@ to enable inline execution.</code></pre>
     <li><b>A nonce</b>, a random value generated fresh on every page load, in both places: <code>script-src 'nonce-r4nd0m'</code> and <code>&lt;script nonce="r4nd0m"&gt;</code>.</li>
     <li><b>A hash</b> of that exact script. Chrome prints it in the error; copy it into <code>script-src</code>. Any edit to the script changes the hash.</li>
   </ol>
-  <p><code>'unsafe-inline'</code> makes the error go away by switching off CSP's main protection against injected scripts. Inline <em>event handlers</em> can't use nonces at all, so they have to move to <code>addEventListener</code>.</p>
+  <p><code>'unsafe-inline'</code> makes the error go away by switching off CSP's main protection against injected scripts. Inline <em>event handlers</em> can't use nonces at all, so move them to <code>addEventListener</code>. If you truly can't change that markup, <code>'unsafe-hashes'</code> plus the handler's hash allows just those exact handlers: much weaker than moving them, much stronger than <code>'unsafe-inline'</code>.</p>
 
   <h2 id="eval">Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source</h2>
   <p>Something called <code>eval()</code>, <code>new Function()</code>, or <code>setTimeout</code> with a string. Usually it's a library: older template engines, some chart and validation libraries, or a development build with eval-based source maps. Switch to a production build or a CSP-compatible version before adding <code>'unsafe-eval'</code>.</p>

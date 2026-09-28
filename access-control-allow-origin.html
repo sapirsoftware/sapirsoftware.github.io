@@ -100,13 +100,14 @@ server {
     add_header Vary Origin always;
     if ($request_method = OPTIONS) {
       add_header Access-Control-Allow-Origin $cors_origin always;
+      add_header Vary Origin always;
       add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE" always;
       add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
       return 204;
     }
   }
 }</code></pre>
-  <p><code>always</code> makes nginx add the header to error responses too, so a 500 doesn't show up as a CORS error.</p>
+  <p><code>always</code> makes nginx add the header to error responses too, so a 500 doesn't show up as a CORS error. And note the repetition inside the <code>if</code> block: nginx inherits <code>add_header</code> lines from the outer level only when the inner level has none, so every header the preflight needs, <code>Vary</code> included, must be listed again there.</p>
   <h3>Apache (.htaccess)</h3>
   <pre><code>SetEnvIf Origin "^(https://(app|admin)\.example\.com)$" CORS_OK=$1
 Header always set Access-Control-Allow-Origin "%{CORS_OK}e" env=CORS_OK

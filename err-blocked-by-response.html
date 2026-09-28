@@ -80,7 +80,7 @@
     <li>It returns <b>JSON</b>, because it's an API URL and not the file itself.</li>
     <li>It returns the right file with the <b>wrong Content-Type</b> plus <code>X-Content-Type-Options: nosniff</code>, such as a script served as <code>text/plain</code>.</li>
   </ul>
-  <p><b>Check:</b> open the URL in its own tab and look at what comes back and its <code>Content-Type</code> in the Network tab. Fix the URL, or fix the server's Content-Type. If you're fetching data, use <code>fetch()</code> with CORS instead of a tag.</p>
+  <p><b>Check:</b> open the URL in its own tab and look at what comes back and its <code>Content-Type</code> in the Network tab. Fix the URL, or on your own server send the correct <code>Content-Type</code> together with <code>X-Content-Type-Options: nosniff</code>; without <code>nosniff</code>, Chrome guesses the type from the first bytes, and that guess is what blocks some legitimate files. If you're fetching data, use <code>fetch()</code> with CORS instead of a tag.</p>
 
   <h2>Testing header fixes before the server changes</h2>
   <p>For <code>ERR_BLOCKED_BY_RESPONSE</code>, you can check that a header change fixes it by changing the header in your own browser first, then asking whoever runs the server for the real fix.</p>
