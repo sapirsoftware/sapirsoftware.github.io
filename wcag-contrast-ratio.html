@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WCAG contrast ratio: the 4.5:1, 3:1 and 7:1 rules explained</title>
+  <meta name="description" content="What WCAG&#x27;s contrast ratios mean, when 4.5:1, 3:1 and 7:1 apply, what counts as large text, how the ratio is calculated, and the mistakes that fail audits.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #0b7a5a; --tint: #e4f5ee; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #7fd8b8; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/wcag-contrast-ratio.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="WCAG contrast ratio: the 4.5:1, 3:1 and 7:1 rules explained">
+  <meta property="og:description" content="What WCAG&#x27;s contrast ratios mean, when 4.5:1, 3:1 and 7:1 apply, what counts as large text, how the ratio is calculated, and the mistakes that fail audits.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/wcag-contrast-ratio.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-contrastforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"WCAG contrast ratio: the 4.5:1, 3:1 and 7:1 rules explained","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What contrast ratio does WCAG require?", "acceptedAnswer": {"@type": "Answer", "text": "For level AA, 4.5:1 for normal text and 3:1 for large text (success criterion 1.4.3). For level AAA, 7:1 for normal text and 4.5:1 for large text (1.4.6). User-interface components and meaningful graphics need 3:1 against what is next to them (1.4.11)."}}, {"@type": "Question", "name": "What counts as large text in WCAG?", "acceptedAnswer": {"@type": "Answer", "text": "At least 18 point (24 CSS pixels) at normal weight, or at least 14 point (about 18.66 CSS pixels) when bold."}}, {"@type": "Question", "name": "Can I round 4.48:1 up to 4.5:1?", "acceptedAnswer": {"@type": "Answer", "text": "No. The thresholds are minimums with no rounding, so 4.48:1 fails AA for normal text. #777777 on white is 4.48:1 and fails; #767676 on white is 4.54:1 and passes."}}, {"@type": "Question", "name": "Did WCAG 2.2 change the contrast rules?", "acceptedAnswer": {"@type": "Answer", "text": "No. WCAG 2.2 kept 1.4.3, 1.4.6 and 1.4.11 exactly as they were in 2.1. APCA, the newer contrast model, belongs to the WCAG 3 drafts and is not a requirement anywhere yet."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>WCAG contrast ratio: the 4.5:1, 3:1 and 7:1 rules</h1>
+  <p class="lede">Contrast is the most common accessibility failure on the web, and the rules fit on an index card. Here they are, with the exact maths, the edge cases auditors actually flag, and free ways to check.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#rules">The rules in one table</a></li>
+    <li><a href="#large">What counts as large text</a></li>
+    <li><a href="#ui">Buttons, inputs, icons: the 3:1 rule</a></li>
+    <li><a href="#maths">How the ratio is calculated</a></li>
+    <li><a href="#traps">Five mistakes that fail audits</a></li>
+    <li><a href="#check">How to check a whole page</a></li>
+  </ol></div>
+
+  <h2 id="rules">The rules in one table</h2>
+  <table>
+    <tr><th>What</th><th>Level AA</th><th>Level AAA</th><th>Success criterion</th></tr>
+    <tr><td>Normal text</td><td><b>4.5:1</b></td><td><b>7:1</b></td><td>1.4.3 / 1.4.6</td></tr>
+    <tr><td>Large text</td><td><b>3:1</b></td><td><b>4.5:1</b></td><td>1.4.3 / 1.4.6</td></tr>
+    <tr><td>UI components and graphics</td><td><b>3:1</b></td><td>—</td><td>1.4.11</td></tr>
+  </table>
+  <p>Almost every law and procurement rule that mentions accessibility — Section 508 in the US, EN 301 549 behind the European Accessibility Act, the ADA settlements — points at <b>level AA</b>. AAA is a target, not usually a requirement.</p>
+  <p>Ratios run from <b>1:1</b> (the same colour twice) to <b>21:1</b> (black on white). Text that is purely decorative, part of a logo, or on a disabled control is exempt.</p>
+
+  <h2 id="large">What counts as large text</h2>
+  <p>WCAG defines large text as <b>at least 18 point, or at least 14 point bold</b>. In CSS pixels that is <b>24px</b> normal weight, or about <b>18.66px</b> at bold (weight 700 or more). A 20px heading at weight 400 is <em>not</em> large, so it still needs 4.5:1.</p>
+
+  <h2 id="ui">Buttons, inputs, icons: the 3:1 rule</h2>
+  <p>Success criterion 1.4.11, Non-text Contrast, asks for <b>3:1</b> between a component's visual boundary and whatever is next to it — the border of a text field against the page, a checkbox outline, an icon that carries meaning, the line in a chart. A pale grey input border on white is the classic failure: <code>#d1d5db</code> on white is about 1.5:1.</p>
+
+  <h2 id="maths">How the ratio is calculated</h2>
+  <p>Each colour is converted to <b>relative luminance</b>, then:</p>
+  <pre><code>ratio = (L_lighter + 0.05) / (L_darker + 0.05)</code></pre>
+  <p>Luminance comes from the sRGB channels, each divided by 255 and linearised:</p>
+  <pre><code>c = channel / 255
+c = c &lt;= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ^ 2.4
+L = 0.2126 * R + 0.7152 * G + 0.0722 * B</code></pre>
+  <p>Green dominates, which is why pure red <code>#ff0000</code> on white only reaches <b>4.00:1</b> and fails for body text, while pure blue <code>#0000ff</code> reaches <b>8.59:1</b>.</p>
+  <table>
+    <tr><th>Text on white</th><th>Ratio</th><th>Normal text AA</th></tr>
+    <tr><td><code>#595959</code></td><td>7.00:1</td><td>Pass (and AAA)</td></tr>
+    <tr><td><code>#6b7280</code></td><td>4.83:1</td><td>Pass</td></tr>
+    <tr><td><code>#767676</code></td><td>4.54:1</td><td>Pass — the lightest grey that does</td></tr>
+    <tr><td><code>#777777</code></td><td>4.48:1</td><td>Fail</td></tr>
+    <tr><td><code>#9ca3af</code></td><td>2.54:1</td><td>Fail — a very common placeholder grey</td></tr>
+    <tr><td><code>#f97316</code> (orange)</td><td>2.80:1</td><td>Fail, even for large text</td></tr>
+  </table>
+
+  <h2 id="traps">Five mistakes that fail audits</h2>
+  <h3>1. Rounding up</h3>
+  <p>4.48:1 is a fail. There is no rounding in WCAG; tools that display one decimal place can hide it.</p>
+  <h3>2. Checking the wrong background</h3>
+  <p>Semi-transparent text or overlays change the colour a person actually sees. <code>rgba(0,0,0,0.5)</code> text on white renders as mid-grey, not black. You have to composite every translucent layer before measuring.</p>
+  <h3>3. Gradients and images</h3>
+  <p>Text over a gradient must pass at its <em>worst</em> point, not its average. Text over a photo can't be verified from CSS at all — it needs a human look, or a solid backing behind the text.</p>
+  <h3>4. Placeholder and disabled-looking text</h3>
+  <p>Placeholder text that carries information (a format hint, a required field) is text and needs 4.5:1. Only truly <em>disabled</em> controls are exempt.</p>
+  <h3>5. Hover, focus and error states</h3>
+  <p>A button that passes at rest and fails on hover still fails. Red error text is a frequent offender: <code>#ef4444</code> on white is about 3.8:1.</p>
+
+  <h2 id="check">How to check a whole page</h2>
+  <p><b>For one pair of colours:</b> the free <a href="contrast-checker.html">contrast checker</a> on this site gives all four verdicts at once and suggests the nearest colour that passes. It runs in your browser.</p>
+  <p><b>For a whole page:</b> Chrome DevTools shows the ratio for one element when you inspect it, and Lighthouse lists failures, but neither handles translucent layers or gradient worst-cases well, and neither gives you something to hand a client.</p>
+  <div class="tool">
+    <p><b>ContrastForge</b> is our extension for this. It scans every visible text element on the page, composites translucent layers properly, tests gradients at their worst colour stop, reports text over images as unchecked instead of guessing, and exports the failures — with the WCAG criterion and a passing colour for each — as a report. Checking any single pair is free.</p>
+    <a class="cta" href="contrastforge.html">See ContrastForge</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

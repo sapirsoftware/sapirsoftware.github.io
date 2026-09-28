@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to do an accessibility audit (WCAG 2.2 AA): a practical checklist</title>
+  <meta name="description" content="A step-by-step WCAG accessibility audit: choosing the pages, automated scans, the manual checks tools miss, how to rate severity, and what the report must contain.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #0b7a5a; --tint: #e4f5ee; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #7fd8b8; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/accessibility-audit.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to do an accessibility audit (WCAG 2.2 AA): a practical checklist">
+  <meta property="og:description" content="A step-by-step WCAG accessibility audit: choosing the pages, automated scans, the manual checks tools miss, how to rate severity, and what the report must contain.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/accessibility-audit.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-contrastforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to do an accessibility audit (WCAG 2.2 AA): a practical checklist","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is an accessibility audit?", "acceptedAnswer": {"@type": "Answer", "text": "A structured check of a website or app against a standard, almost always WCAG 2.1 or 2.2 level AA, that records every failure with where it is, which success criterion it breaks, how badly it affects people, and how to fix it."}}, {"@type": "Question", "name": "Can an automated tool do a full accessibility audit?", "acceptedAnswer": {"@type": "Answer", "text": "No. Automated checkers reliably find machine-detectable issues like missing alt attributes, missing form labels and low contrast, but a large share of WCAG — keyboard traps, meaningful alt text, focus order, screen-reader announcements — needs a person."}}, {"@type": "Question", "name": "How many pages should an accessibility audit cover?", "acceptedAnswer": {"@type": "Answer", "text": "W3C's evaluation methodology (WCAG-EM) recommends a representative sample: every distinct template and every key user journey, such as sign-up and checkout, plus a few randomly chosen pages. That is often 10 to 30 pages even for a large site."}}, {"@type": "Question", "name": "What should an accessibility audit report contain?", "acceptedAnswer": {"@type": "Answer", "text": "Scope and standard, the method and tools, a summary, and a row per issue with location, success criterion, level, severity, a description of the impact, and a recommended fix. Many buyers then need the results in an Accessibility Conformance Report (a filled VPAT)."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>How to do an accessibility audit</h1>
+  <p class="lede">An accessibility audit checks a site against WCAG — almost always 2.1 or 2.2 at level AA — and writes down every failure clearly enough that a developer can fix it and a buyer can trust it. Here is the method auditors use, the free tools, and the report structure.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#scope">Step 1: define scope and pick the pages</a></li>
+    <li><a href="#auto">Step 2: run automated scans</a></li>
+    <li><a href="#manual">Step 3: the manual checks tools miss</a></li>
+    <li><a href="#severity">Step 4: rate severity</a></li>
+    <li><a href="#report">Step 5: write the report</a></li>
+    <li><a href="#after">After the audit</a></li>
+  </ol></div>
+
+  <h2 id="scope">Step 1: define scope and pick the pages</h2>
+  <p>Write down the standard (for example <b>WCAG 2.2 level AA</b>), the site or app version, the date, and the browsers and assistive technology you will test with. Then choose a sample, following W3C's <b>WCAG-EM</b> methodology:</p>
+  <ul>
+    <li>One page of <b>every distinct template</b> — home, listing, article, product, form, search results, account.</li>
+    <li>Every step of each <b>key journey</b> — sign-up, log-in, checkout, contact. A failure in the middle of a journey blocks everything after it.</li>
+    <li>A few <b>randomly chosen</b> pages as a check on the sample.</li>
+  </ul>
+
+  <h2 id="auto">Step 2: run automated scans</h2>
+  <p>Automated tools are fast and consistent, and catch the mechanical failures: missing <code>alt</code> attributes, unlabeled inputs, empty links and buttons, duplicate IDs, missing page language, low text contrast. Free options:</p>
+  <ul>
+    <li><b>Lighthouse</b> (built into Chrome DevTools) — a quick score and a list, using the axe-core rules.</li>
+    <li><b>axe DevTools</b> and <b>WAVE</b> — browser extensions that annotate the page.</li>
+    <li>For contrast specifically, a dedicated checker that handles transparency and gradients — see <a href="wcag-contrast-ratio.html">the WCAG contrast rules</a>.</li>
+  </ul>
+  <div class="note">Treat a clean automated scan as the <em>start</em>. Many WCAG criteria cannot be judged by software at all: whether alt text is meaningful, whether focus order makes sense, whether an error message is announced.</div>
+
+  <h2 id="manual">Step 3: the manual checks tools miss</h2>
+  <h3>Keyboard only</h3>
+  <p>Unplug the mouse. <kbd>Tab</kbd> through every page: can you reach and operate every link, button, menu and form control? Is the focus indicator always visible (2.4.7)? Does focus ever get trapped in a widget (2.1.2)? Does the order make sense (2.4.3)?</p>
+  <h3>Screen reader</h3>
+  <p>Use <b>NVDA</b> (free, Windows) or <b>VoiceOver</b> (built into macOS and iOS). Listen to headings, landmarks, link text, form labels, and what happens when you submit a form with errors. Custom widgets — dropdowns, tabs, modals — are where most problems hide.</p>
+  <h3>Zoom and reflow</h3>
+  <p>Zoom to 200% (1.4.4), then narrow the window to 320 CSS pixels wide (1.4.10). Nothing should be cut off or require scrolling in two directions to read.</p>
+  <h3>Content</h3>
+  <p>Headings form a sensible outline (1.3.1). Images have alt text that says what they <em>mean</em>, and decorative ones have empty alt (1.1.1). Colour is never the only way information is shown (1.4.1). Video has captions (1.2.2).</p>
+  <h3>Contrast in every state</h3>
+  <p>Check hover, focus, visited, error and placeholder states, text over images and gradients, and input borders and icons against the 3:1 non-text rule (1.4.11).</p>
+
+  <h2 id="severity">Step 4: rate severity</h2>
+  <table>
+    <tr><th>Severity</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td><b>Critical</b></td><td>Blocks a task completely for some users</td><td>Checkout button unreachable by keyboard</td></tr>
+    <tr><td><b>Serious</b></td><td>Task possible but very hard</td><td>Form errors not announced to screen readers</td></tr>
+    <tr><td><b>Moderate</b></td><td>Causes friction or confusion</td><td>Body text at 3.9:1 contrast</td></tr>
+    <tr><td><b>Minor</b></td><td>Annoyance, workaround obvious</td><td>Redundant title attribute on a link</td></tr>
+  </table>
+
+  <h2 id="report">Step 5: write the report</h2>
+  <p>A report a client can act on has:</p>
+  <ol>
+    <li><b>Scope</b>: standard and level, pages tested, dates, tools and assistive technology.</li>
+    <li><b>Executive summary</b>: how many issues at each severity, and the biggest risks, in plain language.</li>
+    <li><b>One row per issue</b>: page and element, WCAG success criterion and level, severity, what happens to a real user, and a concrete fix — "change <code>#9ca3af</code> to <code>#6b7280</code>", not "improve contrast".</li>
+    <li><b>Evidence</b>: a screenshot or the code snippet for each.</li>
+  </ol>
+  <p>Organisations selling software to governments, universities or large companies are usually asked for the results in a standard format: an <a href="accessibility-conformance-report.html">Accessibility Conformance Report (a filled VPAT)</a>.</p>
+  <div class="tool">
+    <p><b>ContrastForge</b> covers the contrast part of an audit: it scans every visible text element and form control on a page, maps each failure to 1.4.3, 1.4.6 or 1.4.11, suggests the nearest passing colour, and exports the list as a report with your logo. It does not claim to test the rest of WCAG — pair it with keyboard and screen-reader testing.</p>
+    <a class="cta" href="contrastforge.html">See ContrastForge</a>
+  </div>
+
+  <h2 id="after">After the audit</h2>
+  <p>Fix critical and serious issues first, then re-test those exact items and record the date. Add automated checks to your build so the mechanical failures don't come back, and repeat the manual pass whenever templates or key journeys change.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

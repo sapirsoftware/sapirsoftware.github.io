@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accessibility Conformance Report (ACR) and VPAT: what they are and how to write one</title>
+  <meta name="description" content="What a VPAT and an Accessibility Conformance Report are, which edition you need, what Supports and Partially Supports mean, and how to fill one in honestly.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #0b7a5a; --tint: #e4f5ee; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #7fd8b8; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/accessibility-conformance-report.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Accessibility Conformance Report (ACR) and VPAT: what they are and how to write one">
+  <meta property="og:description" content="What a VPAT and an Accessibility Conformance Report are, which edition you need, what Supports and Partially Supports mean, and how to fill one in honestly.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/accessibility-conformance-report.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-contrastforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Accessibility Conformance Report (ACR) and VPAT: what they are and how to write one","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between a VPAT and an ACR?", "acceptedAnswer": {"@type": "Answer", "text": "The VPAT is the blank template, published by the Information Technology Industry Council (ITI). Once it has been filled in for a specific product, the document is called an Accessibility Conformance Report, or ACR."}}, {"@type": "Question", "name": "Which VPAT edition should I use?", "acceptedAnswer": {"@type": "Answer", "text": "The 508 edition for US federal buyers, the EU edition for EN 301 549 and the European Accessibility Act, the WCAG edition when a buyer only asks about WCAG, and the INT (international) edition to cover all three in one document."}}, {"@type": "Question", "name": "What are the conformance levels in a VPAT?", "acceptedAnswer": {"@type": "Answer", "text": "Supports, Partially Supports, Does Not Support, and Not Applicable. The WCAG tables also allow Not Evaluated, but only for level AAA criteria."}}, {"@type": "Question", "name": "Can I write my own ACR?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Nothing requires a third party, and the template is free. But every row must be backed by real testing, and buyers increasingly ask who tested and how. An ACR that claims Supports without evidence is a legal and commercial risk."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Accessibility Conformance Report (ACR) and VPAT, explained</h1>
+  <p class="lede">A buyer — a government agency, a university, a large company — has asked for your <b>VPAT</b> or <b>ACR</b> before they will sign. Here is what that document is, which version they mean, and how to fill it in without over-claiming.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#what">VPAT vs ACR</a></li>
+    <li><a href="#who">Who asks for one, and why</a></li>
+    <li><a href="#editions">Which edition you need</a></li>
+    <li><a href="#levels">The four conformance levels</a></li>
+    <li><a href="#how">How to fill one in</a></li>
+    <li><a href="#mistakes">Mistakes buyers notice</a></li>
+  </ol></div>
+
+  <h2 id="what">VPAT vs ACR</h2>
+  <p>The <b>VPAT</b> (Voluntary Product Accessibility Template) is a blank template published free by the <b>Information Technology Industry Council (ITI)</b>. Filled in for your product, it becomes an <b>Accessibility Conformance Report</b>. People use the two names interchangeably; when a buyer asks for "your VPAT" they mean your ACR.</p>
+  <p>It is a table: one row per accessibility requirement, a conformance level for each, and remarks explaining anything short of full support.</p>
+
+  <h2 id="who">Who asks for one, and why</h2>
+  <ul>
+    <li><b>US federal agencies</b> must buy accessible technology under <b>Section 508</b>, which since the 2017 refresh incorporates WCAG 2.0 level AA.</li>
+    <li><b>State governments and universities</b>, many of which adopt 508 or WCAG in their procurement rules.</li>
+    <li><b>Buyers in the EU</b>, where public procurement uses <b>EN 301 549</b>, and where the <b>European Accessibility Act</b> has applied to many products and services since <b>28 June 2025</b>.</li>
+    <li><b>Large companies</b> whose procurement checklists copied the public sector's.</li>
+  </ul>
+
+  <h2 id="editions">Which edition you need</h2>
+  <table>
+    <tr><th>Edition</th><th>Covers</th><th>Use when</th></tr>
+    <tr><td><b>WCAG</b></td><td>WCAG 2.x A, AA, AAA</td><td>The buyer only mentions WCAG</td></tr>
+    <tr><td><b>508</b></td><td>WCAG plus Section 508 hardware, software and documentation rules</td><td>US federal and most US public buyers</td></tr>
+    <tr><td><b>EU</b></td><td>WCAG plus EN 301 549</td><td>European buyers</td></tr>
+    <tr><td><b>INT</b></td><td>All of the above</td><td>You sell in both markets and want one document</td></tr>
+  </table>
+  <p>Download the current version from ITI's website rather than reusing an old copy; buyers do notice an outdated template.</p>
+
+  <h2 id="levels">The four conformance levels</h2>
+  <table>
+    <tr><th>Level</th><th>Means</th></tr>
+    <tr><td><b>Supports</b></td><td>The functionality meets the criterion without known defects, or meets it with an equivalent alternative.</td></tr>
+    <tr><td><b>Partially Supports</b></td><td>Some functionality does not meet the criterion. Say which.</td></tr>
+    <tr><td><b>Does Not Support</b></td><td>The majority of functionality does not meet it.</td></tr>
+    <tr><td><b>Not Applicable</b></td><td>The criterion does not apply — no video, so no captions. Say why.</td></tr>
+  </table>
+  <p>The WCAG tables also allow <b>Not Evaluated</b>, but only for level AAA criteria.</p>
+
+  <h2 id="how">How to fill one in</h2>
+  <ol>
+    <li><b>Test first.</b> An ACR summarises an <a href="accessibility-audit.html">accessibility audit</a>; it is not a substitute for one. Automated scans plus keyboard and screen-reader testing, against a sample of real templates and journeys.</li>
+    <li><b>Fill the product details</b>: name and version, report date, a description, contact details, and the <b>evaluation methods used</b> — tools, assistive technology, who tested.</li>
+    <li><b>Go row by row.</b> For each success criterion, pick a level and write remarks a buyer can understand: "Partially Supports — body text meets 4.5:1; the placeholder text in the search field is 2.5:1 and is being fixed in version 4.2."</li>
+    <li><b>Be specific about exceptions</b>, and date the report. Update it with every significant release.</li>
+  </ol>
+
+  <h2 id="mistakes">Mistakes buyers notice</h2>
+  <ul>
+    <li><b>"Supports" on everything.</b> Almost no real product fully supports every AA criterion. A wall of Supports reads as untested.</li>
+    <li><b>Empty remarks.</b> Partially Supports with no explanation gives the buyer nothing to evaluate.</li>
+    <li><b>No evaluation method.</b> Increasingly, procurement teams ask who tested and how.</li>
+    <li><b>An old report.</b> An ACR dated three versions ago describes a different product.</li>
+  </ul>
+  <div class="tool">
+    <p><b>Evidence for the contrast rows.</b> Three rows of every ACR are about contrast — 1.4.3, 1.4.6 and 1.4.11. ContrastForge scans each page for those criteria and exports a dated list of every failure with the element, its ratio, the criterion and a passing colour, which is exactly what the remarks for those rows need. It covers contrast only; the rest of the report still needs the full audit.</p>
+    <a class="cta" href="contrastforge.html">See ContrastForge</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
