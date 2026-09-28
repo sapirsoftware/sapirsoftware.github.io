@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Color blindness simulator: see your image or design as others do</title>
+  <meta name="description" content="Upload a screenshot, chart or photo and see it with protanopia, deuteranopia, tritanopia and achromatopsia, side by side. Runs in your browser; nothing is uploaded.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #0b7a5a; --tint: #e4f5ee; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #7fd8b8; --tint: #1a2a24; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+    nav.top { font-size: 14px; margin-bottom: 20px; } nav.top a { margin-right: 14px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 8px; }
+    .lede { color: var(--muted); max-width: 760px; }
+    .row { display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+    button { font: inherit; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); padding: 8px 14px; cursor: pointer; }
+    label { font-size: 15px; }
+    .drop { border: 2px dashed var(--line); border-radius: 14px; padding: 18px; text-align: center; color: var(--muted); margin-top: 12px; }
+    .drop.over { border-color: var(--accent); background: var(--tint); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; margin-top: 16px; }
+    figure { margin: 0; border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
+    figure canvas { width: 100%; height: auto; display: block; border-radius: 6px; cursor: zoom-in; }
+    figcaption { font-size: 14px; margin-top: 6px; } figcaption span { color: var(--muted); }
+    .status { color: var(--muted); font-size: 14px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 20px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    dialog { max-width: 96vw; max-height: 94vh; padding: 8px; border: 0; border-radius: 12px; background: var(--bg); color: var(--ink); }
+    dialog canvas { max-width: 92vw; max-height: 84vh; display: block; }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/color-blindness-simulator.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Color blindness simulator">
+  <meta property="og:description" content="See a screenshot, chart or photo with protanopia, deuteranopia, tritanopia and achromatopsia, side by side. Nothing is uploaded.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/color-blindness-simulator.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-contrastforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Color blindness simulator","url":"https://sapirsoftware.github.io/color-blindness-simulator.html","applicationCategory":"DesignApplication","operatingSystem":"Any (runs in the browser)","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Sapir Software","url":"https://sapirsoftware.github.io/"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How common is color blindness?","acceptedAnswer":{"@type":"Answer","text":"About 1 in 12 men and 1 in 200 women of Northern European descent have some red-green color vision deficiency. Blue-yellow deficiency (tritan) and complete color blindness (achromatopsia) are rare."}},
+  {"@type":"Question","name":"What is the difference between protanopia and deuteranopia?","acceptedAnswer":{"@type":"Answer","text":"Both are red-green deficiencies. In protanopia the long-wavelength (red) cones are missing, so reds also look darker. In deuteranopia the medium-wavelength (green) cones are missing; reds keep their brightness. The milder forms, protanomaly and deuteranomaly, are far more common than the complete ones."}},
+  {"@type":"Question","name":"How accurate is a color blindness simulator?","acceptedAnswer":{"@type":"Answer","text":"It is a model of an average viewer, not a picture of what any one person sees. This page uses the Machado, Oliveira and Fernandes (2009) model, which is widely used in design tools. Use it to find information carried by color alone, then fix that with labels, patterns or contrast rather than tuning colors to the simulation."}},
+  {"@type":"Question","name":"Does passing WCAG contrast make a design safe for color blind users?","acceptedAnswer":{"@type":"Answer","text":"Contrast helps, because luminance differences survive every type of color blindness. But WCAG 1.4.1 also requires that color is never the only way information is shown, such as red and green status dots with no label. A simulator is the fastest way to catch those."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="contrast-checker.html">Contrast checker</a><a href="wcag-contrast-ratio.html">WCAG contrast rules</a></nav>
+  <h1>Color blindness simulator</h1>
+  <p class="lede">Drop in a screenshot of your page, a chart or a photo and see it the way people with the main types of color vision deficiency do, all side by side. Everything happens in this page: the image is never uploaded.</p>
+
+  <div class="drop" id="drop">
+    <b>Drop an image here</b>, paste one with <kbd>Ctrl</kbd>+<kbd>V</kbd>, or
+    <input type="file" id="file" accept="image/*">
+    <div class="row" style="justify-content:center"><button id="sample" type="button">Try a sample chart</button></div>
+  </div>
+  <div class="row">
+    <label>Severity <input type="range" id="sev" min="10" max="100" step="10" value="100"> <span id="sevv">100%</span></label>
+    <span class="status" id="status"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+  <dialog id="zoom"><canvas id="zc"></canvas></dialog>
+
+  <h2>The types, and how common they are</h2>
+  <table>
+    <tr><th>Type</th><th>What's affected</th><th>Roughly how common</th></tr>
+    <tr><td>Deuteranomaly / deuteranopia</td><td>Green cones weak or missing. Reds, greens and browns get confused.</td><td>About 6% of men (mostly the mild form)</td></tr>
+    <tr><td>Protanomaly / protanopia</td><td>Red cones weak or missing. Reds also look dark, so red text on black nearly disappears.</td><td>About 2% of men</td></tr>
+    <tr><td>Tritanomaly / tritanopia</td><td>Blue cones weak or missing. Blue and green, and yellow and pink, get confused.</td><td>Under 0.01%, equal in men and women</td></tr>
+    <tr><td>Achromatopsia</td><td>No working cones: only light and dark.</td><td>About 1 in 30,000</td></tr>
+  </table>
+  <p>Figures are for people of Northern European descent; overall, about 1 in 12 men and 1 in 200 women have some red-green deficiency. Use the severity slider for the milder, much more common forms.</p>
+
+  <h2>What to fix when something disappears</h2>
+  <ul>
+    <li><b>Never use color alone.</b> Red and green status dots, chart lines told apart only by hue, and form errors shown only as a red border all fail WCAG 1.4.1. Add a label, an icon, a pattern or a direct annotation.</li>
+    <li><b>Lean on lightness.</b> Two colors with different luminance stay distinct for every viewer. Check pairs with the <a href="contrast-checker.html">contrast checker</a>; <a href="wcag-contrast-ratio.html">here's what the ratios mean</a>.</li>
+    <li><b>Pick palettes built for it.</b> Blue and orange work for nearly everyone. Viridis and Okabe-Ito are well-tested palettes for charts.</li>
+  </ul>
+  <p>The simulation uses the model of Machado, Oliveira and Fernandes (2009), applied in linear RGB; lower severities blend toward normal vision. It models an average viewer, not anyone in particular.</p>
+
+  <div class="tool">
+    <b>Checking a whole site?</b>
+    <p>ContrastForge scans every text element on a page for WCAG contrast, including text on semi-transparent layers and gradients, suggests the nearest passing color, and exports an audit report. Checking a pair and five full-page scans a month are free.</p>
+    <a class="cta" href="contrastforge.html">See ContrastForge</a>
+  </div>
+  <p>Related: <a href="accessibility-audit.html">how to do an accessibility audit</a> · <a href="accessibility-conformance-report.html">accessibility conformance reports (VPAT)</a> · <a href="wcag-contrast-ratio.html">WCAG contrast ratio</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> &middot; <a href="guides.html">Guides</a> &middot; Nothing on this page is uploaded &middot; Last updated September 28, 2026</footer>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  // Machado, Oliveira & Fernandes (2009), severity 1.0, for linear RGB.
+  var M = {
+    protan: [0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998],
+    deutan: [0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.011820, 0.042940, 0.968881],
+    tritan: [1.255528, -0.076749, -0.178779, -0.078411, 0.930809, 0.147602, 0.004733, 0.691367, 0.303900],
+    achroma: [0.2126, 0.7152, 0.0722, 0.2126, 0.7152, 0.0722, 0.2126, 0.7152, 0.0722]
+  };
+  var VIEWS = [
+    ["none", "Normal vision", ""],
+    ["deutan", "Deuteranopia", "green-blind, most common"],
+    ["protan", "Protanopia", "red-blind"],
+    ["tritan", "Tritanopia", "blue-blind, rare"],
+    ["achroma", "Achromatopsia", "no color, rare"]
+  ];
+  var MAXPX = 2400 * 2400;
+  var toLin = new Float32Array(256);
+  for (var i = 0; i < 256; i++) { var c = i / 255; toLin[i] = c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  var toSrgb = new Uint8ClampedArray(4096);
+  for (var j = 0; j < 4096; j++) { var l = j / 4095; toSrgb[j] = Math.round(255 * (l <= 0.0031308 ? 12.92 * l : 1.055 * Math.pow(l, 1 / 2.4) - 0.055)); }
+  var source = null;
+
+  function matrix(kind, sev) {
+    var m = M[kind], id = [1, 0, 0, 0, 1, 0, 0, 0, 1], out = [];
+    for (var k = 0; k < 9; k++) out.push(id[k] + (m[k] - id[k]) * sev);
+    return out;
+  }
+  function simulate(src, kind, sev) {
+    var out = new ImageData(src.width, src.height), d = src.data, o = out.data, m = matrix(kind, sev);
+    for (var p = 0; p < d.length; p += 4) {
+      var r = toLin[d[p]], g = toLin[d[p + 1]], b = toLin[d[p + 2]];
+      var R = m[0] * r + m[1] * g + m[2] * b, G = m[3] * r + m[4] * g + m[5] * b, B = m[6] * r + m[7] * g + m[8] * b;
+      o[p] = toSrgb[Math.max(0, Math.min(4095, Math.round(R * 4095)))];
+      o[p + 1] = toSrgb[Math.max(0, Math.min(4095, Math.round(G * 4095)))];
+      o[p + 2] = toSrgb[Math.max(0, Math.min(4095, Math.round(B * 4095)))];
+      o[p + 3] = d[p + 3];
+    }
+    return out;
+  }
+  function render() {
+    if (!source) return;
+    var sev = +$("sev").value / 100;
+    $("sevv").textContent = $("sev").value + "%";
+    var grid = $("grid"); grid.textContent = "";
+    VIEWS.forEach(function (v) {
+      var fig = document.createElement("figure"), cv = document.createElement("canvas"), cap = document.createElement("figcaption");
+      cv.width = source.width; cv.height = source.height;
+      cv.getContext("2d").putImageData(v[0] === "none" ? source : simulate(source, v[0], sev), 0, 0);
+      var b = document.createElement("b"); b.textContent = v[1] + (v[0] !== "none" && v[0] !== "achroma" && sev < 1 ? " (" + Math.round(sev * 100) + "%)" : "");
+      cap.appendChild(b);
+      if (v[2]) { var s = document.createElement("span"); s.textContent = " — " + v[2]; cap.appendChild(s); }
+      cv.addEventListener("click", function () { var z = $("zc"); z.width = cv.width; z.height = cv.height; z.getContext("2d").drawImage(cv, 0, 0); $("zoom").showModal(); });
+      fig.appendChild(cv); fig.appendChild(cap); grid.appendChild(fig);
+    });
+  }
+  function useCanvas(cv) {
+    source = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height);
+    $("status").textContent = cv.width + " × " + cv.height + " px, processed in this page. Click any view to enlarge.";
+    render();
+  }
+  function loadBlob(blob) {
+    if (!blob || !/^image\//.test(blob.type)) { $("status").textContent = "That isn't an image file."; return; }
+    var url = URL.createObjectURL(blob), img = new Image();
+    img.onload = function () {
+      var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, Math.sqrt(MAXPX / (w * h)));
+      var cv = document.createElement("canvas"); cv.width = Math.round(w * k); cv.height = Math.round(h * k);
+      cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url); useCanvas(cv);
+    };
+    img.onerror = function () { $("status").textContent = "That image couldn't be read."; };
+    img.src = url;
+  }
+  function sample() {
+    var cv = document.createElement("canvas"); cv.width = 720; cv.height = 420;
+    var x = cv.getContext("2d");
+    x.fillStyle = "#fff"; x.fillRect(0, 0, 720, 420);
+    x.fillStyle = "#1d1b26"; x.font = "bold 22px sans-serif"; x.fillText("Server status", 24, 40);
+    var rows = [["api-1", "#2e9e44", "OK"], ["api-2", "#d9342b", "Down"], ["db-main", "#2e9e44", "OK"], ["cache", "#e8a317", "Slow"]];
+    x.font = "18px sans-serif";
+    rows.forEach(function (r, i) { var y = 80 + i * 36; x.fillStyle = r[1]; x.beginPath(); x.arc(34, y - 6, 9, 0, 7); x.fill(); x.fillStyle = "#1d1b26"; x.fillText(r[0], 54, y); });
+    x.font = "bold 18px sans-serif"; x.fillStyle = "#1d1b26"; x.fillText("Sales by region", 300, 40);
+    var bars = [["North", 150, "#d9342b"], ["South", 210, "#2e9e44"], ["East", 120, "#e8a317"], ["West", 180, "#1f6fd1"]];
+    bars.forEach(function (b, i) { x.fillStyle = b[2]; x.fillRect(310 + i * 96, 330 - b[1], 64, b[1]); x.fillStyle = "#1d1b26"; x.font = "15px sans-serif"; x.fillText(b[0], 312 + i * 96, 352); });
+    x.fillStyle = "#d9342b"; x.font = "16px sans-serif"; x.fillText("Error: the card number is invalid", 24, 260);
+    x.strokeStyle = "#d9342b"; x.lineWidth = 2; x.strokeRect(24, 272, 240, 36);
+    x.fillStyle = "#2e9e44"; x.fillRect(24, 360, 110, 38); x.fillStyle = "#d9342b"; x.fillRect(146, 360, 110, 38);
+    x.fillStyle = "#fff"; x.font = "bold 16px sans-serif"; x.fillText("Accept", 50, 385); x.fillText("Reject", 174, 385);
+    useCanvas(cv);
+  }
+
+  $("file").addEventListener("change", function (e) { loadBlob(e.target.files[0]); });
+  $("sample").addEventListener("click", sample);
+  $("sev").addEventListener("input", render);
+  $("zoom").addEventListener("click", function () { $("zoom").close(); });
+  var drop = $("drop");
+  ["dragenter", "dragover"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.add("over"); }); });
+  ["dragleave", "drop"].forEach(function (t) { drop.addEventListener(t, function (e) { e.preventDefault(); drop.classList.remove("over"); }); });
+  drop.addEventListener("drop", function (e) { if (e.dataTransfer.files[0]) loadBlob(e.dataTransfer.files[0]); });
+  window.addEventListener("paste", function (e) {
+    var items = (e.clipboardData || {}).items || [];
+    for (var i = 0; i < items.length; i++) if (items[i].type.indexOf("image/") === 0) { loadBlob(items[i].getAsFile()); break; }
+  });
+})();
+</script>
+</body>
+</html>
