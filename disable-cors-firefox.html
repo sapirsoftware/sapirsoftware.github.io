@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to disable CORS in Firefox (and why content.cors.disable makes it worse)</title>
+  <meta name="description" content="Firefox has no --disable-web-security flag, and the about:config setting people suggest blocks CORS instead of allowing it. What actually works for testing, safely.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/disable-cors-firefox.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to disable CORS in Firefox (and why content.cors.disable makes it worse)">
+  <meta property="og:description" content="Firefox has no --disable-web-security flag, and the about:config setting people suggest blocks CORS instead of allowing it. What actually works for testing, safely.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/disable-cors-firefox.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to disable CORS in Firefox (and why content.cors.disable makes it worse)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I disable CORS in Firefox?", "acceptedAnswer": {"@type": "Answer", "text": "Firefox has no supported equivalent of Chrome's --disable-web-security. The narrow, safe way is an add-on that adds Access-Control-Allow-Origin and related headers to responses from the one site you are testing, or a dev-server proxy so the browser sees only one origin."}}, {"@type": "Question", "name": "What does content.cors.disable do in Firefox?", "acceptedAnswer": {"@type": "Answer", "text": "The opposite of what most people expect: setting it to true blocks every cross-origin request, which then fails with 'Reason: CORS disabled'. It does not relax the checks. Set it back to false."}}, {"@type": "Question", "name": "What is security.fileuri.strict_origin_policy?", "acceptedAnswer": {"@type": "Answer", "text": "It controls whether pages opened from file:// can read other local files. Turning it off only affects local files, not requests to web servers, and weakens protection for any HTML file you open from disk."}}, {"@type": "Question", "name": "Why does my request work in curl but not in Firefox?", "acceptedAnswer": {"@type": "Answer", "text": "CORS is enforced only by browsers. curl and Postman never apply it, so the same request succeeds there while Firefox blocks your page from reading the response."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>How to disable CORS in Firefox</h1>
+  <p class="lede">In Chrome you can start the browser with web security switched off. Firefox has no such switch — and the <code>about:config</code> setting most answers point to does the opposite of what you want. Here's what actually works when you need to test against an API that doesn't send CORS headers yet.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#pref">The about:config trap</a></li>
+    <li><a href="#addon">Allow CORS for one site with an add-on</a></li>
+    <li><a href="#proxy">A dev-server proxy</a></li>
+    <li><a href="#file">Local files (file://)</a></li>
+    <li><a href="#real">The real fix</a></li>
+  </ol></div>
+
+  <h2 id="pref">The about:config trap</h2>
+  <p>Search for "disable CORS Firefox" and you'll be told to set <code>content.cors.disable</code> to <code>true</code>. Don't. That preference <b>turns cross-origin requests off entirely</b>: every one of them then fails, and the console says <b>Reason: CORS disabled</b>. It exists for locking Firefox down, not for opening it up. If you already changed it, set it back to <code>false</code>.</p>
+  <p>Firefox has no supported equivalent of Chrome's <code>--disable-web-security</code>, and that's deliberate: switching off the same-origin policy for a whole browser lets any page read your data from any site you're signed in to.</p>
+
+  <h2 id="addon">Allow CORS for one site with an add-on</h2>
+  <p>The narrow way is to add the missing <code>Access-Control-Allow-*</code> headers to responses from <em>just the API you're testing</em>. Every other site keeps normal protection. Two limits apply to any tool that does this: it can't turn a preflight the server rejects (401, 404, 405…) into a success, and it only changes <em>your</em> browser.</p>
+  <div class="tool">
+    <b>CORS Unblock — HeaderForge</b> (Firefox, free)
+    <p>Allow CORS for one site with one switch, then turn it off again when you're done. It also sets or removes any request or response header, blocks or redirects requests, and shows whether each rule fired. No account, no tracking, nothing sent anywhere.</p>
+    <a class="cta" href="https://addons.mozilla.org/firefox/addon/cors-unblock-headerforge/">Get it for Firefox</a>
+  </div>
+
+  <h2 id="proxy">A dev-server proxy</h2>
+  <p>Route API calls through your own dev server, so the browser only ever talks to one origin and CORS never comes up:</p>
+  <pre><code>// vite.config.js
+export default {
+  server: { proxy: { "/api": "http://localhost:8080" } }
+};</code></pre>
+  <p>Then call <code>fetch("/api/users")</code> instead of the full URL.</p>
+
+  <h2 id="file">Local files (file://)</h2>
+  <p>If the problem is an HTML file opened straight from disk that can't load other local files, that's a different rule. <code>security.fileuri.strict_origin_policy</code> relaxes it, but it weakens protection for every HTML file you open. Better: serve the folder with a local server, for example <code>python3 -m http.server</code>, and open <code>http://localhost:8000</code>.</p>
+
+  <h2 id="real">The real fix</h2>
+  <p>Everything above only helps you. For your users the server has to send the headers — <a href="cors-error.html">CORS error: what it means and how to fix it</a> has the code, and the <a href="cors-tester.html">CORS tester</a> shows what a request actually gets back. Using Chrome? See <a href="disable-cors-chrome.html">how to disable CORS in Chrome</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Sapir Software
 
-> Small, privacy-first browser extensions for Chrome and Firefox. Everything runs locally: no analytics, no tracking, no account, nothing uploaded. Each product is free to use, with an optional low-cost Pro licence.
+> Small, privacy-first browser extensions for Chrome and Firefox (all four are submitted to Firefox Add-ons). Everything runs locally: no analytics, no tracking, no account, nothing uploaded. Each product is free to use, with an optional low-cost Pro licence.
 
 ## Extensions
 
@@ -29,6 +29,8 @@
 - [CORS error: what it means and how to fix it](https://sapirsoftware.github.io/cors-error.html)
 - [How to disable CORS in Chrome, and the safer way to test](https://sapirsoftware.github.io/disable-cors-chrome.html)
 - [How to add a custom HTTP header to requests in Chrome](https://sapirsoftware.github.io/add-request-header-chrome.html)
+- [How to disable CORS in Firefox](https://sapirsoftware.github.io/disable-cors-firefox.html)
+- [Full page screenshot in Firefox](https://sapirsoftware.github.io/firefox-full-page-screenshot.html)
 - [What is CORS](https://sapirsoftware.github.io/what-is-cors.html)
 - [TypeError: Failed to fetch](https://sapirsoftware.github.io/failed-to-fetch.html)
 - [iframe refused to connect / X-Frame-Options](https://sapirsoftware.github.io/x-frame-options.html)
