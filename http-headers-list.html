@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HTTP headers list: the request and response headers that matter</title>
+  <meta name="description" content="A practical list of HTTP request and response headers, what each one does and an example value: caching, cookies, CORS, security, content type, redirects and more.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/http-headers-list.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="HTTP headers list: the request and response headers that matter">
+  <meta property="og:description" content="A practical list of HTTP request and response headers, what each one does and an example value: caching, cookies, CORS, security, content type, redirects and more.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/http-headers-list.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"HTTP headers list: the request and response headers that matter","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What are HTTP headers?", "acceptedAnswer": {"@type": "Answer", "text": "Name-value lines sent at the start of every HTTP request and response, before the body. Request headers describe the request and the client (what formats it accepts, cookies, credentials); response headers describe the answer (its type, how long to cache it, security rules for the browser)."}}, {"@type": "Question", "name": "Are HTTP header names case-sensitive?", "acceptedAnswer": {"@type": "Answer", "text": "No. Content-Type, content-type and CONTENT-TYPE are the same header. HTTP/2 and HTTP/3 send them in lower case, which is why DevTools often shows lower-case names. Header values can be case-sensitive, depending on the header."}}, {"@type": "Question", "name": "How do I see the HTTP headers of a request?", "acceptedAnswer": {"@type": "Answer", "text": "In Chrome, open DevTools with F12, go to the Network tab, reload, and click a request: the Headers panel shows request and response headers. From a terminal, curl -I https://example.com prints the response headers, and curl -v shows both."}}, {"@type": "Question", "name": "Can I add my own custom HTTP header?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Any name works, and the old X- prefix is no longer required or recommended. In the browser, custom headers on cross-origin requests trigger a CORS preflight, so the server must list them in Access-Control-Allow-Headers."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>HTTP headers: a practical list</h1>
+  <p class="lede">HTTP headers are the name-value lines at the top of every request and response. There are hundreds; these are the ones you'll actually meet while building or debugging a website, grouped by job, each with what it does and a typical value.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#what">What headers look like</a></li>
+    <li><a href="#request">Request headers</a></li>
+    <li><a href="#response">Response headers</a></li>
+    <li><a href="#cors">CORS headers</a></li>
+    <li><a href="#security">Security headers</a></li>
+    <li><a href="#see">How to see and change them</a></li>
+  </ol></div>
+
+  <h2 id="what">What headers look like</h2>
+  <pre><code>GET /api/orders HTTP/1.1
+Host: shop.example.com
+Accept: application/json
+Authorization: Bearer eyJhbGciOi...
+Cookie: session=4f2a...
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Cache-Control: private, no-cache
+Set-Cookie: session=4f2a...; Secure; HttpOnly; SameSite=Lax</code></pre>
+  <p>Names are case-insensitive. HTTP/2 and HTTP/3 send them in lower case, which is why DevTools often shows <code>content-type</code>.</p>
+
+  <h2 id="request">Request headers</h2>
+  <table>
+    <tr><th>Header</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><code>Host</code></td><td>Which site on the server you want. Required in HTTP/1.1.</td><td><code>shop.example.com</code></td></tr>
+    <tr><td><code>User-Agent</code></td><td>Identifies the browser or client. <a href="what-is-my-user-agent.html">See yours.</a></td><td><code>Mozilla/5.0 (Windows NT 10.0; ...) Chrome/129.0</code></td></tr>
+    <tr><td><code>Accept</code></td><td>Formats the client can read, in order of preference.</td><td><code>application/json</code></td></tr>
+    <tr><td><code>Accept-Language</code></td><td>Preferred languages.</td><td><code>en-US,en;q=0.9</code></td></tr>
+    <tr><td><code>Accept-Encoding</code></td><td>Compression the client supports.</td><td><code>gzip, deflate, br, zstd</code></td></tr>
+    <tr><td><code>Authorization</code></td><td>Credentials, usually a token. <a href="jwt-decoder.html">Decode a JWT.</a></td><td><code>Bearer eyJhbGciOi...</code></td></tr>
+    <tr><td><code>Cookie</code></td><td>Cookies the browser stored for this site.</td><td><code>session=4f2a; theme=dark</code></td></tr>
+    <tr><td><code>Content-Type</code></td><td>Format of the request body.</td><td><code>application/json</code></td></tr>
+    <tr><td><code>Content-Length</code></td><td>Size of the body in bytes.</td><td><code>348</code></td></tr>
+    <tr><td><code>Referer</code></td><td>The page the request came from (one r, a historic typo). <a href="referer-header.html">Explained.</a></td><td><code>https://blog.example.com/</code></td></tr>
+    <tr><td><code>Origin</code></td><td>The origin that started a cross-origin or POST request. Used by CORS and CSRF checks.</td><td><code>https://app.example.com</code></td></tr>
+    <tr><td><code>If-None-Match</code></td><td>Only send the body if the ETag changed; otherwise the server answers 304.</td><td><code>"33a64df5"</code></td></tr>
+    <tr><td><code>If-Modified-Since</code></td><td>Only send the body if it changed after this date.</td><td><code>Tue, 24 Sep 2026 10:00:00 GMT</code></td></tr>
+    <tr><td><code>Cache-Control</code></td><td>In a request: asks caches for a fresh copy.</td><td><code>no-cache</code></td></tr>
+    <tr><td><code>Range</code></td><td>Ask for part of a file (video seeking, resumed downloads).</td><td><code>bytes=0-1023</code></td></tr>
+    <tr><td><code>Sec-Fetch-Site</code></td><td>Set by the browser: whether the request is same-origin, same-site or cross-site. Pages can't fake it.</td><td><code>cross-site</code></td></tr>
+    <tr><td><code>X-Forwarded-For</code></td><td>Added by proxies: the original client's IP address.</td><td><code>203.0.113.7</code></td></tr>
+  </table>
+
+  <h2 id="response">Response headers</h2>
+  <table>
+    <tr><th>Header</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><code>Content-Type</code></td><td>Format of the body. Wrong values make browsers refuse scripts or download pages.</td><td><code>text/html; charset=utf-8</code></td></tr>
+    <tr><td><code>Content-Encoding</code></td><td>How the body is compressed.</td><td><code>br</code></td></tr>
+    <tr><td><code>Cache-Control</code></td><td>Who may cache it and for how long. <a href="cache-control-header.html">Explained.</a></td><td><code>public, max-age=31536000, immutable</code></td></tr>
+    <tr><td><code>ETag</code></td><td>A version tag for the response, used with If-None-Match.</td><td><code>"33a64df5"</code></td></tr>
+    <tr><td><code>Last-Modified</code></td><td>When the resource last changed.</td><td><code>Tue, 24 Sep 2026 10:00:00 GMT</code></td></tr>
+    <tr><td><code>Age</code></td><td>Seconds a CDN or proxy has held this copy. Present means it came from a cache.</td><td><code>412</code></td></tr>
+    <tr><td><code>Vary</code></td><td>Which request headers change the response, so caches keep separate copies.</td><td><code>Origin, Accept-Encoding</code></td></tr>
+    <tr><td><code>Set-Cookie</code></td><td>Stores a cookie. Add Secure, HttpOnly and SameSite.</td><td><code>id=4f2a; Secure; HttpOnly; SameSite=Lax</code></td></tr>
+    <tr><td><code>Location</code></td><td>Where to go, with a 3xx redirect or 201 Created.</td><td><code>https://example.com/login</code></td></tr>
+    <tr><td><code>Content-Disposition</code></td><td>Show inline or download, and the file name.</td><td><code>attachment; filename="report.pdf"</code></td></tr>
+    <tr><td><code>WWW-Authenticate</code></td><td>Sent with 401: how to authenticate. <a href="401-vs-403.html">401 vs 403.</a></td><td><code>Bearer realm="api"</code></td></tr>
+    <tr><td><code>Retry-After</code></td><td>With 429 or 503: how long to wait.</td><td><code>120</code></td></tr>
+    <tr><td><code>Server</code></td><td>The server software. Many sites hide or shorten it.</td><td><code>nginx</code></td></tr>
+  </table>
+
+  <h2 id="cors">CORS headers</h2>
+  <p>These let a page on one origin read responses from another. <a href="what-is-cors.html">What CORS is</a> · <a href="blocked-by-cors-policy.html">every CORS error message</a> · <a href="preflight-request.html">preflight requests</a>.</p>
+  <table>
+    <tr><th>Header</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><code>Access-Control-Allow-Origin</code></td><td>Which origin may read the response.</td><td><code>https://app.example.com</code></td></tr>
+    <tr><td><code>Access-Control-Allow-Methods</code></td><td>Methods allowed, in a preflight answer.</td><td><code>GET, POST, PUT, DELETE</code></td></tr>
+    <tr><td><code>Access-Control-Allow-Headers</code></td><td>Request headers allowed, in a preflight answer.</td><td><code>Content-Type, Authorization</code></td></tr>
+    <tr><td><code>Access-Control-Allow-Credentials</code></td><td>Whether cookies may be sent and the response read.</td><td><code>true</code></td></tr>
+    <tr><td><code>Access-Control-Expose-Headers</code></td><td>Response headers page JavaScript may read.</td><td><code>X-Total-Count</code></td></tr>
+    <tr><td><code>Access-Control-Max-Age</code></td><td>How long the browser may reuse a preflight answer.</td><td><code>7200</code></td></tr>
+  </table>
+
+  <h2 id="security">Security headers</h2>
+  <table>
+    <tr><th>Header</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><code>Strict-Transport-Security</code></td><td>Only ever connect over HTTPS, for this long.</td><td><code>max-age=63072000; includeSubDomains</code></td></tr>
+    <tr><td><code>Content-Security-Policy</code></td><td>Which sources scripts, styles, images and frames may load from.</td><td><code>default-src 'self'; frame-ancestors 'none'</code></td></tr>
+    <tr><td><code>X-Frame-Options</code></td><td>Whether other sites may put this page in a frame. <a href="x-frame-options.html">Explained.</a></td><td><code>DENY</code></td></tr>
+    <tr><td><code>X-Content-Type-Options</code></td><td>Don't guess the file type; trust Content-Type.</td><td><code>nosniff</code></td></tr>
+    <tr><td><code>Referrer-Policy</code></td><td>How much of the URL to put in Referer.</td><td><code>strict-origin-when-cross-origin</code></td></tr>
+    <tr><td><code>Permissions-Policy</code></td><td>Which browser features (camera, location...) the page may use.</td><td><code>camera=(), geolocation=()</code></td></tr>
+    <tr><td><code>Cross-Origin-Opener-Policy</code></td><td>Isolates the page's window from pages it opens.</td><td><code>same-origin</code></td></tr>
+  </table>
+
+  <h2 id="see">How to see and change them</h2>
+  <p><b>See:</b> DevTools (<kbd>F12</kbd>) → <b>Network</b> → click a request → <b>Headers</b>. From a terminal, <code>curl -I https://example.com</code> shows response headers and <code>curl -v</code> shows both directions. A <a href="what-is-a-har-file.html">HAR file</a> records every header of a whole session, and our <a href="har-viewer.html">HAR viewer</a> reads one in your browser.</p>
+  <p><b>Change, for testing:</b> <code>curl -H "Name: value"</code> for one-off requests. In the browser, a header extension adds or overrides headers on the sites you choose. See <a href="add-request-header-chrome.html">how to add a request header in Chrome</a>.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Set, add or remove any request or response header on the sites you choose, and see whether each rule fired. Unlimited rules, no account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

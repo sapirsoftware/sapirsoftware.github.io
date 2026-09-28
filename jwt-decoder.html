@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JWT decoder and debugger that runs in your browser — nothing is uploaded</title>
-  <meta name="description" content="Decode a JSON Web Token locally: header, payload, expiry and what each claim means, plus optional HS256 signature checking. The token never leaves your browser.">
+  <title>JWT decoder, debugger and generator in your browser — nothing is uploaded</title>
+  <meta name="description" content="Decode a JSON Web Token locally: header, payload, expiry and what each claim means. Check or create HS256-signed test tokens. Nothing leaves your browser.">
   <style>
     :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f4f8; --ok: #0f7a3d; --bad: #b4232a; --warn: #8a5a00; }
     @media (prefers-color-scheme: dark) { :root { --ink: #e8e8f0; --muted: #a3a9b3; --line: #2e3140; --accent: #8fb6f5; --tint: #18243a; --bg: #14151c; --code: #1c1e28; --ok: #6fd39a; --bad: #ff9a9a; --warn: #f0c070; } }
@@ -47,11 +47,12 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
   {"@type":"Question","name":"Is it safe to paste a JWT into an online decoder?","acceptedAnswer":{"@type":"Answer","text":"Only if the decoding happens in your browser. A token is a credential: anyone holding it can act as that user until it expires. This page decodes with JavaScript in your own browser and makes no network request with the token; you can confirm that in the Network tab. Never paste a production token into a site that sends it to a server."}},
   {"@type":"Question","name":"Can a JWT be decoded without the secret?","acceptedAnswer":{"@type":"Answer","text":"Yes. The header and payload are only base64url encoded, not encrypted, so anyone can read them. The secret is needed to verify the signature, not to read the contents. Never put anything private in a JWT payload."}},
+  {"@type":"Question","name":"How do I generate a JWT for testing?","acceptedAnswer":{"@type":"Answer","text":"Write the payload as JSON, choose a secret, and sign header.payload with HMAC-SHA256 (HS256). The generator on this page does it in your browser with the Web Crypto API. Use test secrets only: anyone who knows the secret can mint tokens your server will accept."}},
   {"@type":"Question","name":"What does exp mean in a JWT?","acceptedAnswer":{"@type":"Answer","text":"exp is the expiry time, in seconds since 1 January 1970 (UTC). After that moment a correct server rejects the token. iat is when it was issued and nbf is the earliest time it may be used."}}]}</script>
 </head>
 <body>
   <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
-  <h1>JWT decoder and debugger</h1>
+  <h1>JWT decoder, debugger and generator</h1>
   <p class="lede">Paste a JSON Web Token to debug it: read its header and payload, see whether it has expired, and check an HS256 signature if you have the secret. Everything happens in this page: the token is never sent anywhere, and you can watch the Network tab to confirm it.</p>
 
   <textarea id="token" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
@@ -78,6 +79,18 @@
   </div>
   <div id="sig"></div>
 
+  <h2 id="generate">Generate a test JWT (HS256)</h2>
+  <p class="lede">Write a payload, pick a secret, and get a signed token to test your API with. Signed here with your browser's Web Crypto; nothing is sent. Use a <b>test</b> secret only: anyone who knows it can mint tokens your server will accept.</p>
+  <textarea id="gpayload" spellcheck="false" aria-label="Payload JSON" style="min-height:150px"></textarea>
+  <div class="row" style="align-items:stretch">
+    <input type="text" id="gsecret" placeholder="Test secret" spellcheck="false" autocomplete="off" style="flex:1;min-width:220px">
+    <button id="gnow" type="button">Reset iat / exp to now + 1 hour</button>
+    <button id="gmake" type="button">Generate token</button>
+  </div>
+  <div id="gstatus"></div>
+  <textarea id="gout" spellcheck="false" readonly aria-label="Generated token" style="min-height:90px;margin-top:10px"></textarea>
+  <div class="row"><button id="gcopy" type="button">Copy token</button><button id="gdecode" type="button">Decode it above</button></div>
+
   <h2>Things worth knowing</h2>
   <ul>
     <li><b>A JWT is not encrypted.</b> Header and payload are base64url text. Anyone with the token can read them, so nothing private belongs in a payload.</li>
@@ -92,7 +105,7 @@
     <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
   </div>
 
-  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">Guides</a> · Nothing on this page is uploaded · Last updated September 21, 2026</footer>
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">Guides</a> · Nothing on this page is uploaded · Last updated September 28, 2026</footer>
 
   <script>
     const $ = (id) => document.getElementById(id);
@@ -236,6 +249,39 @@
     $("clear").addEventListener("click", () => { $("token").value = ""; $("secret").value = ""; render(); });
     $("token").addEventListener("input", render);
     render();
+
+    // Generator: HS256 only, since the other algorithms need a private key we'd rather nobody pasted here.
+    const b64url = (bytes) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    function freshPayload() {
+      let p = {};
+      try { p = JSON.parse($("gpayload").value || "{}"); } catch (e) { p = {}; }
+      const now = Math.floor(Date.now() / 1000);
+      p = Object.assign({ sub: "user-123", name: "Test User" }, p, { iat: now, exp: now + 3600 });
+      $("gpayload").value = JSON.stringify(p, null, 2);
+    }
+    async function generate() {
+      $("gstatus").innerHTML = "";
+      let payload;
+      try { payload = JSON.parse($("gpayload").value); }
+      catch (e) { $("gstatus").appendChild(banner("bad", "<b class='bad'>The payload isn't valid JSON.</b> Check for a missing comma or quote.")); return; }
+      const secret = $("gsecret").value;
+      if (!secret) { $("gstatus").appendChild(banner("warn", "Type a test secret first.")); return; }
+      const enc = new TextEncoder();
+      const input = b64url(enc.encode(JSON.stringify({ alg: "HS256", typ: "JWT" }))) + "." + b64url(enc.encode(JSON.stringify(payload)));
+      const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+      const mac = new Uint8Array(await crypto.subtle.sign("HMAC", key, enc.encode(input)));
+      $("gout").value = input + "." + b64url(mac);
+      $("gstatus").appendChild(banner("ok", "<b class='ok'>Signed.</b> HS256 with your secret" + (secret.length < 32 ? ". For HS256, a real secret should be at least 32 random characters." : ".")));
+    }
+    $("gnow").addEventListener("click", freshPayload);
+    $("gmake").addEventListener("click", generate);
+    $("gcopy").addEventListener("click", () => { if ($("gout").value && navigator.clipboard) navigator.clipboard.writeText($("gout").value); });
+    $("gdecode").addEventListener("click", () => {
+      if (!$("gout").value) return;
+      $("token").value = $("gout").value; $("secret").value = $("gsecret").value; render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    freshPayload();
   </script>
 </body>
 </html>

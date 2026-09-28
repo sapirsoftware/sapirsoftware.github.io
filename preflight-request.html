@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preflight request (CORS OPTIONS): when it happens and how to fix it</title>
+  <meta name="description" content="What a CORS preflight is, exactly which requests trigger one, what the server must answer, why it fails with 401 or 404, and how to cache it with Access-Control-Max-Age.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/preflight-request.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Preflight request (CORS OPTIONS): when it happens and how to fix it">
+  <meta property="og:description" content="What a CORS preflight is, exactly which requests trigger one, what the server must answer, why it fails with 401 or 404, and how to cache it with Access-Control-Max-Age.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/preflight-request.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Preflight request (CORS OPTIONS): when it happens and how to fix it","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a preflight request?", "acceptedAnswer": {"@type": "Answer", "text": "An OPTIONS request the browser sends before a cross-origin request that isn't 'simple', to ask the server whether the real request is allowed. The server answers with Access-Control-Allow-Origin, -Methods and -Headers. Only if that answer permits it does the browser send the real request."}}, {"@type": "Question", "name": "When does the browser send a preflight?", "acceptedAnswer": {"@type": "Answer", "text": "When a cross-origin request uses a method other than GET, HEAD or POST; sends a header other than a few safe ones (Accept, Accept-Language, Content-Language, Content-Type with a simple value); or has a Content-Type other than text/plain, multipart/form-data or application/x-www-form-urlencoded. Sending JSON or an Authorization header always triggers one."}}, {"@type": "Question", "name": "How do I avoid a preflight request?", "acceptedAnswer": {"@type": "Answer", "text": "Keep the request simple: GET or POST with no custom headers and a simple Content-Type. That rules out JSON bodies and Authorization headers, so usually the better answer is to let the preflight happen and cache it with Access-Control-Max-Age, or to serve the API from the same origin through a proxy."}}, {"@type": "Question", "name": "Why does my preflight return 401?", "acceptedAnswer": {"@type": "Answer", "text": "Preflight requests never carry cookies or Authorization headers, so an authentication check that runs on every route rejects them. Handle OPTIONS before authentication and answer it with a 204."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Preflight requests, explained</h1>
+  <p class="lede">You send one request and the Network tab shows two: an <code>OPTIONS</code> request first, then yours. That first one is the CORS <b>preflight</b>: the browser asking the server's permission before it sends anything that could change data. When it fails, your real request never goes out.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#what">What the browser sends and expects</a></li>
+    <li><a href="#when">Which requests trigger one</a></li>
+    <li><a href="#fail">Why it fails</a></li>
+    <li><a href="#cache">Caching it with Access-Control-Max-Age</a></li>
+    <li><a href="#debug">Seeing it in DevTools</a></li>
+  </ol></div>
+
+  <h2 id="what">What the browser sends and expects</h2>
+  <p>Say a page on <code>https://app.example.com</code> sends JSON with a token to <code>https://api.example.com</code>. Before the real request, the browser sends:</p>
+  <pre><code>OPTIONS /orders HTTP/1.1
+Origin: https://app.example.com
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: authorization, content-type</code></pre>
+  <p>The server must answer with a <b>2xx status</b> (204 is usual) and:</p>
+  <pre><code>HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+Access-Control-Allow-Headers: authorization, content-type
+Access-Control-Max-Age: 7200</code></pre>
+  <p>Only then does the browser send the real <code>POST</code>, which also needs <code>Access-Control-Allow-Origin</code> on its response.</p>
+
+  <h2 id="when">Which requests trigger one</h2>
+  <p>A cross-origin request skips the preflight only if it's "simple". Anything below makes it non-simple:</p>
+  <table>
+    <tr><th>Trigger</th><th>Example</th></tr>
+    <tr><td>Method other than GET, HEAD, POST</td><td><code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></td></tr>
+    <tr><td>Content-Type other than the three form types</td><td><code>application/json</code></td></tr>
+    <tr><td>Any non-safelisted header</td><td><code>Authorization</code>, <code>X-Api-Key</code>, <code>X-Requested-With</code></td></tr>
+    <tr><td>An upload listener or a ReadableStream body</td><td><code>xhr.upload.onprogress</code></td></tr>
+  </table>
+  <p>So nearly every modern API call, JSON plus a token, gets a preflight. That's normal. Same-origin requests never get one.</p>
+
+  <h2 id="fail">Why it fails</h2>
+  <table>
+    <tr><th>What you see</th><th>Cause</th><th>Fix</th></tr>
+    <tr><td>OPTIONS returns <b>401 / 403</b></td><td>Auth middleware ran on the preflight, which never carries credentials</td><td>Handle OPTIONS before auth</td></tr>
+    <tr><td>OPTIONS returns <b>404 / 405</b></td><td>No route or handler for OPTIONS</td><td>Add CORS middleware that answers OPTIONS</td></tr>
+    <tr><td>OPTIONS returns <b>301 / 302</b></td><td>Redirect (http&rarr;https, trailing slash)</td><td>Call the final URL</td></tr>
+    <tr><td>200, but "not allowed by Access-Control-Allow-Headers"</td><td>A header you send isn't listed</td><td>Add it to Allow-Headers</td></tr>
+    <tr><td>200, but "Method … is not allowed"</td><td>Method missing from Allow-Methods</td><td>Add it</td></tr>
+  </table>
+  <p>In Express, order matters:</p>
+  <pre><code>import cors from "cors";
+app.use(cors({ origin: "https://app.example.com", maxAge: 7200 }));  // answers OPTIONS
+app.use(requireAuth);                                                // runs after</code></pre>
+  <p>The exact wording of each browser error is on <a href="blocked-by-cors-policy.html">"has been blocked by CORS policy": every variant</a>.</p>
+
+  <h2 id="cache">Caching it with Access-Control-Max-Age</h2>
+  <p>Without it, browsers repeat the preflight often, adding a round trip to every call. <code>Access-Control-Max-Age: 7200</code> lets the browser reuse the answer. Chrome caps it at 2 hours and Firefox at 24 hours; a larger value is simply cut to the cap.</p>
+
+  <h2 id="debug">Seeing it in DevTools</h2>
+  <p>In the Network tab, Chrome lists the preflight as a separate row with type <code>preflight</code>; clear any filter to see it. Click it to read what the server answered. To check a URL from outside your app, the <a href="cors-tester.html">CORS tester</a> sends the request and shows which header is missing.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>When a request on the current tab is blocked by CORS, HeaderForge names the server and offers to allow CORS for that site in your browser. It says so plainly when the failure is a rejected preflight, because no header change can fix a 401 or 404 status; that one needs the server fix above.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+  <p>Related: <a href="what-is-cors.html">what CORS is</a> · <a href="cors-error.html">CORS error guide</a> · <a href="disable-cors-chrome.html">disable CORS in Chrome</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
