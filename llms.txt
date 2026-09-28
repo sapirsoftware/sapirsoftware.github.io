@@ -26,6 +26,8 @@
 - [How to save a web page as an image](https://sapirsoftware.github.io/save-webpage-as-image.html)
 - [How to save a webpage as a PDF](https://sapirsoftware.github.io/save-webpage-as-pdf.html)
 - [Redact a screenshot safely](https://sapirsoftware.github.io/screenshot-redact.html)
+- [FireShot alternatives](https://sapirsoftware.github.io/fireshot-alternative.html)
+- [Awesome Screenshot alternatives](https://sapirsoftware.github.io/awesome-screenshot-alternative.html)
 - [Chrome screenshot extensions compared](https://sapirsoftware.github.io/screenshot-extension-comparison.html)
 - [CORS error: what it means and how to fix it](https://sapirsoftware.github.io/cors-error.html)
 - [How to disable CORS in Chrome, and the safer way to test](https://sapirsoftware.github.io/disable-cors-chrome.html)

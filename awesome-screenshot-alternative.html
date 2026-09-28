@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Awesome Screenshot alternatives: local, no account, no uploads</title>
+  <meta name="description" content="Awesome Screenshot is a recording and cloud-sharing tool. If you just want full-page screenshots saved on your own computer, with nothing uploaded, here are the alternatives.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/awesome-screenshot-alternative.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Awesome Screenshot alternatives: local, no account, no uploads">
+  <meta property="og:description" content="Awesome Screenshot is a recording and cloud-sharing tool. If you just want full-page screenshots saved on your own computer, with nothing uploaded, here are the alternatives.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/awesome-screenshot-alternative.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Awesome Screenshot alternatives: local, no account, no uploads","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why look for an Awesome Screenshot alternative?", "acceptedAnswer": {"@type": "Answer", "text": "Awesome Screenshot is built around screen recording and cloud sharing with an account. People who only need full-page screenshots saved to their own computer, with nothing uploaded, often want something smaller."}}, {"@type": "Question", "name": "Is there a screenshot extension that doesn't upload anything?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Chrome's built-in DevTools capture and Full Page Screenshot both save files locally only. Full Page Screenshot has no account, no analytics and no cloud, and installs with no permission warning."}}, {"@type": "Question", "name": "What is a good alternative for screen recording?", "acceptedAnswer": {"@type": "Answer", "text": "If you need recording, stay with a recording tool: Awesome Screenshot, Loom, or the recorder built into your operating system (Win+Alt+R with Xbox Game Bar on Windows, Cmd+Shift+5 on a Mac)."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Awesome Screenshot alternatives</h1>
+  <p class="lede">Awesome Screenshot has grown into a screen-recording and sharing platform, with cloud storage, share links and team workspaces. If you use those, it's a sensible choice. If you only wanted screenshots, and would rather they never left your computer, here are simpler options. We make one of them, so weigh this accordingly.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#why">Why people switch</a></li>
+    <li><a href="#builtin">Nothing installed</a></li>
+    <li><a href="#local">A local-only extension</a></li>
+    <li><a href="#record">If you need recording</a></li>
+  </ol></div>
+
+  <h2 id="why">Why people switch</h2>
+  <ul>
+    <li><b>Where captures go.</b> Sharing links work by uploading your capture to the vendor's servers. For a page with customer data, that upload is a decision, not a detail.</li>
+    <li><b>Account and plan limits.</b> Features are tied to an account and a plan. Check its pricing page for today's limits.</li>
+    <li><b>History.</b> In 2014 Awesome Screenshot was reported to collect browsing data. It has changed owners and versions since, and we haven't tested current versions ourselves, but some teams' security policies still exclude it.</li>
+  </ul>
+
+  <h2 id="builtin">Nothing installed</h2>
+  <p>Chrome captures a whole page by itself: <kbd>F12</kbd>, then <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, type <code>full size</code>, choose <b>Capture full size screenshot</b>. PNG only, and it struggles with lazy-loaded images and sticky headers. <a href="screenshot-whole-page.html">Step by step.</a> For the visible part of the screen, your operating system's own tool (<kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>, <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>4</kbd>) is enough.</p>
+
+  <h2 id="local">A local-only extension</h2>
+  <p><b>Full Page Screenshot</b> does screenshots and nothing else, on your computer only:</p>
+  <ul>
+    <li>Whole page, a selected part, or an inner scrolling panel (Gmail, Slack, dashboards), as PNG, JPEG or PDF.</li>
+    <li>Finds emails, phone and card numbers and API keys, and blacks them out before the image exists.</li>
+    <li>No account, no cloud, no analytics, and it installs with no permission warning.</li>
+  </ul>
+  <p>What it doesn't do: recording, annotation, share links. If you need those, a local-only tool isn't the right fit.</p>
+
+  <h2 id="record">If you need recording</h2>
+  <p>Stay with a recorder. Windows has one in Xbox Game Bar (<kbd>Win</kbd>+<kbd>Alt</kbd>+<kbd>R</kbd>), macOS in the screenshot toolbar (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd>), and Loom and Awesome Screenshot both do it well if you want share links.</p>
+  <div class="tool">
+    <b>Full Page Screenshot</b> (Chrome, free)
+    <p>Full-page, region and scrolling-panel screenshots as PNG, JPEG or PDF, with private details blacked out before the file is written. Nothing is uploaded.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot</a>
+  </div>
+
+  <p class="more"><b>More on this topic:</b> <a href="firefox-full-page-screenshot.html">How to take a full page screenshot in Firefox (3 ways)</a> · <a href="redact-image.html">Redact an image</a> · <a href="scrolling-screenshot.html">How to take a scrolling screenshot on Windows, Mac, iPhone and Android</a> · <a href="save-webpage-as-image.html">How to save a web page as an image (PNG or JPG), the whole page</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
