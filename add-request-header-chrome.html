@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to add a custom HTTP header to requests in Chrome</title>
+  <meta name="description" content="Add or change a request header (Authorization, X-Api-Key, feature flags, Accept-Language) in Chrome: what DevTools can and can&#x27;t do, the console way, and per-site rules.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/add-request-header-chrome.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to add a custom HTTP header to requests in Chrome">
+  <meta property="og:description" content="Add or change a request header (Authorization, X-Api-Key, feature flags, Accept-Language) in Chrome: what DevTools can and can&#x27;t do, the console way, and per-site rules.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/add-request-header-chrome.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to add a custom HTTP header to requests in Chrome","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can Chrome DevTools add a request header?", "acceptedAnswer": {"@type": "Answer", "text": "Not to the page's own requests. DevTools can override response headers (Sources > Overrides) and change the user agent (Network conditions), but it has no setting to add an arbitrary header to every request a page makes."}}, {"@type": "Question", "name": "How do I add an Authorization header to requests in Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "For a single API call, send it yourself with fetch in the console or with curl. For every request a page makes, use a header-modifying extension with a rule that sets Authorization for that site only."}}, {"@type": "Question", "name": "Is it safe to use an extension to modify headers?", "acceptedAnswer": {"@type": "Answer", "text": "It is as safe as the extension. Prefer one that runs locally, sends no data anywhere, and limits rules to the sites you choose. ModHeader, the best-known tool, was removed from the Chrome Web Store in 2026."}}, {"@type": "Question", "name": "Why is my custom header not being sent?", "acceptedAnswer": {"@type": "Answer", "text": "Common causes: the rule doesn't match the request URL, it is scoped to a different tab or domain, or the header is added to a cross-origin request and the server's CORS preflight doesn't allow it in Access-Control-Allow-Headers."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>How to add a custom header to requests in Chrome</h1>
+  <p class="lede">You need every request to carry a header — an <code>Authorization</code> token, an <code>X-Api-Key</code>, a feature flag, a different <code>Accept-Language</code> — while you test in a real browser. Here's what Chrome can do on its own, and how to do the rest.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#devtools">What DevTools can and can't do</a></li>
+    <li><a href="#console">One request: the console</a></li>
+    <li><a href="#every">Every request a page makes: a header rule</a></li>
+    <li><a href="#check">Checking the header was really sent</a></li>
+    <li><a href="#notsent">When the header isn't sent</a></li>
+  </ol></div>
+
+  <h2 id="devtools">What DevTools can and can't do</h2>
+  <table>
+    <tr><th>Want to</th><th>Built into Chrome?</th></tr>
+    <tr><td>Change the <b>User-Agent</b></td><td>Yes — DevTools → <b>Network conditions</b> (<a href="change-user-agent-chrome.html">how</a>)</td></tr>
+    <tr><td>Override a <b>response</b> header</td><td>Yes — DevTools → <b>Sources → Overrides</b>, then right-click a request in Network → <b>Override headers</b></td></tr>
+    <tr><td>Add a <b>request</b> header to the page's own requests</td><td><b>No</b></td></tr>
+  </table>
+
+  <h2 id="console">One request: the console</h2>
+  <p>For a single API call, send it yourself from the DevTools console on the site's own tab, so cookies and origin are right:</p>
+  <pre><code>const res = await fetch("/api/me", {
+  headers: { "Authorization": "Bearer eyJhbGciOi...", "X-Feature-Flag": "new-checkout" }
+});
+console.log(res.status, await res.json());</code></pre>
+  <p>Or from a terminal: <code>curl -H "Authorization: Bearer …" https://api.example.com/me</code>. Neither affects the page's own requests.</p>
+
+  <h2 id="every">Every request a page makes: a header rule</h2>
+  <p>To make the <em>page itself</em> send the header — every <code>fetch</code>, XHR, image and navigation — you need a rule in the browser that rewrites requests before they leave. Extensions do this through Chrome's <code>declarativeNetRequest</code> API. What to look for:</p>
+  <ul>
+    <li><b>Scope</b>: limit the rule to the domains you're testing, so your token never goes to other sites.</li>
+    <li><b>Proof it fired</b>: silent tools leave you guessing whether the rule even matched.</li>
+    <li><b>Local only</b>: a header tool sees your tokens. It should send nothing anywhere.</li>
+  </ul>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Set or remove any request or response header, for all sites, chosen domains or just this tab. It shows when a rule actually fired, works on fetch, XHR and POST, and has presets for User-Agent, no-cache, X-Forwarded-For and removing CSP or X-Frame-Options. Imports ModHeader exports. No account, no analytics.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2 id="check">Checking the header was really sent</h2>
+  <ol>
+    <li>Open DevTools → <b>Network</b> and reload.</li>
+    <li>Click a request and open <b>Headers → Request Headers</b>.</li>
+    <li>If you see "Provisional headers are shown", the list is incomplete — tick <b>Disable cache</b> and reload, or check what the server received in its logs.</li>
+  </ol>
+
+  <h2 id="notsent">When the header isn't sent</h2>
+  <ul>
+    <li><b>The rule doesn't match</b> the URL — check the pattern against the exact request URL, including the port.</li>
+    <li><b>The request is cross-origin</b> and the header isn't a simple one, so the browser sends a preflight first; the server must list it in <code>Access-Control-Allow-Headers</code> or the real request never goes. See <a href="cors-error.html">CORS errors</a>.</li>
+    <li><b>A service worker</b> answered from cache, so no network request happened. Tick <b>Bypass for network</b> under Application → Service workers.</li>
+  </ul>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

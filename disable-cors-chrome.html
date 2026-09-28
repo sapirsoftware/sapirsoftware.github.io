@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to disable CORS in Chrome (and the safer way to test)</title>
+  <meta name="description" content="The exact command to start Chrome with CORS disabled on Windows, Mac and Linux, why it needs its own profile, and narrower alternatives for testing against an API.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/disable-cors-chrome.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to disable CORS in Chrome (and the safer way to test)">
+  <meta property="og:description" content="The exact command to start Chrome with CORS disabled on Windows, Mac and Linux, why it needs its own profile, and narrower alternatives for testing against an API.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/disable-cors-chrome.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to disable CORS in Chrome (and the safer way to test)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I disable CORS in Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "Start a separate Chrome with --disable-web-security and its own --user-data-dir, for example: google-chrome --disable-web-security --user-data-dir=/tmp/chrome-dev. The flag is ignored without a separate profile. Use that window only for the site you are testing."}}, {"@type": "Question", "name": "Is it safe to disable web security in Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "Only in a throwaway profile used for nothing else. The flag turns off the same-origin policy for every site in that window, so any page you open could read data from any site you are logged in to there."}}, {"@type": "Question", "name": "Can a Chrome extension disable CORS?", "acceptedAnswer": {"@type": "Answer", "text": "It can add Access-Control-Allow-Origin and related headers to responses from the sites you choose, in your own browser, which is narrower and safer than the flag. It cannot rescue a preflight the server answers with an error status."}}, {"@type": "Question", "name": "Why does my request work in Postman but not in Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "CORS is enforced by browsers only. Postman and curl never apply it, so the same request succeeds there while the browser blocks your page from reading the response."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>How to disable CORS in Chrome</h1>
+  <p class="lede">You're testing a front end against an API that doesn't send CORS headers yet, and you just want Chrome to stop blocking it. You can — here's the exact command for each system — but read the warning, and consider the narrower options below it.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#flag">Start Chrome with web security off</a></li>
+    <li><a href="#danger">Why it needs a separate profile</a></li>
+    <li><a href="#narrow">Narrower: allow CORS for one site only</a></li>
+    <li><a href="#proxy">Better: a dev-server proxy</a></li>
+    <li><a href="#real">The real fix</a></li>
+  </ol></div>
+
+  <h2 id="flag">Start Chrome with web security off</h2>
+  <p>Close nothing — this starts a <em>second</em>, separate Chrome. The <code>--user-data-dir</code> part is required; without a separate profile Chrome ignores the flag.</p>
+  <h3>Windows</h3>
+  <pre><code>"C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="%TEMP%\chrome-dev"</code></pre>
+  <h3>Mac</h3>
+  <pre><code>open -na "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome-dev</code></pre>
+  <h3>Linux</h3>
+  <pre><code>google-chrome --disable-web-security --user-data-dir=/tmp/chrome-dev</code></pre>
+  <p>Chrome shows a yellow bar saying you're using an unsupported command-line flag. That's how you know it worked.</p>
+
+  <h2 id="danger">Why it needs a separate profile</h2>
+  <p>The flag doesn't just switch off CORS for your API. It turns off the <b>same-origin policy for every site</b> in that window — so any page open there could read responses from any other site, including ones you are signed in to. That's why Chrome insists on a separate profile.</p>
+  <div class="note">Use that window for your dev site only. Don't sign in to email, banking or anything else in it, and close it when you're done.</div>
+
+  <h2 id="narrow">Narrower: allow CORS for one site only</h2>
+  <p>Instead of turning off security everywhere, you can add the missing <code>Access-Control-Allow-*</code> headers to responses from <em>just the API you're testing</em>, in your normal browser. Everything else keeps working as usual.</p>
+  <p>Two limits apply to any tool that does this:</p>
+  <ul>
+    <li>If the server answers the <code>OPTIONS</code> preflight with an error (401, 404, 405…), headers can't turn that into a success. The server has to let <code>OPTIONS</code> through.</li>
+    <li>It only changes <em>your</em> browser. Your users still need the real fix.</li>
+  </ul>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Allow CORS for one site in one click, as a single switch you can turn off again. When a request on the current tab is blocked for CORS reasons, HeaderForge names the server that refused it and offers the fix right there — and says so plainly when the failure is a rejected preflight that headers can't fix. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2 id="proxy">Better: a dev-server proxy</h2>
+  <p>Route API calls through your own dev server so the browser only ever talks to one origin. No CORS involved at all:</p>
+  <pre><code>// vite.config.js
+export default {
+  server: { proxy: { "/api": "http://localhost:8080" } }
+};</code></pre>
+  <p>Then call <code>fetch("/api/users")</code> instead of the full URL. webpack-dev-server and Next.js rewrites do the same job.</p>
+
+  <h2 id="real">The real fix</h2>
+  <p>Everything above only helps you. For your users, the API has to send the headers. <a href="cors-error.html">CORS error: what it means and how to fix it</a> has the server code, and the <a href="cors-tester.html">CORS tester</a> shows exactly what a given request gets back.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

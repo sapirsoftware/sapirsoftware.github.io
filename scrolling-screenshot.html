@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to take a scrolling screenshot on Windows, Mac, iPhone and Android</title>
+  <meta name="description" content="Scrolling (long) screenshots on every device: the built-in ways on Windows, Mac, iPhone and Android, the browser commands for whole web pages, and fixes for repeated headers.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/scrolling-screenshot.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to take a scrolling screenshot on Windows, Mac, iPhone and Android">
+  <meta property="og:description" content="Scrolling (long) screenshots on every device: the built-in ways on Windows, Mac, iPhone and Android, the browser commands for whole web pages, and fixes for repeated headers.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/scrolling-screenshot.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to take a scrolling screenshot on Windows, Mac, iPhone and Android","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I take a scrolling screenshot on Windows?", "acceptedAnswer": {"@type": "Answer", "text": "Windows' own screenshot shortcuts capture only what is on screen. For a web page, use the browser: Chrome DevTools' Capture full size screenshot, Edge's Web capture (Ctrl+Shift+S) or Firefox's Save full page. For other apps, the free open-source ShareX has a Scrolling capture mode."}}, {"@type": "Question", "name": "How do I take a scrolling screenshot on a Mac?", "acceptedAnswer": {"@type": "Answer", "text": "The macOS screenshot tool (Cmd+Shift+5) has no scrolling mode. For web pages use Firefox's Save full page, Chrome DevTools' Capture full size screenshot, or Safari's File > Export as PDF, which saves the whole page as one long PDF."}}, {"@type": "Question", "name": "How do I take a scrolling screenshot on iPhone?", "acceptedAnswer": {"@type": "Answer", "text": "Take a normal screenshot in Safari, tap the thumbnail, and choose Full Page at the top. It saves the whole page as a PDF."}}, {"@type": "Question", "name": "How do I take a scrolling screenshot on Android?", "acceptedAnswer": {"@type": "Answer", "text": "On Android 12 and later, take a screenshot and tap Capture more (Samsung calls it Scroll capture), then drag to choose how far down to go."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>How to take a scrolling screenshot</h1>
+  <p class="lede">A normal screenshot stops at the edge of your screen. A <b>scrolling screenshot</b> — also called a long or full-page screenshot — captures everything, top to bottom. Here's the built-in way on each device, and what to do when the result comes out broken.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#web">Web pages on any computer: use the browser</a></li>
+    <li><a href="#windows">Windows</a></li>
+    <li><a href="#mac">Mac</a></li>
+    <li><a href="#iphone">iPhone and iPad</a></li>
+    <li><a href="#android">Android</a></li>
+    <li><a href="#broken">When the result comes out broken</a></li>
+  </ol></div>
+
+  <h2 id="web">Web pages on any computer: use the browser</h2>
+  <p>If what you want to capture is a web page, the operating system's screenshot tool is the wrong place to start. Every major browser can capture the whole page itself:</p>
+  <table>
+    <tr><th>Browser</th><th>How</th><th>Saves as</th></tr>
+    <tr><td><b>Chrome</b></td><td><kbd>F12</kbd>, then <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (Mac <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>), type <b>full size</b>, choose <b>Capture full size screenshot</b></td><td>PNG</td></tr>
+    <tr><td><b>Edge</b></td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>, then <b>Capture full page</b></td><td>PNG</td></tr>
+    <tr><td><b>Firefox</b></td><td>Right-click the page, <b>Take Screenshot</b>, <b>Save full page</b></td><td>PNG</td></tr>
+    <tr><td><b>Safari</b></td><td><b>File → Export as PDF</b></td><td>One long PDF</td></tr>
+  </table>
+  <p>More detail for Chrome, including the pitfalls: <a href="screenshot-whole-page.html">how to screenshot an entire webpage in Chrome</a>.</p>
+
+  <h2 id="windows">Windows</h2>
+  <p><kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> and <kbd>PrtScn</kbd> capture what is on screen, not a scrolling window. For web pages use the browser methods above. For scrolling inside <em>other</em> apps — a long chat, a document viewer — the free, open-source <b>ShareX</b> has a <b>Scrolling capture</b> mode that scrolls the window and stitches the result.</p>
+
+  <h2 id="mac">Mac</h2>
+  <p>The macOS screenshot toolbar (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>5</kbd>) has no scrolling mode. For web pages, use Firefox's <b>Save full page</b>, Chrome's DevTools command, or Safari's <b>Export as PDF</b>, which gives you the whole page as a single tall PDF page — handy for reading, awkward for printing.</p>
+
+  <h2 id="iphone">iPhone and iPad</h2>
+  <ol>
+    <li>In Safari, take a screenshot as usual (side button + volume up).</li>
+    <li>Tap the thumbnail that appears in the corner.</li>
+    <li>Choose <b>Full Page</b> at the top, then <b>Done → Save PDF to Files</b>.</li>
+  </ol>
+  <p>It works in Safari and some other apps, and always saves a PDF rather than an image.</p>
+
+  <h2 id="android">Android</h2>
+  <p>On Android 12 and later, take a screenshot and tap <b>Capture more</b>, then drag the bottom handle to choose how much to include. Samsung phones call it <b>Scroll capture</b> and repeat the tap to keep scrolling.</p>
+
+  <h2 id="broken">When the result comes out broken</h2>
+  <p>Long captures of web pages fail in the same four ways, whichever tool you use:</p>
+  <ul>
+    <li><b>The header repeats</b> down the image — the page has a sticky header, and each scrolled section captured it again.</li>
+    <li><b>Images are blank</b> — they load only when scrolled into view, and the capture didn't wait for them.</li>
+    <li><b>Only the frame is captured</b> — web apps like Gmail, Notion or dashboards scroll an <em>inner panel</em>, not the page, so page-level tools see nothing to scroll.</li>
+    <li><b>The image is blurry or cut off</b> — very long pages hit the browser's maximum image size, and some tools quietly shrink them.</li>
+  </ul>
+  <div class="tool">
+    <b>Full Page Screenshot</b> (Chrome, free)
+    <p>Our extension was built around those four failures: it waits for lazy images, shows sticky headers once, can capture an inner scrolling panel, and saves very long pages as a full-resolution PDF instead of shrinking them. Saves as PNG, JPEG or PDF, and can black out private details before the capture is taken. Nothing is uploaded.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot, free</a>
+  </div>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
