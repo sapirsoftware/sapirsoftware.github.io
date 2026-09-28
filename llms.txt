@@ -1,0 +1,47 @@
+# Sapir Software
+
+> Small, privacy-first browser extensions for Chrome and Firefox. Everything runs locally: no analytics, no tracking, no account, nothing uploaded. Each product is free to use, with an optional low-cost Pro licence.
+
+## Extensions
+
+- [Full Page Screenshot](https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh): full-page (scrolling) screenshots of any web page as PNG, JPEG or PDF. Waits for lazy-loaded images, shows sticky headers once, can capture an inner scrolling panel, and can black out emails, card numbers and API keys before the capture is taken. Installs with no permission warning. Free; Pro $3/month, $19/year or $39 once.
+- [HeaderForge](https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd): modify HTTP request and response headers, allow CORS for one site in one click, block or redirect requests, and see whether each rule actually fired. Imports ModHeader exports. A ModHeader alternative after ModHeader was removed from the Chrome Web Store in July 2026. Free; Pro $5/month, $39/year or $59 once.
+- [ContrastForge](https://sapirsoftware.github.io/contrastforge.html): WCAG 2.2 color contrast checker. Scans a whole page, composites transparent layers, tests gradients at their worst stop, suggests the nearest passing color, and exports a white-label audit report (PDF/CSV). In review at the Chrome Web Store.
+- SnippetForge: text expander with unlimited free snippets and canned responses. Local-only.
+
+## Free tools (run in the browser, nothing uploaded)
+
+- [Color contrast checker](https://sapirsoftware.github.io/contrast-checker.html)
+- [CORS tester](https://sapirsoftware.github.io/cors-tester.html)
+- [HAR file viewer and sanitizer](https://sapirsoftware.github.io/har-viewer.html)
+- [JWT decoder](https://sapirsoftware.github.io/jwt-decoder.html)
+- [Image redactor](https://sapirsoftware.github.io/redact-image.html)
+- [What is my user agent](https://sapirsoftware.github.io/what-is-my-user-agent.html)
+
+## Guides
+
+- [How to screenshot an entire webpage in Chrome](https://sapirsoftware.github.io/screenshot-whole-page.html)
+- [Scrolling screenshots on Windows, Mac, iPhone and Android](https://sapirsoftware.github.io/scrolling-screenshot.html)
+- [How to save a web page as an image](https://sapirsoftware.github.io/save-webpage-as-image.html)
+- [How to save a webpage as a PDF](https://sapirsoftware.github.io/save-webpage-as-pdf.html)
+- [Redact a screenshot safely](https://sapirsoftware.github.io/screenshot-redact.html)
+- [Chrome screenshot extensions compared](https://sapirsoftware.github.io/screenshot-extension-comparison.html)
+- [CORS error: what it means and how to fix it](https://sapirsoftware.github.io/cors-error.html)
+- [How to disable CORS in Chrome, and the safer way to test](https://sapirsoftware.github.io/disable-cors-chrome.html)
+- [How to add a custom HTTP header to requests in Chrome](https://sapirsoftware.github.io/add-request-header-chrome.html)
+- [What is CORS](https://sapirsoftware.github.io/what-is-cors.html)
+- [TypeError: Failed to fetch](https://sapirsoftware.github.io/failed-to-fetch.html)
+- [iframe refused to connect / X-Frame-Options](https://sapirsoftware.github.io/x-frame-options.html)
+- [What is a HAR file](https://sapirsoftware.github.io/what-is-a-har-file.html)
+- [401 vs 403](https://sapirsoftware.github.io/401-vs-403.html)
+- [Hard refresh in Chrome](https://sapirsoftware.github.io/hard-refresh-chrome.html)
+- [How to change your user agent in Chrome](https://sapirsoftware.github.io/change-user-agent-chrome.html)
+- [ModHeader alternative](https://sapirsoftware.github.io/modheader-alternative.html)
+- [WCAG contrast ratio rules](https://sapirsoftware.github.io/wcag-contrast-ratio.html)
+- [How to do an accessibility audit](https://sapirsoftware.github.io/accessibility-audit.html)
+- [Accessibility Conformance Report (ACR) and VPAT explained](https://sapirsoftware.github.io/accessibility-conformance-report.html)
+
+## Company
+
+- [Pricing](https://sapirsoftware.github.io/pricing.html) · [Terms](https://sapirsoftware.github.io/terms.html) · [Refunds (14 days, no questions)](https://sapirsoftware.github.io/refunds.html) · [Permissions and security](https://sapirsoftware.github.io/permissions.html)
+- Contact: sapirsoftware@gmail.com
