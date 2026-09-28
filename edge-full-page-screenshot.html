@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to take a full page screenshot in Microsoft Edge</title>
+  <meta name="description" content="Edge&#x27;s built-in Web capture takes full-page screenshots with Ctrl+Shift+S. How to use it, why images sometimes come out blank, and what to do for scrolling panels and PDFs.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/edge-full-page-screenshot.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to take a full page screenshot in Microsoft Edge">
+  <meta property="og:description" content="Edge&#x27;s built-in Web capture takes full-page screenshots with Ctrl+Shift+S. How to use it, why images sometimes come out blank, and what to do for scrolling panels and PDFs.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/edge-full-page-screenshot.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to take a full page screenshot in Microsoft Edge","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I take a full page screenshot in Microsoft Edge?", "acceptedAnswer": {"@type": "Answer", "text": "Press Ctrl+Shift+S (Cmd+Shift+S on a Mac) to open Web capture, choose Capture full page, then save or copy the image. You can also find Screenshot in the ... menu at the top right."}}, {"@type": "Question", "name": "Why is Edge's full page capture missing images or cut off?", "acceptedAnswer": {"@type": "Answer", "text": "Web capture takes the page as it is laid out, so images that load only as you scroll can come out blank, and content that scrolls inside a panel (web mail, chat, dashboards) is captured only as far as the panel shows. Scroll to the bottom first, or use an extension that scrolls and waits for images."}}, {"@type": "Question", "name": "Can I use Chrome extensions in Edge?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. In Edge, open the Chrome Web Store, click 'Allow extensions from other stores' in the banner, and then 'Add to Chrome' installs the extension in Edge."}}, {"@type": "Question", "name": "Where does Edge save screenshots?", "acceptedAnswer": {"@type": "Answer", "text": "Web capture opens the image in a small editor. Click the save icon to download it to your Downloads folder, or copy it to paste somewhere else."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Full page screenshots in Microsoft Edge</h1>
+  <p class="lede">Edge can capture a whole scrolling page by itself, with no extension: it's called <b>Web capture</b>. Here's how to use it, where it falls short, and what to use when it does.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#webcapture">Web capture: the built-in way</a></li>
+    <li><a href="#problems">When the capture comes out wrong</a></li>
+    <li><a href="#extension">Using a screenshot extension in Edge</a></li>
+    <li><a href="#pdf">Saving the page as a PDF instead</a></li>
+  </ol></div>
+
+  <h2 id="webcapture">Web capture: the built-in way</h2>
+  <ol>
+    <li>Open the page and press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> (on a Mac, <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>). Or open the <b>&hellip;</b> menu and choose <b>Screenshot</b>.</li>
+    <li>Choose <b>Capture full page</b>. (<b>Capture area</b> is for part of the screen.)</li>
+    <li>The image opens in a small editor where you can draw on it. Click the save icon to download it as a JPEG, or copy it.</li>
+  </ol>
+  <p>If the shortcut does nothing, your organisation may have turned Web capture off, or another app has claimed the shortcut.</p>
+
+  <h2 id="problems">When the capture comes out wrong</h2>
+  <table>
+    <tr><th>Problem</th><th>Why</th><th>Fix</th></tr>
+    <tr><td>Blank or grey images lower down</td><td>They load only when scrolled into view</td><td>Scroll to the bottom and back up, then capture</td></tr>
+    <tr><td>Only one screenful of an email or chat</td><td>The content scrolls inside a panel, not the page</td><td>Use a tool that can capture a scrolling panel (below)</td></tr>
+    <tr><td>Header or cookie banner covering content</td><td>Sticky elements are part of the layout</td><td>Close banners first</td></tr>
+    <tr><td>The page is cut off at the bottom</td><td>Very long pages exceed the capture limit</td><td>Save as PDF, or capture in parts</td></tr>
+  </table>
+
+  <h2 id="extension">Using a screenshot extension in Edge</h2>
+  <p>Edge runs extensions from the Chrome Web Store. Open an extension's Chrome Web Store page in Edge, click <b>Allow extensions from other stores</b> in the banner at the top, confirm, then click <b>Add to Chrome</b>. It installs in Edge.</p>
+  <div class="tool">
+    <b>Full Page Screenshot</b> (works in Chrome and Edge, free)
+    <p>Scrolls the page slowly so images load, shows sticky headers once, and can capture a panel that scrolls on its own, like a Gmail message list. Saves PNG, JPEG or PDF, and can black out emails, phone and card numbers before the image is made. No account, nothing uploaded.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot</a>
+  </div>
+
+  <h2 id="pdf">Saving the page as a PDF instead</h2>
+  <p>For text you want to keep or search later, a PDF is often better than a picture: <kbd>Ctrl</kbd>+<kbd>P</kbd>, set <b>Printer</b> to <b>Save as PDF</b>, and save. The layout can differ from the screen because sites style pages for printing. <a href="save-webpage-as-pdf.html">More on saving pages as PDF.</a></p>
+
+  <p class="more"><b>More on this topic:</b> <a href="redact-image.html">Redact an image</a> · <a href="redact-pdf.html">Redact a PDF</a> · <a href="screenshot-whole-page.html">How to screenshot an entire webpage in Chrome (3 ways)</a> · <a href="scrolling-screenshot.html">How to take a scrolling screenshot on Windows, Mac, iPhone and Android</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

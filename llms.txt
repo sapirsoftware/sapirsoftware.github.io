@@ -37,6 +37,7 @@
 - [How to disable CORS in Chrome, and the safer way to test](https://sapirsoftware.github.io/disable-cors-chrome.html)
 - [How to add a custom HTTP header to requests in Chrome](https://sapirsoftware.github.io/add-request-header-chrome.html)
 - [How to disable CORS in Firefox](https://sapirsoftware.github.io/disable-cors-firefox.html)
+- [Full page screenshot in Microsoft Edge](https://sapirsoftware.github.io/edge-full-page-screenshot.html)
 - [Full page screenshot in Firefox](https://sapirsoftware.github.io/firefox-full-page-screenshot.html)
 - ["Has been blocked by CORS policy": every variant and its fix](https://sapirsoftware.github.io/blocked-by-cors-policy.html)
 - [Requestly alternatives](https://sapirsoftware.github.io/requestly-alternative.html)
