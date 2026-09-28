@@ -6,8 +6,8 @@
 
 - [Full Page Screenshot](https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh): full-page (scrolling) screenshots of any web page as PNG, JPEG or PDF. Waits for lazy-loaded images, shows sticky headers once, can capture an inner scrolling panel, and can black out emails, card numbers and API keys before the capture is taken. Installs with no permission warning. Free; Pro $3/month, $19/year or $39 once.
 - [HeaderForge](https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd): modify HTTP request and response headers, allow CORS for one site in one click, block or redirect requests, and see whether each rule actually fired. Imports ModHeader exports. A ModHeader alternative after ModHeader was removed from the Chrome Web Store in July 2026. Free; Pro $5/month, $39/year or $59 once.
-- [ContrastForge](https://sapirsoftware.github.io/contrastforge.html): WCAG 2.2 color contrast checker. Scans a whole page, composites transparent layers, tests gradients at their worst stop, suggests the nearest passing color, and exports a white-label audit report (PDF/CSV). In review at the Chrome Web Store.
-- SnippetForge: text expander with unlimited free snippets and canned responses. Local-only.
+- [ContrastForge](https://sapirsoftware.github.io/contrastforge.html): WCAG 2.2 color contrast checker. Scans a whole page, composites transparent layers, tests gradients at their worst stop, suggests the nearest passing color, and exports a white-label audit report (PDF/CSV). Free: single-pair checks and 5 full-page scans a month; Pro $149/year adds unlimited scans and report export. In review at the Chrome Web Store and Firefox Add-ons.
+- SnippetForge: text expander with unlimited free snippets and canned responses, plus 25 smart expansions a month free. Local-only. In review at Firefox Add-ons.
 
 ## Free tools (run in the browser, nothing uploaded)
 
