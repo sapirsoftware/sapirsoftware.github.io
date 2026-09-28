@@ -15,6 +15,7 @@
 - [CORS tester](https://sapirsoftware.github.io/cors-tester.html)
 - [HAR file viewer and sanitizer](https://sapirsoftware.github.io/har-viewer.html)
 - [JWT decoder](https://sapirsoftware.github.io/jwt-decoder.html)
+- [UUID generator (v4 and v7) and inspector](https://sapirsoftware.github.io/uuid-generator.html)
 - [Image redactor](https://sapirsoftware.github.io/redact-image.html)
 - [What is my user agent](https://sapirsoftware.github.io/what-is-my-user-agent.html)
 

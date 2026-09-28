@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UUID generator (v4 and v7), in bulk, in your browser</title>
+  <meta name="description" content="Generate random v4 or time-ordered v7 UUIDs, one or a thousand at a time, and inspect any UUID's version and timestamp. Uses your browser's secure random generator.">
+  <style>
+    :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f4f8; --ok: #0f7a3d; --bad: #b4232a; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #e8e8f0; --muted: #a3a9b3; --line: #2e3140; --accent: #8fb6f5; --tint: #18243a; --bg: #14151c; --code: #1c1e28; --ok: #6fd39a; --bad: #ff9a9a; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 820px; margin: 0 auto; padding: 32px 16px 64px; }
+    nav.top { font-size: 14px; margin-bottom: 20px; } nav.top a { margin-right: 14px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 8px; }
+    .lede { color: var(--muted); }
+    .big { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 20px; background: var(--code); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; overflow-wrap: anywhere; margin-top: 12px; }
+    textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; width: 100%; min-height: 180px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+    input[type=text], input[type=number], select { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+    input[type=number] { width: 96px; }
+    button { font: inherit; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); padding: 8px 14px; cursor: pointer; }
+    button.primary { background: var(--accent); color: #fff; }
+    @media (prefers-color-scheme: dark) { button.primary { color: #14151c; } }
+    label { font-size: 15px; }
+    .row { display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 6px; display: block; overflow-x: auto; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    code { background: var(--code); padding: 1px 5px; border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; overflow-wrap: anywhere; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 12px; padding: 12px; overflow-x: auto; font-size: 14px; }
+    pre code { background: none; padding: 0; }
+    .status { color: var(--muted); font-size: 14px; min-height: 1.4em; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 20px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #14151c; } }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/uuid-generator.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="UUID generator (v4 and v7), in bulk, in your browser">
+  <meta property="og:description" content="Generate random v4 or time-ordered v7 UUIDs, one or a thousand at a time, and inspect any UUID's version and timestamp.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/uuid-generator.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What is the difference between UUID v4 and v7?","acceptedAnswer":{"@type":"Answer","text":"A v4 UUID is 122 random bits. A v7 UUID starts with a 48-bit Unix timestamp in milliseconds followed by random bits, so v7 values sort in the order they were created. That makes v7 a better primary key for databases with B-tree indexes, because new rows go at the end of the index instead of at random places."}},
+  {"@type":"Question","name":"Can two UUIDs ever be the same?","acceptedAnswer":{"@type":"Answer","text":"In theory yes, in practice no, as long as they come from a secure random generator. With 122 random bits you would need to generate about 2.7 quintillion v4 UUIDs to have a 50% chance of a single duplicate."}},
+  {"@type":"Question","name":"Is a UUID the same as a GUID?","acceptedAnswer":{"@type":"Answer","text":"Yes. GUID is Microsoft's name for the same 128-bit identifier. Windows tools often show it in upper case and wrapped in braces, like {3F2504E0-4F89-41D3-9A0C-0305E82C3301}."}},
+  {"@type":"Question","name":"Are UUIDs safe to use as secret tokens?","acceptedAnswer":{"@type":"Answer","text":"A v4 UUID from a cryptographically secure generator is hard to guess, but it is not designed as a secret: it is often logged and shown in URLs. A v7 UUID also reveals when it was created. For session tokens or password-reset links, use a dedicated random token of at least 128 bits."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>UUID generator</h1>
+  <p class="lede">A new random UUID is below. Generate one or a thousand, as v4 (random) or v7 (time-ordered), in the format you need. They're made with your browser's secure random generator, <code>crypto.getRandomValues</code>, and never leave this page.</p>
+
+  <div class="big" id="one" aria-live="polite">&nbsp;</div>
+  <div class="row">
+    <button class="primary" id="again" type="button">New UUID</button>
+    <button id="copyone" type="button">Copy</button>
+    <span class="status" id="st1"></span>
+  </div>
+
+  <h2>Bulk and options</h2>
+  <div class="row">
+    <label>Version <select id="ver"><option value="4">v4 (random)</option><option value="7">v7 (time-ordered)</option></select></label>
+    <label>How many <input type="number" id="count" min="1" max="1000" value="10"></label>
+  </div>
+  <div class="row">
+    <label><input type="checkbox" id="upper"> Upper case</label>
+    <label><input type="checkbox" id="nohyph"> No hyphens</label>
+    <label><input type="checkbox" id="braces"> {Braces} (GUID style)</label>
+    <label><input type="checkbox" id="quotes"> "Quoted", comma-separated</label>
+  </div>
+  <div class="row">
+    <button class="primary" id="bulk" type="button">Generate</button>
+    <button id="copybulk" type="button">Copy all</button>
+    <button id="dl" type="button">Download .txt</button>
+    <span class="status" id="st2"></span>
+  </div>
+  <textarea id="out" spellcheck="false" readonly aria-label="Generated UUIDs"></textarea>
+
+  <h2>Inspect a UUID</h2>
+  <p class="lede">Paste any UUID to see its version, variant and, for v1, v6 and v7, when it was created.</p>
+  <div class="row"><input type="text" id="insp" spellcheck="false" autocomplete="off" placeholder="0192f7a4-9c3e-7d21-8b4a-5e6f7a8b9c0d" style="flex:1;min-width:260px"></div>
+  <table><tbody id="info"><tr><td>—</td><td>Paste a UUID above.</td></tr></tbody></table>
+
+  <h2>v4 or v7?</h2>
+  <table>
+    <tr><th></th><th>v4</th><th>v7</th></tr>
+    <tr><td>Contents</td><td>122 random bits</td><td>48-bit millisecond timestamp, then 74 random bits</td></tr>
+    <tr><td>Sort order</td><td>Random</td><td>Creation order</td></tr>
+    <tr><td>As a database primary key</td><td>Works, but inserts land all over the index, which fragments it and slows big tables</td><td>Inserts go at the end of the index, close to an auto-increment integer</td></tr>
+    <tr><td>Reveals</td><td>Nothing</td><td>When it was created, to the millisecond</td></tr>
+    <tr><td>Standard</td><td>RFC 9562 (was RFC 4122)</td><td>RFC 9562, published May 2024</td></tr>
+  </table>
+  <p>Short version: use <b>v7 for database keys</b> and anything you'll sort, <b>v4 when the ID shouldn't reveal timing</b>. Neither is a password or session token.</p>
+
+  <h2>Generate one in code</h2>
+  <pre><code>// JavaScript (browsers and Node 19+)
+crypto.randomUUID()
+
+# Python
+import uuid; uuid.uuid4()        # v7: uuid.uuid7() in Python 3.14+
+
+-- PostgreSQL
+SELECT gen_random_uuid();        -- v7: uuidv7() in PostgreSQL 18+
+
+# Command line
+uuidgen                          # macOS and most Linux
+[guid]::NewGuid()                # PowerShell</code></pre>
+
+  <h2>What the parts mean</h2>
+  <p>A UUID is 128 bits written as 32 hex digits in five groups: <code>8-4-4-4-12</code>. The first digit of the third group is the <b>version</b> (the <code>4</code> in <code>xxxxxxxx-xxxx-<b>4</b>xxx-yxxx-xxxxxxxxxxxx</code>). The first digit of the fourth group, <code>y</code>, is the <b>variant</b>: 8, 9, a or b for standard UUIDs. The all-zero <code>00000000-0000-0000-0000-000000000000</code> is the "nil" UUID, often used as a placeholder.</p>
+
+  <div class="tool">
+    <b>Debugging an API?</b>
+    <p>HeaderForge, our free Chrome extension, sets request headers such as <code>X-Request-ID</code> or <code>Authorization</code> on the sites you choose, and shows whether each rule fired. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+  <p>More free tools: <a href="jwt-decoder.html">JWT decoder</a> · <a href="cors-tester.html">CORS tester</a> · <a href="har-viewer.html">HAR file viewer</a> · <a href="what-is-my-user-agent.html">what is my user agent</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">Guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 28, 2026</footer>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var hex = function (b) { var s = ""; for (var i = 0; i < b.length; i++) s += (b[i] + 256).toString(16).slice(1); return s; };
+  var fmt36 = function (h) { return h.slice(0, 8) + "-" + h.slice(8, 12) + "-" + h.slice(12, 16) + "-" + h.slice(16, 20) + "-" + h.slice(20); };
+
+  function v4() {
+    var b = crypto.getRandomValues(new Uint8Array(16));
+    b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+    return fmt36(hex(b));
+  }
+  // v7 with a monotonic counter in rand_a, so a bulk batch made in one millisecond still sorts.
+  var lastMs = -1, seq = 0;
+  function v7() {
+    var ms = Date.now();
+    if (ms <= lastMs) { seq++; if (seq > 0xfff) { lastMs++; seq = 0; } ms = lastMs; }
+    else { lastMs = ms; seq = crypto.getRandomValues(new Uint16Array(1))[0] & 0x7ff; }
+    var b = crypto.getRandomValues(new Uint8Array(16));
+    for (var i = 5; i >= 0; i--) { b[i] = ms % 256; ms = Math.floor(ms / 256); }
+    b[6] = 0x70 | (seq >> 8); b[7] = seq & 0xff;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    return fmt36(hex(b));
+  }
+  function style(u) {
+    if ($("nohyph").checked) u = u.replace(/-/g, "");
+    if ($("upper").checked) u = u.toUpperCase();
+    if ($("braces").checked) u = "{" + u + "}";
+    if ($("quotes").checked) u = '"' + u + '"';
+    return u;
+  }
+  function flash(el, msg) { el.textContent = msg; setTimeout(function () { el.textContent = ""; }, 1800); }
+  function copy(text, el) {
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+      .then(function () { flash(el, "Copied"); }, function () { flash(el, "Select and copy with Ctrl+C"); });
+  }
+
+  function one() { $("one").textContent = style($("ver").value === "7" ? v7() : v4()); }
+  function bulk() {
+    var n = Math.max(1, Math.min(1000, parseInt($("count").value, 10) || 1));
+    $("count").value = n;
+    var gen = $("ver").value === "7" ? v7 : v4, list = [];
+    for (var i = 0; i < n; i++) list.push(style(gen()));
+    $("out").value = list.join($("quotes").checked ? ",\n" : "\n");
+    $("st2").textContent = n + " generated";
+  }
+
+  $("again").onclick = one;
+  $("copyone").onclick = function () { copy($("one").textContent, $("st1")); };
+  $("bulk").onclick = bulk;
+  $("copybulk").onclick = function () { if (!$("out").value) bulk(); copy($("out").value, $("st2")); };
+  $("dl").onclick = function () {
+    if (!$("out").value) bulk();
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([$("out").value + "\n"], { type: "text/plain" }));
+    a.download = "uuids.txt"; a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  };
+  ["ver", "upper", "nohyph", "braces", "quotes"].forEach(function (id) { $(id).addEventListener("change", function () { one(); if ($("out").value) bulk(); }); });
+
+  var VNAMES = { 1: "v1 (time + node)", 2: "v2 (DCE security)", 3: "v3 (MD5 name-based)", 4: "v4 (random)", 5: "v5 (SHA-1 name-based)", 6: "v6 (reordered time)", 7: "v7 (Unix time + random)", 8: "v8 (custom)" };
+  function row(k, v) { var tr = document.createElement("tr"), a = document.createElement("td"), b = document.createElement("td"); a.textContent = k; b.textContent = v; tr.appendChild(a); tr.appendChild(b); return tr; }
+  function inspect() {
+    var t = $("info"), raw = $("insp").value.trim();
+    t.textContent = "";
+    if (!raw) { t.appendChild(row("—", "Paste a UUID above.")); return; }
+    var h = raw.replace(/^urn:uuid:/i, "").replace(/[{}"\s-]/g, "").toLowerCase();
+    if (!/^[0-9a-f]{32}$/.test(h)) { t.appendChild(row("Not a UUID", "Expected 32 hex digits, with or without hyphens and braces.")); return; }
+    t.appendChild(row("Canonical", fmt36(h)));
+    if (/^0{32}$/.test(h)) { t.appendChild(row("Type", "Nil UUID (all zeros)")); return; }
+    if (/^f{32}$/.test(h)) { t.appendChild(row("Type", "Max UUID (all ones)")); return; }
+    var ver = parseInt(h[12], 16), vd = parseInt(h[16], 16);
+    var variant = vd < 8 ? "NCS (legacy)" : vd < 12 ? "RFC 9562 (standard)" : vd < 14 ? "Microsoft (legacy)" : "Reserved";
+    t.appendChild(row("Variant", variant));
+    t.appendChild(row("Version", vd >= 8 && vd < 12 ? (VNAMES[ver] || ver + " (unknown)") : "n/a for this variant"));
+    if (vd >= 8 && vd < 12) {
+      var ms = null;
+      if (ver === 7) ms = parseInt(h.slice(0, 12), 16);
+      if (ver === 1 || ver === 6) {
+        var ts = ver === 1 ? h.slice(13, 16) + h.slice(8, 12) + h.slice(0, 8) : h.slice(0, 12) + h.slice(13, 16);
+        ms = Number((BigInt("0x" + ts) - 122192928000000000n) / 10000n);
+      }
+      if (ms !== null) {
+        var d = new Date(ms);
+        t.appendChild(row("Created", isNaN(d) ? "Out of range" : d.toISOString().replace("T", " ").replace("Z", " UTC") + "  (" + d.toLocaleString() + " your time)"));
+      }
+    }
+  }
+  $("insp").addEventListener("input", inspect);
+  one();
+})();
+</script>
+</body>
+</html>
