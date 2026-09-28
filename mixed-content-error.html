@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mixed content error: “loaded over HTTPS, but requested an insecure resource”</title>
+  <meta name="description" content="Why the browser blocks http:// scripts, API calls and images on an https:// page, how to find every one, and the fixes: https links, upgrade-insecure-requests and proxies.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/mixed-content-error.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Mixed content error: “loaded over HTTPS, but requested an insecure resource”">
+  <meta property="og:description" content="Why the browser blocks http:// scripts, API calls and images on an https:// page, how to find every one, and the fixes: https links, upgrade-insecure-requests and proxies.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/mixed-content-error.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Mixed content error: “loaded over HTTPS, but requested an insecure resource”","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a mixed content error?", "acceptedAnswer": {"@type": "Answer", "text": "Your page was loaded over HTTPS but tried to load something (a script, API call, image or iframe) over plain HTTP. Browsers block most of these, because anything sent over HTTP can be read or altered on the network, which would undo the protection HTTPS gives the page."}}, {"@type": "Question", "name": "How do I fix 'was loaded over HTTPS, but requested an insecure resource'?", "acceptedAnswer": {"@type": "Answer", "text": "Change the http:// address to https:// in your code, content or database. If the other server doesn't support HTTPS, host the file yourself or route it through your own HTTPS backend. As a safety net, the response header Content-Security-Policy: upgrade-insecure-requests makes the browser try HTTPS for every http:// address on the page."}}, {"@type": "Question", "name": "Why are mixed content images sometimes still shown?", "acceptedAnswer": {"@type": "Answer", "text": "Images, audio and video are 'optionally blockable' content. Chrome now tries to upgrade them to HTTPS automatically and blocks them if that fails; older browsers showed them with a warning. Scripts, stylesheets, iframes and fetch calls are always blocked."}}, {"@type": "Question", "name": "How do I find all mixed content on my site?", "acceptedAnswer": {"@type": "Answer", "text": "Open DevTools' Console and look for Mixed Content warnings, or the Security panel, which lists insecure origins. Across a whole site, search your templates and database for 'http://', and add Content-Security-Policy-Report-Only: default-src https: to collect reports without breaking anything."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Mixed content: what the error means and how to fix it</h1>
+  <p class="lede">Your site moved to HTTPS, and now something on it is broken: a script doesn't run, an API call fails, an embed is blank. The console says <b>Mixed Content</b>. The page is secure, but it asked for something over plain HTTP, and the browser refused.</p>
+  <pre><code>Mixed Content: The page at 'https://example.com/' was loaded over HTTPS, but requested an
+insecure script 'http://cdn.example.net/widget.js'. This request has been blocked; the
+content must be served over HTTPS.</code></pre>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#why">Why browsers block it</a></li>
+    <li><a href="#what">What gets blocked and what gets upgraded</a></li>
+    <li><a href="#find">Finding every instance</a></li>
+    <li><a href="#fix">The fixes</a></li>
+    <li><a href="#local">On localhost and in development</a></li>
+  </ol></div>
+
+  <h2 id="why">Why browsers block it</h2>
+  <p>Anything fetched over HTTP travels unencrypted, so anyone on the same Wi-Fi or network path can read or change it. A script altered on the way in runs with full access to your HTTPS page, including its cookies and whatever the user types. Loading it would make the padlock a lie, so browsers don't.</p>
+
+  <h2 id="what">What gets blocked and what gets upgraded</h2>
+  <table>
+    <tr><th>Resource</th><th>What Chrome does</th></tr>
+    <tr><td>Scripts, stylesheets, iframes, <code>fetch</code>/XHR, WebSockets (<code>ws://</code>), fonts</td><td><b>Blocked.</b> The console shows the Mixed Content error above.</td></tr>
+    <tr><td>Images, audio, video</td><td><b>Upgraded</b> to https:// automatically; blocked if the server doesn't answer on HTTPS.</td></tr>
+    <tr><td>Form posting to http://</td><td>Warning before submitting.</td></tr>
+    <tr><td>Downloads over http:// from an https:// page</td><td>Blocked or warned, depending on file type and version.</td></tr>
+  </table>
+  <p>In JavaScript, a blocked <code>fetch</code> just rejects, which shows up as <a href="failed-to-fetch.html">TypeError: Failed to fetch</a>. Check the console for the Mixed Content line.</p>
+
+  <h2 id="find">Finding every instance</h2>
+  <ul>
+    <li><b>Console</b>: each blocked or upgraded request gets a line naming the page and the http:// URL.</li>
+    <li><b>DevTools → Security panel</b>: lists insecure origins on the current page.</li>
+    <li><b>Your code and database</b>: search for <code>http://</code>. In WordPress and other CMSs, old posts often hold absolute http:// image links; a search-and-replace plugin or database query fixes them in bulk.</li>
+    <li><b>Site-wide reports</b>: send <code>Content-Security-Policy-Report-Only: default-src https: 'unsafe-inline' 'unsafe-eval'; report-uri /csp-report</code> for a while. Browsers report every non-HTTPS load without blocking anything.</li>
+  </ul>
+
+  <h2 id="fix">The fixes</h2>
+  <ol>
+    <li><b>Change the URL to https://.</b> Almost every CDN, API and embed supports it; the http:// address is just old. Use <code>https://</code> explicitly rather than protocol-relative <code>//</code> URLs.</li>
+    <li><b>If the other server has no HTTPS</b>, host a copy of the file yourself, or call the API from your own server and serve the result over HTTPS.</li>
+    <li><b>Add a safety net</b> header that makes the browser try HTTPS for every http:// address on your pages:
+      <pre><code>Content-Security-Policy: upgrade-insecure-requests</code></pre>
+      Anything that isn't available over HTTPS will still fail, but you'll stop missing the ones that are.</li>
+    <li><b>Make the whole site HTTPS-only</b> with <code>Strict-Transport-Security: max-age=31536000</code> once everything works, so browsers never load your own pages over HTTP again.</li>
+  </ol>
+
+  <h2 id="local">On localhost and in development</h2>
+  <p><code>http://localhost</code> and <code>http://127.0.0.1</code> count as secure, so an http page on localhost calling an http API is fine. The error appears when an <em>https</em> page (a deployed front end, or a dev server with a certificate) calls an <em>http</em> API. Run the API with HTTPS too (<code>mkcert</code> makes local certificates trusted), or put both behind the same dev-server proxy.</p>
+  <p>To test the <code>upgrade-insecure-requests</code> fix on a live site before changing its server, add the header to that site's responses in your own browser:</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Add <code>Content-Security-Policy: upgrade-insecure-requests</code>, or any other response header, to the sites you choose, and see whether the rule fired. Switch it off with one click. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <p class="more"><b>More on this topic:</b> <a href="change-user-agent-chrome.html">How to change your user agent in Chrome (and what it really changes)</a> · <a href="modheader-alternative.html">ModHeader alternative</a> · <a href="requestly-alternative.html">Requestly alternatives for modifying headers (2026)</a> · <a href="401-vs-403.html">401 vs 403: which status code means what, and how to fix each</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

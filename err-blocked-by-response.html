@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>net::ERR_BLOCKED_BY_CLIENT, ERR_BLOCKED_BY_RESPONSE and ERR_BLOCKED_BY_ORB</title>
+  <meta name="description" content="Three Chrome errors that look alike and have different causes: an extension, a server header, or a response that isn&#x27;t what the tag expected. How to tell them apart and fix each.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/err-blocked-by-response.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="net::ERR_BLOCKED_BY_CLIENT, ERR_BLOCKED_BY_RESPONSE and ERR_BLOCKED_BY_ORB">
+  <meta property="og:description" content="Three Chrome errors that look alike and have different causes: an extension, a server header, or a response that isn&#x27;t what the tag expected. How to tell them apart and fix each.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/err-blocked-by-response.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"net::ERR_BLOCKED_BY_CLIENT, ERR_BLOCKED_BY_RESPONSE and ERR_BLOCKED_BY_ORB","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does net::ERR_BLOCKED_BY_CLIENT mean?", "acceptedAnswer": {"@type": "Answer", "text": "Something inside your browser, almost always an ad blocker or privacy extension, cancelled the request. The server never saw it. Try the page in an Incognito window with extensions off; if it works there, pause the blocker for the site or rename the URL (paths containing words like 'ads', 'track' or 'analytics' get caught by filter lists)."}}, {"@type": "Question", "name": "What does net::ERR_BLOCKED_BY_RESPONSE mean?", "acceptedAnswer": {"@type": "Answer", "text": "The server answered, but a header in its response forbids the browser from using it in this context: X-Frame-Options or CSP frame-ancestors for iframes, Cross-Origin-Resource-Policy for images and scripts from another site, or a Cross-Origin-Embedder-Policy mismatch. The suffix after the dot, such as .NotSameOrigin, names which."}}, {"@type": "Question", "name": "What does net::ERR_BLOCKED_BY_ORB mean?", "acceptedAnswer": {"@type": "Answer", "text": "Chrome's Opaque Response Blocking stopped a cross-origin response loaded by a tag like <img>, <script> or <video> because it looked like data, not the media or script the tag expected. Usually the URL returned an HTML error or login page, or JSON, or a file with the wrong Content-Type. Open the URL in a tab to see what it really returns."}}, {"@type": "Question", "name": "How is ERR_BLOCKED_BY_RESPONSE different from a CORS error?", "acceptedAnswer": {"@type": "Answer", "text": "CORS controls whether your JavaScript may read a response it fetched. ERR_BLOCKED_BY_RESPONSE comes from headers that stop a page embedding the resource at all, even in an img or iframe tag where CORS never applies."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>ERR_BLOCKED_BY_CLIENT, _RESPONSE and _ORB: which one you have</h1>
+  <p class="lede">Chrome's Network tab and console show a request as <code>(blocked:…)</code> or <code>net::ERR_BLOCKED_BY_…</code>. The last word matters: it tells you whether your browser, the server or Chrome's own safety check stopped the request.</p>
+  <table>
+    <tr><th>Error</th><th>Who blocked it</th><th>Usual cause</th></tr>
+    <tr><td><a href="#client"><code>ERR_BLOCKED_BY_CLIENT</code></a></td><td>Your browser, before sending</td><td>Ad blocker or privacy extension</td></tr>
+    <tr><td><a href="#response"><code>ERR_BLOCKED_BY_RESPONSE</code></a></td><td>The server's response headers</td><td>Framing rules, Cross-Origin-Resource-Policy, COEP</td></tr>
+    <tr><td><a href="#orb"><code>ERR_BLOCKED_BY_ORB</code></a></td><td>Chrome, after receiving</td><td>The URL returned HTML, JSON or the wrong type</td></tr>
+  </table>
+
+  <h2 id="client">net::ERR_BLOCKED_BY_CLIENT</h2>
+  <p>"Client" means your browser. An extension, nearly always an ad or tracker blocker (uBlock Origin, AdBlock, Privacy Badger, Ghostery, Brave Shields), cancelled the request before it left. The server never saw it.</p>
+  <ul>
+    <li><b>Confirm it:</b> open the page in an Incognito window, where extensions are off by default. If it works there, it's an extension.</li>
+    <li><b>As a visitor:</b> pause the blocker for that site.</li>
+    <li><b>As the developer:</b> filter lists match URLs. Paths and file names with <code>ads</code>, <code>advert</code>, <code>banner</code>, <code>track</code>, <code>analytics</code>, <code>pixel</code> or <code>sponsor</code> get blocked even when they're your own features. Rename <code>/api/ads-settings</code> to something neutral. Remember a slice of your real users run blockers too, so the page shouldn't break when an analytics script is blocked.</li>
+  </ul>
+
+  <h2 id="response">net::ERR_BLOCKED_BY_RESPONSE</h2>
+  <p>The server responded, but its headers say this page may not use the response this way. The part after the dot tells you which rule:</p>
+  <table>
+    <tr><th>You see</th><th>Header responsible</th><th>Fix (on the server that sent it)</th></tr>
+    <tr><td>In an iframe, often with "refused to connect"</td><td><code>X-Frame-Options</code> or CSP <code>frame-ancestors</code></td><td>Allow your site in <code>frame-ancestors</code>. <a href="x-frame-options.html">Details.</a></td></tr>
+    <tr><td><code>.NotSameOrigin</code> / <code>.NotSameSite</code></td><td><code>Cross-Origin-Resource-Policy: same-origin</code> or <code>same-site</code></td><td>Send <code>Cross-Origin-Resource-Policy: cross-origin</code> on files meant to be embedded elsewhere</td></tr>
+    <tr><td><code>.NotSameOriginAfterDefaultedToSameOriginByCoep</code></td><td><em>Your</em> page sends <code>Cross-Origin-Embedder-Policy: require-corp</code></td><td>The other server must send CORP <code>cross-origin</code>, or load it with <code>crossorigin</code> plus CORS, or use <code>COEP: credentialless</code></td></tr>
+  </table>
+  <p>If the file isn't yours, you can't fix it for your visitors; copy it to your own server if its licence allows. Pages using COEP usually do so for <code>SharedArrayBuffer</code>; if you don't need that, dropping COEP makes the error disappear.</p>
+
+  <h2 id="orb">net::ERR_BLOCKED_BY_ORB</h2>
+  <p>Opaque Response Blocking is Chrome's protection against pages using <code>&lt;img&gt;</code>, <code>&lt;script&gt;</code> or <code>&lt;video&gt;</code> tags to pull private data from other sites. When a cross-origin response loaded that way doesn't look like the image, script or media the tag expects, Chrome throws it away. In practice, the URL is wrong:</p>
+  <ul>
+    <li>It returns an <b>HTML page</b>: a 404 page, a login page, a "hotlinking not allowed" page, or a cookie-consent wall.</li>
+    <li>It returns <b>JSON</b>, because it's an API URL and not the file itself.</li>
+    <li>It returns the right file with the <b>wrong Content-Type</b> plus <code>X-Content-Type-Options: nosniff</code>, such as a script served as <code>text/plain</code>.</li>
+  </ul>
+  <p><b>Check:</b> open the URL in its own tab and look at what comes back and its <code>Content-Type</code> in the Network tab. Fix the URL, or fix the server's Content-Type. If you're fetching data, use <code>fetch()</code> with CORS instead of a tag.</p>
+
+  <h2>Testing header fixes before the server changes</h2>
+  <p>For <code>ERR_BLOCKED_BY_RESPONSE</code>, you can check that a header change fixes it by changing the header in your own browser first, then asking whoever runs the server for the real fix.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Remove <code>X-Frame-Options</code> or <code>Cross-Origin-Resource-Policy</code> from a site's responses, or set CORP to <code>cross-origin</code>, only on the sites you choose, and see whether each rule fired. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <p class="more"><b>More on this topic:</b> <a href="cors-tester.html">CORS tester</a> · <a href="cors-error.html">CORS error: what it means and how to fix it (including localhost)</a> · <a href="blocked-by-cors-policy.html">“Has been blocked by CORS policy”: every variant and its fix</a> · <a href="what-is-cors.html">What is CORS? Cross-Origin Resource Sharing, in plain words</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
