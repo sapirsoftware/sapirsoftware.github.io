@@ -54,6 +54,7 @@
 - [Mixed content errors](https://sapirsoftware.github.io/mixed-content-error.html)
 - [iframe refused to connect / X-Frame-Options](https://sapirsoftware.github.io/x-frame-options.html)
 - [What is a HAR file](https://sapirsoftware.github.io/what-is-a-har-file.html)
+- [JWT errors and fixes](https://sapirsoftware.github.io/jwt-errors.html)
 - [401 vs 403](https://sapirsoftware.github.io/401-vs-403.html)
 - [Hard refresh in Chrome](https://sapirsoftware.github.io/hard-refresh-chrome.html)
 - [How to change your user agent in Chrome](https://sapirsoftware.github.io/change-user-agent-chrome.html)
