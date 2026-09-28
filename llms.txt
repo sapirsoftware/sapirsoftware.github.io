@@ -12,6 +12,7 @@
 ## Free tools (run in the browser, nothing uploaded)
 
 - [Color contrast checker](https://sapirsoftware.github.io/contrast-checker.html)
+- [Accessible color palette generator](https://sapirsoftware.github.io/accessible-color-palette.html)
 - [Color blindness simulator](https://sapirsoftware.github.io/color-blindness-simulator.html)
 - [CORS tester](https://sapirsoftware.github.io/cors-tester.html)
 - [HAR file viewer and sanitizer](https://sapirsoftware.github.io/har-viewer.html)
