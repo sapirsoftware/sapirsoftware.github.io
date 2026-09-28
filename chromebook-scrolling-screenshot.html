@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to take a scrolling screenshot on a Chromebook</title>
+  <meta name="description" content="Chromebook&#x27;s Screen capture tool can&#x27;t scroll. Here&#x27;s how to capture a whole web page anyway: the hidden built-in Chrome command, a one-click extension, and saving as PDF.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/chromebook-scrolling-screenshot.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="How to take a scrolling screenshot on a Chromebook">
+  <meta property="og:description" content="Chromebook&#x27;s Screen capture tool can&#x27;t scroll. Here&#x27;s how to capture a whole web page anyway: the hidden built-in Chrome command, a one-click extension, and saving as PDF.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/chromebook-scrolling-screenshot.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to take a scrolling screenshot on a Chromebook","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can a Chromebook take a scrolling screenshot?", "acceptedAnswer": {"@type": "Answer", "text": "Not with its own Screen capture tool, which only captures what is on screen. For a web page, Chrome's developer tools can capture the full page (Ctrl+Shift+I, then Ctrl+Shift+P, type 'full size', choose Capture full size screenshot), or a full-page screenshot extension can do it in one click."}}, {"@type": "Question", "name": "How do I take a screenshot on a Chromebook?", "acceptedAnswer": {"@type": "Answer", "text": "Press Ctrl + Show windows for the whole screen, or Ctrl + Shift + Show windows to open the Screen capture toolbar, where you can pick a region or a window. On keyboards with a Screenshot key, press that. Screenshots go to the Downloads folder and the clipboard."}}, {"@type": "Question", "name": "Where do Chromebook screenshots go?", "acceptedAnswer": {"@type": "Answer", "text": "To the Downloads folder in the Files app by default, and they are also copied to the clipboard. You can change the folder in the Screen capture toolbar's settings."}}, {"@type": "Question", "name": "Do Chrome extensions work on a Chromebook?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Chrome Web Store extensions run in Chrome on ChromeOS the same way as on Windows or Mac, unless a school or work administrator has blocked them."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>How to take a scrolling screenshot on a Chromebook</h1>
+  <p class="lede">The Chromebook's Screen capture tool is good, but it only captures what's on the screen: it has no scrolling mode. If what you need is a whole web page, top to bottom, there are three ways, and one of them is already built in.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#normal">First, the normal screenshot shortcuts</a></li>
+    <li><a href="#devtools">Built in: Chrome's full-size capture</a></li>
+    <li><a href="#extension">One click: a full-page screenshot extension</a></li>
+    <li><a href="#pdf">As a PDF: print to PDF</a></li>
+    <li><a href="#school">On a school or work Chromebook</a></li>
+  </ol></div>
+
+  <h2 id="normal">First, the normal screenshot shortcuts</h2>
+  <table>
+    <tr><th>What</th><th>Keys</th></tr>
+    <tr><td>Whole screen</td><td><kbd>Ctrl</kbd> + <kbd>Show windows</kbd> (the key with a rectangle and two lines), or the <b>Screenshot</b> key if yours has one</td></tr>
+    <tr><td>Part of the screen, a window, or a recording</td><td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Show windows</kbd> opens the Screen capture toolbar</td></tr>
+    <tr><td>Tablet mode</td><td>Press <b>Power</b> + <b>Volume down</b></td></tr>
+  </table>
+  <p>Screenshots land in <b>Downloads</b> and on the clipboard. None of these scroll.</p>
+
+  <h2 id="devtools">Built in: Chrome's full-size capture</h2>
+  <p>Chrome has a hidden command that captures the entire page. It works on a Chromebook exactly as on any computer:</p>
+  <ol>
+    <li>Open the page and press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> to open developer tools. (There's no F12 key on most Chromebooks.)</li>
+    <li>Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> to open the command menu.</li>
+    <li>Type <code>full size</code> and choose <b>Capture full size screenshot</b>.</li>
+  </ol>
+  <p>A PNG of the whole page goes to Downloads. It has three common problems: images further down may be blank because they hadn't loaded yet, sticky headers can appear more than once, and pages that scroll <em>inside</em> a panel (Gmail, Slack, dashboards) come out cut off. On a school Chromebook, developer tools are often disabled.</p>
+
+  <h2 id="extension">One click: a full-page screenshot extension</h2>
+  <p>Chrome extensions run on Chromebooks, so a screenshot extension gives you a button that scrolls and stitches for you.</p>
+  <div class="tool">
+    <b>Full Page Screenshot</b> (free)
+    <p>Click the icon and it captures the whole page as PNG, JPEG or PDF. It scrolls slowly enough for images to load, shows sticky headers once, and can capture a panel that scrolls on its own, like a Gmail thread or a dashboard table. It can also black out email addresses and phone numbers before the picture is made, which is handy for anything you're sharing with a class. No account, nothing uploaded, and it installs with no permission warning.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot</a>
+  </div>
+
+  <h2 id="pdf">As a PDF: print to PDF</h2>
+  <p>If you just need the content, not a picture: press <kbd>Ctrl</kbd> + <kbd>P</kbd>, set <b>Destination</b> to <b>Save as PDF</b>, and save. The layout may change for print, and some sites hide parts of the page when printing. <a href="save-webpage-as-pdf.html">More on saving pages as PDF.</a></p>
+
+  <h2 id="school">On a school or work Chromebook</h2>
+  <p>Administrators can block developer tools, extensions, or both. If the Chrome Web Store says an extension is blocked by your administrator, only they can allow it; ask your teacher or IT team. Print to PDF usually still works, and so do the normal screenshot keys: take several and scroll between them.</p>
+
+  <p class="more"><b>More on this topic:</b> <a href="save-webpage-as-image.html">How to save a web page as an image (PNG or JPG), the whole page</a> · <a href="screenshot-redact.html">Redact a screenshot safely</a> · <a href="screenshot-extension-comparison.html">Chrome screenshot extensions compared, honestly (2026)</a> · <a href="gofullpage-alternative.html">GoFullPage alternatives: when to use something else (2026)</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

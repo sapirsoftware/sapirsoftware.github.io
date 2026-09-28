@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>“Refused to load … violates the following Content Security Policy directive”: fixes</title>
+  <meta name="description" content="What each Content Security Policy error means, from blocked scripts and inline code to eval, styles, fonts, fetch and frames, where the policy comes from, and the right fix for each.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/content-security-policy-error.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="“Refused to load … violates the following Content Security Policy directive”: fixes">
+  <meta property="og:description" content="What each Content Security Policy error means, from blocked scripts and inline code to eval, styles, fonts, fetch and frames, where the policy comes from, and the right fix for each.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/content-security-policy-error.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"“Refused to load … violates the following Content Security Policy directive”: fixes","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does 'Refused to load the script because it violates the following Content Security Policy directive' mean?", "acceptedAnswer": {"@type": "Answer", "text": "The page's Content-Security-Policy lists where scripts may come from, and the script you tried to load is not on that list. The browser blocked it on purpose. Add the script's origin to script-src, or serve the script from an origin already allowed."}}, {"@type": "Question", "name": "How do I fix 'Refused to execute inline script because it violates the following Content Security Policy directive'?", "acceptedAnswer": {"@type": "Answer", "text": "Move the inline code into a .js file served from an allowed origin, or allow that one script with a nonce ('nonce-random value' in script-src and nonce= on the script tag) or its hash ('sha256-...'), which the error message prints for you. Avoid 'unsafe-inline': it switches off most of what CSP protects against."}}, {"@type": "Question", "name": "How do I find where the Content Security Policy is set?", "acceptedAnswer": {"@type": "Answer", "text": "In DevTools' Network tab, click the page's own document request and look for a Content-Security-Policy response header. Also search the page source for a <meta http-equiv=\"Content-Security-Policy\"> tag. It can come from your server, a framework, a CDN or a hosting provider's security settings."}}, {"@type": "Question", "name": "Can I disable Content Security Policy in Chrome for testing?", "acceptedAnswer": {"@type": "Answer", "text": "Chrome has no setting for it. A header-editing extension can remove the Content-Security-Policy response header from the sites you choose in your own browser, which is enough to test whether CSP is the problem. It cannot remove a policy set with a <meta> tag inside the page."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Content Security Policy errors, and how to fix each one</h1>
+  <p class="lede">Content Security Policy (CSP) is a list, sent by the site, of where scripts, styles, images and connections are allowed to come from. When something isn't on the list, the browser blocks it and logs an error naming the rule it broke. That rule, the <b>directive</b>, tells you exactly what to change.</p>
+  <pre><code>Refused to load the script 'https://cdn.example.com/widget.js' because it violates the
+following Content Security Policy directive: "script-src 'self'".</code></pre>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#find">First: find where the policy comes from</a></li>
+    <li><a href="#script">Refused to load the script</a></li>
+    <li><a href="#inline">Refused to execute inline script / event handler</a></li>
+    <li><a href="#eval">Refused to evaluate a string as JavaScript ('unsafe-eval')</a></li>
+    <li><a href="#style">Refused to apply inline style / load the stylesheet</a></li>
+    <li><a href="#connect">Refused to connect to</a></li>
+    <li><a href="#img">Refused to load the image / font</a></li>
+    <li><a href="#frame">Refused to frame</a></li>
+    <li><a href="#test">Testing: turning CSP off in your own browser</a></li>
+  </ol></div>
+
+  <h2 id="find">First: find where the policy comes from</h2>
+  <p>You can't fix a policy until you know who sends it. Check both places:</p>
+  <ul>
+    <li><b>A response header.</b> DevTools → <b>Network</b> → click the page's own document (the first row) → <b>Response Headers</b> → <code>Content-Security-Policy</code>. It may be set by your server code, a framework (Helmet for Express, Next.js config, Django settings), your web server, a CDN, or your host's security settings.</li>
+    <li><b>A meta tag</b> in the HTML: <code>&lt;meta http-equiv="Content-Security-Policy" content="..."&gt;</code>.</li>
+  </ul>
+  <p>If both exist, the browser enforces <b>both</b>: something must pass each one. A <code>Content-Security-Policy-Report-Only</code> header never blocks anything; it only reports, and its console messages say "[Report Only]".</p>
+
+  <h2 id="script">Refused to load the script &hellip; "script-src &hellip;"</h2>
+  <p>The script's origin isn't allowed. Add it to <code>script-src</code>:</p>
+  <pre><code>Content-Security-Policy: script-src 'self' https://cdn.example.com</code></pre>
+  <p>If there's no <code>script-src</code>, the browser uses <code>default-src</code>, and the error will name that instead. Add the origin to <code>script-src</code> (creating it) rather than loosening <code>default-src</code> for everything.</p>
+  <p>Tag managers and widgets often load more scripts from other domains. Each shows up as its own error; add the ones you trust, one at a time.</p>
+
+  <h2 id="inline">Refused to execute inline script / inline event handler</h2>
+  <pre><code>Refused to execute inline script because it violates the following Content Security Policy
+directive: "script-src 'self'". Either the 'unsafe-inline' keyword, a hash
+('sha256-B2yPHKaXnvFWtRChIbabYmUBFZdVfKKXHbWtWidDVF8='), or a nonce ('nonce-...') is required
+to enable inline execution.</code></pre>
+  <p>Code inside <code>&lt;script&gt;</code> tags and <code>onclick=</code> attributes is blocked. In order of preference:</p>
+  <ol>
+    <li><b>Move it to a file.</b> <code>&lt;script src=&quot;/app.js&quot;&gt;</code>, and swap <code>onclick="..."</code> for <code>addEventListener</code>.</li>
+    <li><b>A nonce</b>, a random value generated fresh on every page load, in both places: <code>script-src 'nonce-r4nd0m'</code> and <code>&lt;script nonce="r4nd0m"&gt;</code>.</li>
+    <li><b>A hash</b> of that exact script. Chrome prints it in the error; copy it into <code>script-src</code>. Any edit to the script changes the hash.</li>
+  </ol>
+  <p><code>'unsafe-inline'</code> makes the error go away by switching off CSP's main protection against injected scripts. Inline <em>event handlers</em> can't use nonces at all, so they have to move to <code>addEventListener</code>.</p>
+
+  <h2 id="eval">Refused to evaluate a string as JavaScript because 'unsafe-eval' is not an allowed source</h2>
+  <p>Something called <code>eval()</code>, <code>new Function()</code>, or <code>setTimeout</code> with a string. Usually it's a library: older template engines, some chart and validation libraries, or a development build with eval-based source maps. Switch to a production build or a CSP-compatible version before adding <code>'unsafe-eval'</code>.</p>
+
+  <h2 id="style">Refused to apply inline style / load the stylesheet</h2>
+  <p>The same rules for CSS, under <code>style-src</code>. Inline <code>style=</code> attributes and <code>&lt;style&gt;</code> blocks need a nonce, a hash or <code>'unsafe-inline'</code>. Many CSS-in-JS libraries inject styles at runtime and support a nonce; check their docs. Google Fonts needs <code>style-src https://fonts.googleapis.com</code> and <code>font-src https://fonts.gstatic.com</code>.</p>
+
+  <h2 id="connect">Refused to connect to &hellip; "connect-src &hellip;"</h2>
+  <p><code>fetch</code>, XHR, WebSocket and EventSource calls are governed by <code>connect-src</code>. Add your API's origin, and <code>wss://</code> origins for WebSockets:</p>
+  <pre><code>connect-src 'self' https://api.example.com wss://live.example.com</code></pre>
+  <p>This is different from a CORS error. CSP is <em>your</em> page refusing to send the request; CORS is the <em>other</em> server not permitting your page to read the answer. <a href="blocked-by-cors-policy.html">CORS error messages are here.</a></p>
+
+  <h2 id="img">Refused to load the image / font</h2>
+  <p>Add the origin to <code>img-src</code> or <code>font-src</code>. Images from <code>data:</code> URLs need <code>img-src data:</code>, and blob images need <code>blob:</code>.</p>
+
+  <h2 id="frame">Refused to frame &hellip;</h2>
+  <p>Two different errors with similar wording:</p>
+  <ul>
+    <li><b>"because it violates the following Content Security Policy directive: frame-src"</b>: <em>your</em> policy doesn't allow that site in an iframe. Add it to <code>frame-src</code>.</li>
+    <li><b>"because an ancestor violates &hellip; frame-ancestors"</b>: the <em>other</em> site forbids being framed. Only its owner can change that. See <a href="x-frame-options.html">iframe "refused to connect"</a>.</li>
+  </ul>
+
+  <h2 id="test">Testing: turning CSP off in your own browser</h2>
+  <p>To prove CSP is the cause, or to try a third-party widget on a site you don't control, remove the policy in your own browser for that site only. Chrome has no setting for it, but a header extension can strip the <code>Content-Security-Policy</code> response header. It can't remove a <code>&lt;meta&gt;</code> policy, since that lives inside the page.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Has a ready-made "Remove Content-Security-Policy" rule you can limit to one site, switch off with one click, and check that it fired. Use it to test, then fix the real policy. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+  <p>Related: <a href="http-headers-list.html">HTTP headers list</a> · <a href="x-frame-options.html">X-Frame-Options</a> · <a href="cors-error.html">CORS errors</a>.</p>
+
+  <p class="more"><b>More on this topic:</b> <a href="change-user-agent-chrome.html">How to change your user agent in Chrome (and what it really changes)</a> · <a href="modheader-alternative.html">ModHeader alternative</a> · <a href="requestly-alternative.html">Requestly alternatives for modifying headers (2026)</a> · <a href="401-vs-403.html">401 vs 403: which status code means what, and how to fix each</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

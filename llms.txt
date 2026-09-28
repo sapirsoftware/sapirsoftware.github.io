@@ -17,6 +17,7 @@
 - [HAR file viewer and sanitizer](https://sapirsoftware.github.io/har-viewer.html)
 - [JWT decoder](https://sapirsoftware.github.io/jwt-decoder.html)
 - [UUID generator (v4 and v7) and inspector](https://sapirsoftware.github.io/uuid-generator.html)
+- [PDF redactor (removes the text, not just covers it)](https://sapirsoftware.github.io/redact-pdf.html)
 - [Image redactor](https://sapirsoftware.github.io/redact-image.html)
 - [What is my user agent](https://sapirsoftware.github.io/what-is-my-user-agent.html)
 
@@ -24,6 +25,7 @@
 
 - [How to screenshot an entire webpage in Chrome](https://sapirsoftware.github.io/screenshot-whole-page.html)
 - [Scrolling screenshots on Windows, Mac, iPhone and Android](https://sapirsoftware.github.io/scrolling-screenshot.html)
+- [Scrolling screenshot on a Chromebook](https://sapirsoftware.github.io/chromebook-scrolling-screenshot.html)
 - [How to save a web page as an image](https://sapirsoftware.github.io/save-webpage-as-image.html)
 - [How to save a webpage as a PDF](https://sapirsoftware.github.io/save-webpage-as-pdf.html)
 - [Redact a screenshot safely](https://sapirsoftware.github.io/screenshot-redact.html)
@@ -44,6 +46,7 @@
 - [HTTP headers list](https://sapirsoftware.github.io/http-headers-list.html)
 - [What is CORS](https://sapirsoftware.github.io/what-is-cors.html)
 - [TypeError: Failed to fetch](https://sapirsoftware.github.io/failed-to-fetch.html)
+- [Content Security Policy errors and fixes](https://sapirsoftware.github.io/content-security-policy-error.html)
 - [iframe refused to connect / X-Frame-Options](https://sapirsoftware.github.io/x-frame-options.html)
 - [What is a HAR file](https://sapirsoftware.github.io/what-is-a-har-file.html)
 - [401 vs 403](https://sapirsoftware.github.io/401-vs-403.html)

@@ -52,7 +52,7 @@
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Image redactor", "url": "https://sapirsoftware.github.io/redact-image.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "browserRequirements": "Requires JavaScript", "description": "Black out parts of an image with the pixels replaced, in the browser.", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "Sapir Software", "url": "https://sapirsoftware.github.io/"}}</script>
 </head>
 <body>
-  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="har-viewer.html">HAR viewer</a><a href="screenshot-redact.html">Redacting screenshots</a></nav>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="har-viewer.html">HAR viewer</a><a href="screenshot-redact.html">Redacting screenshots</a><a href="redact-pdf.html">Redact a PDF</a></nav>
   <h1>Redact an image</h1>
   <p class="lede">Drag a box over anything private. The pixels underneath are <b>replaced</b>, not covered by a layer, and the file you save is re-encoded from what you can see &mdash; so there is no original underneath and no metadata carried along. The picture never leaves this page.</p>
 
@@ -67,6 +67,8 @@
   <div class="tool" id="stage" hidden style="padding:10px">
     <canvas id="canvas" style="max-width:100%;cursor:crosshair;border-radius:8px;display:block"></canvas>
   </div>
+
+  <p>Redacting a PDF instead? Use the <a href="redact-pdf.html">PDF redactor</a>: it removes the text under the boxes, which drawing a shape in a PDF editor doesn't.</p>
 
   <h2>Why a solid box, and not a blur</h2>
   <ul>

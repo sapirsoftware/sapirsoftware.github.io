@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redact a PDF free, in your browser — the text underneath is really removed</title>
+  <meta name="description" content="Black out text in a PDF and save a copy where the hidden words are gone, not just covered. Finds emails, phone and card numbers for you. Nothing is uploaded.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; --ok: #0f7a3d; --bad: #b4232a; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; --ok: #6fd39a; --bad: #ff9a9a; } }
+    * { box-sizing: border-box; }
+    body { font: 16px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 900px; margin: 0 auto; padding: 32px 16px 64px; }
+    nav.top { font-size: 14px; margin-bottom: 20px; } nav.top a { margin-right: 14px; }
+    h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; }
+    h2 { font-size: 21px; margin: 32px 0 8px; }
+    .lede { color: var(--muted); }
+    .row { display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+    button { font: inherit; font-weight: 600; border-radius: 10px; border: 1.5px solid var(--accent); background: transparent; color: var(--accent); padding: 8px 14px; cursor: pointer; }
+    button.primary { background: var(--accent); color: #fff; }
+    @media (prefers-color-scheme: dark) { button.primary { color: #141219; } }
+    button:disabled { opacity: .45; cursor: default; }
+    input[type=text] { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+    label { font-size: 15px; }
+    .banner { border-radius: 12px; padding: 12px 16px; margin-top: 14px; font-size: 15px; border: 1px solid var(--line); }
+    .banner.ok { border-color: var(--ok); } .banner.bad { border-color: var(--bad); }
+    .panel { border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; margin-top: 14px; }
+    .pages { margin-top: 14px; }
+    .page { margin: 0 0 18px; }
+    .page .num { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .page canvas { max-width: 100%; display: block; cursor: crosshair; border: 1px solid var(--line); border-radius: 6px; touch-action: none; background: #fff; }
+    code { background: var(--code); padding: 1px 5px; border-radius: 5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 20px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/redact-pdf.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Redact a PDF free, in your browser">
+  <meta property="og:description" content="Black out text in a PDF and save a copy where the hidden words are really gone. Finds emails, phone and card numbers. Nothing is uploaded.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/redact-pdf.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"How do I redact a PDF for free?","acceptedAnswer":{"@type":"Answer","text":"Open the PDF in a redaction tool that removes the underlying text, not one that only draws shapes on top. This page does it in your browser: drag boxes over what you want hidden or let it find emails, phone and card numbers, then save. Each page is rebuilt as an image with the boxes burned in, so the hidden text no longer exists in the file."}},
+  {"@type":"Question","name":"Why is drawing a black box on a PDF not a real redaction?","acceptedAnswer":{"@type":"Answer","text":"A rectangle drawn in most PDF editors is a separate object on top of the page. The text underneath is still in the file, so anyone can select it, copy it, or delete the rectangle. Real redaction removes the content itself."}},
+  {"@type":"Question","name":"Is my PDF uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The PDF is read and rebuilt by JavaScript in this page. The only network requests are for the open-source libraries it uses: jsPDF, and pdf.js with its worker file. Nothing is requested once your file is chosen. You can watch the Network tab to confirm."}},
+  {"@type":"Question","name":"Can I still search or copy text in the redacted PDF?","acceptedAnswer":{"@type":"Answer","text":"No. To guarantee nothing hidden survives, every page is saved as an image, so the text is no longer selectable. If you need a searchable result, run OCR on the redacted copy afterwards; it can only find what is still visible."}}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDF redactor", "url": "https://sapirsoftware.github.io/redact-pdf.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "browserRequirements": "Requires JavaScript", "description": "Redact a PDF in the browser; pages are rebuilt as images so hidden text is removed.", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "Sapir Software", "url": "https://sapirsoftware.github.io/"}}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="redact-image.html">Redact an image</a><a href="screenshot-redact.html">Redacting screenshots</a></nav>
+  <h1>Redact a PDF</h1>
+  <p class="lede">Drag a box over anything private, or let the page find emails, phone numbers and card numbers for you. When you save, every page is rebuilt from what you see, so the words under the boxes are <b>gone from the file</b>, not hidden behind a shape. The PDF never leaves this page.</p>
+
+  <div class="row">
+    <input type="file" id="file" accept="application/pdf,.pdf">
+    <button id="save" class="primary" type="button" disabled>Save the redacted PDF</button>
+    <button id="undo" type="button" disabled>Undo last box</button>
+    <button id="clear" type="button" disabled>Remove all boxes</button>
+  </div>
+
+  <div class="panel" id="find" hidden>
+    <b>Find and black out</b>
+    <div class="row">
+      <label><input type="checkbox" id="p-email" checked> Email addresses</label>
+      <label><input type="checkbox" id="p-phone" checked> Phone numbers</label>
+      <label><input type="checkbox" id="p-card" checked> Card numbers</label>
+      <label><input type="checkbox" id="p-iban"> IBANs</label>
+    </div>
+    <div class="row">
+      <input type="text" id="terms" placeholder="Also these words, comma-separated: Jane Doe, Acme Ltd" style="flex:1;min-width:240px" spellcheck="false" autocomplete="off">
+      <button id="run" type="button">Find</button>
+    </div>
+    <div class="row" style="font-size:14px;color:var(--muted)">Automatic matches are a starting point. Scroll through every page before you save: scanned pages have no text to search, and text split oddly in the file can be missed.</div>
+  </div>
+
+  <div id="status" class="banner" hidden></div>
+  <div class="pages" id="pages"></div>
+
+  <h2>Why a box drawn in a PDF editor isn't a redaction</h2>
+  <p>Most PDF editors, and every "add a rectangle" tool, put the black box on a layer above the page. The text is still underneath. Anyone can select it and copy it, search for it, or just delete the box. Court filings and government reports have leaked this way more than once.</p>
+  <p>Real redaction removes the content. Paid tools like Adobe Acrobat Pro do it by editing the text inside the file. This page does it the blunt, reliable way: it draws each page as an image, burns the boxes in, and writes a new PDF from those images. Nothing from the original file is copied across: no text, no hidden layers, no form data, no attachments, no metadata.</p>
+
+  <h2>What you trade for that</h2>
+  <table>
+    <tr><th></th><th>This page</th><th>Acrobat Pro "Redact"</th></tr>
+    <tr><td>Hidden text removed</td><td>Yes, along with all other text</td><td>Yes</td></tr>
+    <tr><td>Rest of the text still selectable</td><td>No, pages become images</td><td>Yes</td></tr>
+    <tr><td>Metadata, layers, attachments removed</td><td>Always</td><td>With "Sanitize document"</td></tr>
+    <tr><td>File size</td><td>Usually larger</td><td>About the same</td></tr>
+    <tr><td>Cost</td><td>Free, nothing installed</td><td>Paid subscription</td></tr>
+  </table>
+  <p>Pages are drawn at about 144 dots per inch, which reads clearly on screen and prints well for ordinary documents.</p>
+
+  <h2>The better version: never create the exposure</h2>
+  <p>If the PDF comes from a web page, such as an invoice, a support ticket or a dashboard, the safer order is to black the details out <i>before</i> the PDF exists.</p>
+  <div class="tool">
+    <b>Full Page Screenshot</b> (Chrome, free)
+    <p>Saves any web page as a PDF or image, and finds emails, card numbers, API keys and IBANs on it and blacks them out before the file is written. In PDFs it also drops any link that sits under a black box, so the address can't give away what the box hides. Nothing is uploaded.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot for Chrome</a>
+  </div>
+  <p>Related: <a href="redact-image.html">redact an image</a> · <a href="screenshot-redact.html">redact a screenshot safely</a> · <a href="save-webpage-as-pdf.html">save a webpage as a PDF</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> &middot; <a href="guides.html">Guides</a> &middot; Nothing on this page is uploaded &middot; Uses <a href="https://mozilla.github.io/pdf.js/">pdf.js</a> and <a href="https://github.com/parallax/jsPDF">jsPDF</a> &middot; Last updated September 28, 2026</footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const SCALE = 2;          // 144 dpi: PDF points are 1/72 inch
+    const PAD = 2;            // extra pixels around every found match
+    let pages = [];           // { base, view, ctx, wPt, hPt, boxes: [], text: [] }
+    let fileName = "document.pdf";
+    let history = [];         // [pageIndex, box] in the order boxes were added, for undo
+
+    function say(text, kind) {
+      const box = $("status");
+      box.hidden = !text;
+      box.className = "banner" + (kind ? " " + kind : "");
+      box.textContent = text;
+    }
+
+    function draw(p, preview) {
+      p.ctx.drawImage(p.base, 0, 0);
+      p.ctx.fillStyle = "#000";
+      for (const b of p.boxes) p.ctx.fillRect(b.x, b.y, b.w, b.h);
+      if (preview) { p.ctx.fillStyle = "rgba(0,0,0,.5)"; p.ctx.fillRect(preview.x, preview.y, preview.w, preview.h); }
+    }
+    function total() { return pages.reduce((n, p) => n + p.boxes.length, 0); }
+    function refresh() {
+      const n = total();
+      $("undo").disabled = history.length === 0;
+      $("clear").disabled = n === 0;
+      $("save").disabled = pages.length === 0;
+    }
+    function addBox(i, b) { pages[i].boxes.push(b); history.push([i, b]); }
+
+    const rect = (a, b) => ({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), w: Math.abs(a.x - b.x), h: Math.abs(a.y - b.y) });
+    function at(canvas, ev) {
+      const r = canvas.getBoundingClientRect();
+      return { x: (ev.clientX - r.left) * (canvas.width / r.width), y: (ev.clientY - r.top) * (canvas.height / r.height) };
+    }
+
+    function wire(i) {
+      const p = pages[i], c = p.view;
+      let start = null;
+      c.addEventListener("pointerdown", (ev) => { c.setPointerCapture(ev.pointerId); start = at(c, ev); });
+      c.addEventListener("pointermove", (ev) => { if (start) draw(p, rect(start, at(c, ev))); });
+      c.addEventListener("pointerup", (ev) => {
+        if (!start) return;
+        const end = at(c, ev), b = rect(start, end);
+        start = null;
+        if (b.w < 4 || b.h < 4) {
+          // A click, not a drag: clicking inside a box removes it.
+          const k = p.boxes.findIndex((q) => end.x >= q.x && end.x <= q.x + q.w && end.y >= q.y && end.y <= q.y + q.h);
+          if (k >= 0) { const gone = p.boxes.splice(k, 1)[0]; history = history.filter((h) => h[1] !== gone); say("Box removed.", ""); }
+          draw(p); refresh(); return;
+        }
+        addBox(i, b); draw(p); refresh();
+        say(total() + (total() === 1 ? " area" : " areas") + " marked. Click a box to remove it.", "ok");
+      });
+    }
+
+    async function load(file) {
+      if (!window.pdfjsLib || !window.jspdf) { say("The PDF libraries didn't load. Check your connection or any script blocker, then reload.", "bad"); return; }
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      fileName = file.name.replace(/\.pdf$/i, "") || "document";
+      pages = []; history = []; $("pages").textContent = ""; refresh();
+      let doc;
+      try {
+        doc = await pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false }).promise;
+      } catch (e) {
+        say(e && e.name === "PasswordException" ? "This PDF is password-protected. Open it in your PDF reader, print it to a new PDF without the password, and load that."
+                                                : "That file couldn't be read as a PDF.", "bad");
+        return;
+      }
+      // Said again at the end, because every "Reading page k…" below overwrites
+      // this one and the finished message would have overwritten it too: the
+      // person who most needs to know that 250 pages were dropped is the one
+      // who watched a long file load and then saw a cheerful green banner.
+      const dropped = Math.max(0, doc.numPages - 150);
+      if (dropped) { say("This PDF has " + doc.numPages + " pages. Only the first 150 are loaded; split it and do the rest separately.", "bad"); }
+      const n = Math.min(doc.numPages, 150);
+      for (let k = 1; k <= n; k++) {
+        say("Reading page " + k + " of " + n + "…");
+        const page = await doc.getPage(k);
+        const vp = page.getViewport({ scale: SCALE }), vp1 = page.getViewport({ scale: 1 });
+        const base = document.createElement("canvas");
+        base.width = Math.ceil(vp.width); base.height = Math.ceil(vp.height);
+        const bctx = base.getContext("2d");
+        bctx.fillStyle = "#fff"; bctx.fillRect(0, 0, base.width, base.height);
+        await page.render({ canvasContext: bctx, viewport: vp }).promise;
+        const text = [];
+        try {
+          const tc = await page.getTextContent();
+          for (const it of tc.items) {
+            if (!it.str || !it.str.trim()) continue;
+            const t = pdfjsLib.Util.transform(vp.transform, it.transform);
+            const h = Math.hypot(t[2], t[3]);
+            if (Math.abs(t[1]) > 0.01 || Math.abs(t[2]) > 0.01) continue;   // rotated text: leave to the eye
+            text.push({ str: it.str, x: t[4], y: t[5] - h, w: it.width * SCALE, h: h * 1.25 });
+          }
+        } catch (e) { /* no text layer: boxes by hand only */ }
+        const wrap = document.createElement("div"); wrap.className = "page";
+        const num = document.createElement("div"); num.className = "num"; num.textContent = "Page " + k + (text.length ? "" : " (no text found: an image or scan, so mark it by hand)");
+        const view = document.createElement("canvas"); view.width = base.width; view.height = base.height;
+        wrap.appendChild(num); wrap.appendChild(view); $("pages").appendChild(wrap);
+        pages.push({ base, view, ctx: view.getContext("2d"), wPt: vp1.width, hPt: vp1.height, boxes: [], text });
+        draw(pages[k - 1]); wire(k - 1);
+      }
+      $("find").hidden = false; refresh();
+      say(n + (n === 1 ? " page" : " pages") + " loaded, in this page only. Drag across anything private, or use Find."
+          + (dropped ? " The other " + dropped + " page" + (dropped === 1 ? " was" : "s were")
+                       + " left out: split the file and do the rest separately." : ""),
+          dropped ? "bad" : "ok");
+    }
+
+    const PATTERNS = {
+      "p-email": /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
+      "p-phone": /(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{2,4}\)[\s.-]?)?\d{2,4}[\s.-]\d{3,4}[\s.-]?\d{0,4}/g,
+      "p-card": /\b(?:\d[ -]?){13,19}\b/g,
+      "p-iban": /\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{4}){2,7}(?:[ ]?[A-Z0-9]{1,3})?\b/g,
+    };
+    function luhn(s) {
+      const d = s.replace(/\D/g, ""); if (d.length < 13 || d.length > 19) return false;
+      let sum = 0; for (let i = 0; i < d.length; i++) { let x = +d[d.length - 1 - i]; if (i % 2) { x *= 2; if (x > 9) x -= 9; } sum += x; }
+      return sum % 10 === 0;
+    }
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    function findAll() {
+      const res = [];
+      for (const id in PATTERNS) if ($(id).checked) res.push([id, PATTERNS[id]]);
+      const words = $("terms").value.split(",").map((s) => s.trim()).filter(Boolean);
+      if (words.length) res.push(["terms", new RegExp(words.map(esc).join("|"), "gi")]);
+      if (!res.length) { say("Tick at least one kind of detail, or type some words.", "bad"); return; }
+      let found = 0;
+      pages.forEach((p, i) => {
+        for (const t of p.text) {
+          for (const [id, re] of res) {
+            re.lastIndex = 0;
+            let m;
+            while ((m = re.exec(t.str))) {
+              if (!m[0]) { re.lastIndex++; continue; }
+              if (id === "p-card" && !luhn(m[0])) continue;
+              if (id === "p-phone" && m[0].replace(/\D/g, "").length < 7) continue;
+              const cw = t.w / t.str.length;
+              const b = { x: t.x + m.index * cw - PAD, y: t.y - PAD, w: m[0].length * cw + 2 * PAD, h: t.h + 2 * PAD };
+              if (p.boxes.some((q) => Math.abs(q.x - b.x) < 1 && Math.abs(q.y - b.y) < 1 && Math.abs(q.w - b.w) < 1)) continue;
+              addBox(i, b); found++;
+            }
+          }
+        }
+        draw(p);
+      });
+      refresh();
+      say(found ? "Blacked out " + found + (found === 1 ? " match" : " matches") + ". Check every page, then save." : "Nothing matched. Scanned pages have no searchable text; mark those by hand.", found ? "ok" : "");
+    }
+
+    async function save() {
+      const { jsPDF } = window.jspdf;
+      $("save").disabled = true;
+      let pdf = null;
+      for (let i = 0; i < pages.length; i++) {
+        say("Building page " + (i + 1) + " of " + pages.length + "…");
+        const p = pages[i];
+        draw(p);
+        const orient = p.wPt > p.hPt ? "l" : "p";
+        if (!pdf) pdf = new jsPDF({ unit: "pt", format: [p.wPt, p.hPt], orientation: orient, compress: true });
+        else pdf.addPage([p.wPt, p.hPt], orient);
+        pdf.addImage(p.view.toDataURL("image/jpeg", 0.9), "JPEG", 0, 0, p.wPt, p.hPt, undefined, "FAST");
+        await new Promise((r) => setTimeout(r));
+      }
+      pdf.setProperties({ title: fileName + " (redacted)" });
+      pdf.save(fileName + "-redacted.pdf");
+      $("save").disabled = false;
+      say("Saved " + fileName + "-redacted.pdf. Every page is an image now, so nothing under the boxes is left in it. Open it and check before you send it.", "ok");
+    }
+
+    $("file").addEventListener("change", (ev) => { const f = ev.target.files[0]; if (f) load(f); });
+    $("run").addEventListener("click", findAll);
+    $("terms").addEventListener("keydown", (ev) => { if (ev.key === "Enter") findAll(); });
+    $("save").addEventListener("click", save);
+    $("undo").addEventListener("click", () => {
+      const h = history.pop(); if (!h) return;
+      const p = pages[h[0]]; p.boxes = p.boxes.filter((b) => b !== h[1]); draw(p); refresh();
+    });
+    $("clear").addEventListener("click", () => { pages.forEach((p) => { p.boxes = []; draw(p); }); history = []; refresh(); say("All boxes removed.", ""); });
+  </script>
+</body>
+</html>
