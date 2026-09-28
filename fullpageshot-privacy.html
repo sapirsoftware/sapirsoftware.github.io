@@ -25,17 +25,17 @@
 </head>
 <body>
   <h1>Full Page Screenshot Privacy Policy</h1>
-  <p><em>Last updated: September 18, 2026</em></p>
+  <p><em>Last updated: September 28, 2026</em></p>
 
   <h2>The short version</h2>
   <p>Full Page Screenshot runs entirely in your browser. Your screenshots never leave your machine. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
 
   <h2>What happens to your screenshots</h2>
-  <p>When you click capture, the extension scrolls the page, captures each section, and stitches them together into one image — all locally, inside your own browser. The finished file is saved straight to your computer, through Chrome's own save dialog or, if you turn that off in settings, into your Downloads folder. <strong>Your screenshots are never uploaded, never stored by us, and never seen by anyone but you.</strong> We have no servers that receive images, because we have no servers at all.</p>
+  <p>When you click capture, the extension scrolls the page, captures each section, and stitches them together into one image — all locally, inside your own browser. The finished file is saved straight to your computer, through the browser's own save dialog or, if you turn that off in settings, into your Downloads folder. <strong>Your screenshots are never uploaded, never stored by us, and never seen by anyone but you.</strong> We have no servers that receive images, because we have no servers at all.</p>
 
   <h2>What the extension stores</h2>
-  <p>Your settings (format, whether to show the save dialog, display choices), your license status, and whether you have used your one free try of hiding private info are stored locally in your browser using <code>chrome.storage.local</code>. A capture in progress is tracked in <code>chrome.storage.session</code>, which Chrome clears when the browser closes. None of this is sent to us.</p>
-<p><strong>Optional settings sync.</strong> If you switch on "Keep settings in sync", your format and save-dialog choice are also copied to <code>chrome.storage.sync</code>, which Chrome's own Sync carries to your other computers signed in to the same Chrome profile. That goes through Google's Chrome Sync, not through us. It is off until you turn it on, and it never includes screenshots, pages or your license.</p>
+  <p>Your settings (format, whether to show the save dialog, display choices), your license status, and whether you have used your one free try of hiding private info are stored locally in your browser using <code>chrome.storage.local</code>. A capture in progress is tracked in <code>chrome.storage.session</code>, which the browser clears when it closes. None of this is sent to us.</p>
+<p><strong>Optional settings sync.</strong> If you switch on "Keep settings in sync", your format and save-dialog choice are also copied to <code>chrome.storage.sync</code>, which your browser's own sync carries to your other computers signed in to the same browser profile. That goes through your browser's own sync service, not through us. It is off until you turn it on, and it never includes screenshots, pages or your license.</p>
 <h2>Hiding private info (redaction)</h2>
 <p>When you black out an area before capturing, the box is painted over the image before the file is created, so an unredacted copy is never saved. In a PDF, links that sit under a blacked-out box are left out of the file too.</p>
 <p><strong>Find private info</strong> reads the text of the page you are on, only when you press it, and looks for patterns such as email addresses, phone numbers and card numbers. This happens entirely in your browser; the text is never stored or sent anywhere. It only suggests boxes, which you review before capturing.</p>
@@ -51,7 +51,7 @@
     <li>No browsing history collection</li>
     <li>No analytics or usage tracking</li>
     <li>No advertising or third-party trackers</li>
-    <li>No remotely hosted code — every line ships in the extension package and is reviewed by the Chrome Web Store</li>
+    <li>No remotely hosted code — every line ships in the extension package and is reviewed by the add-on store you installed it from</li>
     <li>No sale or sharing of any data, ever</li>
   </ul>
 
@@ -64,7 +64,7 @@
     <li><code>downloads</code> — to save the finished file where you choose</li>
     <li><code>storage</code> — to remember your format preference and license status locally</li>
   </ul>
-  <p><strong>Optional: access to all sites, for capturing a list of pages (Pro).</strong> Capturing a list of addresses you paste needs to open and capture pages you did not click. Chrome only allows that with access to all sites (<code>&lt;all_urls&gt;</code>), so the extension asks for it at the moment you start such a run, and not before. If you decline, everything else keeps working. Each listed page is opened in a background tab, captured and closed. You can withdraw this access at any time in Chrome's extension settings.</p>
+  <p><strong>Optional: access to all sites, for capturing a list of pages (Pro).</strong> Capturing a list of addresses you paste needs to open and capture pages you did not click. Browsers only allow that with access to all sites (<code>&lt;all_urls&gt;</code>), so the extension asks for it at the moment you start such a run, and not before. If you decline, everything else keeps working. Each listed page is opened in a background tab, captured and closed. You can withdraw this access at any time in your browser's extension settings.</p>
 <p>Without that optional access, the extension has no standing access to any website. It can only see a page in the moment you ask it to capture that page.</p>
 
   <h2>Contact</h2>

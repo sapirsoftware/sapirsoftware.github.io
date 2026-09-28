@@ -25,7 +25,7 @@
 </head>
 <body>
   <h1>HeaderForge Privacy Policy</h1>
-  <p><em>Last updated: September 18, 2026</em></p>
+  <p><em>Last updated: September 28, 2026</em></p>
 
   <h2>The short version</h2>
   <p>HeaderForge runs entirely in your browser. Your rules stay on your machine unless you turn on sync. We collect <strong>no</strong> browsing data, <strong>no</strong> analytics, and <strong>no</strong> telemetry of any kind.</p>
@@ -34,9 +34,9 @@
   <p>Your header rules (header names, values, URL patterns), profiles, settings and license status are stored locally in your browser using <code>chrome.storage.local</code>. They are never sent to us.</p>
 <p><strong>Match history (Pro).</strong> When you use "Test a URL" in the popup, the address you typed is kept in a list of your last 50 tests, without its query string, so you can see what matched. It stays in <code>chrome.storage.local</code> and you can clear it at any time in Settings.</p>
 <p><strong>Variables (Pro).</strong> Values you give to variables such as <code>{{token}}</code> are stored in <code>chrome.storage.local</code> on your computer. They are not synced unless you separately turn on syncing variable values, and exported rule files contain only the variable names.</p>
-<p><strong>Block and redirect rules</strong> are carried out by Chrome itself. HeaderForge never fetches, reads or forwards the requests they affect.</p>
+<p><strong>Block and redirect rules</strong> are carried out by the browser itself. HeaderForge never fetches, reads or forwards the requests they affect.</p>
 <p><strong>Small counters.</strong> The number of free URL tests used this month and the days your rules were used (so we can ask once whether you'd like to leave a review) are kept on your computer and never sent.</p>
-<p><strong>Optional sync.</strong> If you switch on sync in Settings, your rules and profiles are also copied to <code>chrome.storage.sync</code>, which Chrome's own Sync carries to your other computers signed in to the same Chrome profile. That goes through Google's Chrome Sync, not through us. Rules can contain secrets such as tokens, so sync is off until you turn it on.</p>
+<p><strong>Optional sync.</strong> If you switch on sync in Settings, your rules and profiles are also copied to <code>chrome.storage.sync</code>, which your browser's own sync carries to your other computers signed in to the same browser profile. That goes through your browser's own sync service, not through us. Rules can contain secrets such as tokens, so sync is off until you turn it on.</p>
 
   <h2>The live request list (Pro)</h2>
   <p>HeaderForge Pro can show you, in the popup, the requests the tab you are looking at is making, and which of your own header rules touched each one. Because this is the one place where the extension observes network activity, here is exactly what it does.</p>
@@ -48,7 +48,7 @@
     <li><strong>What is never kept:</strong> header values, cookies, anything from the query string (only whether there was one), request or response bodies, and page content.</li>
     <li><strong>Free users</strong> see the number of requests and a blurred placeholder. The per-request details are not sent to a free popup at all. The one thing a free popup does receive from this recording is the CORS notice described below.</li>
   </ul>
-  <p>The list is honest about what it can prove. Chrome reports request headers to the extension <em>after</em> your rule has changed them, so a row can truthfully say a header was sent. Chrome reports response headers <em>before</em> your rule changes them, so for a response-header rule the list only says the rule matched that response — it never claims the header was present, changed or removed.</p>
+  <p>The list is honest about what it can prove. The browser reports request headers to the extension <em>after</em> your rule has changed them, so a row can truthfully say a header was sent. The browser reports response headers <em>before</em> your rule changes them, so for a response-header rule the list only says the rule matched that response — it never claims the header was present, changed or removed.</p>
 
   <h2>The "blocked by CORS" notice (free)</h2>
   <p>While the popup is open on a tab, HeaderForge also keeps a much shorter list drawn from the same recording: the servers whose answers the browser will not let that page read. It is what the popup uses to say "api.example.com blocked a request from this page (CORS)" and to offer the one-click fix, which is free. It lives under the same rules as the list above — that one tab, the background worker's memory, only while the popup is open, dropped when the popup closes, never written to storage and never sent anywhere.</p>
@@ -70,13 +70,13 @@
     <li>No browsing history collection</li>
     <li>No analytics or usage tracking</li>
     <li>No advertising or third-party trackers</li>
-    <li>No remotely hosted code — every line ships in the extension package and is reviewed by the Chrome Web Store</li>
+    <li>No remotely hosted code — every line ships in the extension package and is reviewed by the add-on store you installed it from</li>
     <li>No sale or sharing of any data, ever</li>
   </ul>
 
   <h2>Permissions</h2>
-  <p>HeaderForge requests access to all websites (<code>&lt;all_urls&gt;</code>) for one reason only: modifying HTTP headers requires the browser's network-layer permission on the sites you target. Header rules are applied locally by Chrome itself; the extension does not read page content.</p>
-  <p>It also requests <code>webRequest</code>, which it uses in observe-only mode for the live request list and the CORS notice described above. Headers are still modified by <code>declarativeNetRequest</code>, not by this permission. Because HeaderForge already has access to all websites, adding it does not widen what the extension can reach, and Chrome shows no additional permission warning.</p>
+  <p>HeaderForge requests access to all websites (<code>&lt;all_urls&gt;</code>) for one reason only: modifying HTTP headers requires the browser's network-layer permission on the sites you target. Header rules are applied locally by the browser itself; the extension does not read page content.</p>
+  <p>It also requests <code>webRequest</code>, which it uses in observe-only mode for the live request list and the CORS notice described above. Headers are still modified by <code>declarativeNetRequest</code>, not by this permission. Because HeaderForge already has access to all websites, adding it does not widen what the extension can reach, and the browser shows no additional permission warning.</p>
 
   <h2>Contact</h2>
   <p>Questions: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a></p>
