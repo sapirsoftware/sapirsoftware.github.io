@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Referer header: what it sends, why it&#x27;s empty, and how to change it</title>
+  <meta name="description" content="What the HTTP Referer header contains, why browsers now send only the origin or nothing, how Referrer-Policy controls it, and how to set it for testing.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/referer-header.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Referer header: what it sends, why it&#x27;s empty, and how to change it">
+  <meta property="og:description" content="What the HTTP Referer header contains, why browsers now send only the origin or nothing, how Referrer-Policy controls it, and how to set it for testing.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/referer-header.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Referer header: what it sends, why it's empty, and how to change it","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the Referer header?", "acceptedAnswer": {"@type": "Answer", "text": "Referer is an HTTP request header in which the browser tells a server the address of the page that made the request, for example the page with the link you clicked. It is spelled 'Referer', with one r in the middle, because of a typo in the original HTTP specification that was never corrected."}}, {"@type": "Question", "name": "Why is my Referer header empty or only showing the domain?", "acceptedAnswer": {"@type": "Answer", "text": "Since Chrome 85 the default Referrer-Policy is strict-origin-when-cross-origin: requests to other sites get only the origin (https://example.com/), not the full path, and requests from https to http get no Referer at all. A page can set a stricter or looser policy with the Referrer-Policy header or a meta tag."}}, {"@type": "Question", "name": "How do I change the Referer header in Chrome?", "acceptedAnswer": {"@type": "Answer", "text": "Page JavaScript cannot set Referer with fetch headers, because it is a forbidden header name. fetch's referrer option can only pick a same-origin URL. To test a server that checks Referer, set it with a header-modifying extension for the sites you choose, or send the request from curl with -e or -H 'Referer: ...'."}}, {"@type": "Question", "name": "What is the difference between Referer and Referrer-Policy?", "acceptedAnswer": {"@type": "Answer", "text": "Referer is the request header that carries the previous page's address. Referrer-Policy is a response header (or meta tag) a site sends to control how much of its address browsers put into Referer on the requests it triggers."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>The Referer header, explained</h1>
+  <p class="lede">The browser uses the <code>Referer</code> header to tell a server which page a request came from. It's behind analytics, hotlink protection and a surprising number of "works on my machine" bugs. This guide covers what it contains today, why it's often shorter than you expect, and how to set it when you need to test.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#what">What it contains</a></li>
+    <li><a href="#spelling">Why it's spelled "Referer"</a></li>
+    <li><a href="#empty">Why it's empty or only the domain</a></li>
+    <li><a href="#policy">Referrer-Policy values</a></li>
+    <li><a href="#change">How to set or change it for testing</a></li>
+    <li><a href="#server">If your server checks it</a></li>
+  </ol></div>
+
+  <h2 id="what">What it contains</h2>
+  <p>When you click a link on <code>https://blog.example.com/post/42</code> to another site, the browser's request looks like this:</p>
+  <pre><code>GET /pricing HTTP/1.1
+Host: shop.example.org
+Referer: https://blog.example.com/</code></pre>
+  <p>The same goes for images, scripts, stylesheets and <code>fetch()</code> calls a page makes: each can carry the page's address. Fragments (<code>#section</code>) and any username or password in the URL are never included.</p>
+
+  <h2 id="spelling">Why it's spelled "Referer"</h2>
+  <p>A typo in the 1996 HTTP specification. By the time anyone noticed, servers everywhere read <code>Referer</code>, so it stayed. The newer <code>Referrer-Policy</code> header, the JavaScript <code>document.referrer</code> property and the <code>referrerpolicy</code> attribute are all spelled correctly. Mixing them up is a classic bug: a server that reads <code>Referrer</code> gets nothing.</p>
+
+  <h2 id="empty">Why it's empty or only the domain</h2>
+  <p>Since Chrome 85 (2020), and in Firefox and Safari too, the default policy is <code>strict-origin-when-cross-origin</code>. That means:</p>
+  <table>
+    <tr><th>Request goes to</th><th>Referer sent</th></tr>
+    <tr><td>The same site</td><td>Full URL: <code>https://blog.example.com/post/42?ref=nav</code></td></tr>
+    <tr><td>Another site, over https</td><td>Origin only: <code>https://blog.example.com/</code></td></tr>
+    <tr><td>Any site over plain http, from an https page</td><td>Nothing</td></tr>
+  </table>
+  <p>It can also be missing because the page set a stricter policy, the link has <code>rel="noreferrer"</code>, the user typed the address or used a bookmark, or a privacy extension stripped it.</p>
+
+  <h2 id="policy">Referrer-Policy values</h2>
+  <p>A site controls what its pages send with a response header or a meta tag:</p>
+  <pre><code>Referrer-Policy: strict-origin-when-cross-origin
+&lt;meta name="referrer" content="no-referrer"&gt;</code></pre>
+  <table>
+    <tr><th>Value</th><th>What gets sent</th></tr>
+    <tr><td><code>no-referrer</code></td><td>Never anything</td></tr>
+    <tr><td><code>same-origin</code></td><td>Full URL to your own site, nothing elsewhere</td></tr>
+    <tr><td><code>origin</code></td><td>Only the origin, everywhere</td></tr>
+    <tr><td><code>strict-origin</code></td><td>Only the origin, and nothing on https&rarr;http</td></tr>
+    <tr><td><code>strict-origin-when-cross-origin</code></td><td>Full URL on your site, origin elsewhere, nothing on https&rarr;http (the default)</td></tr>
+    <tr><td><code>no-referrer-when-downgrade</code></td><td>Full URL everywhere except https&rarr;http (the old default)</td></tr>
+    <tr><td><code>unsafe-url</code></td><td>Full URL, everywhere, including query strings. Avoid it: tokens in URLs leak this way.</td></tr>
+  </table>
+
+  <h2 id="change">How to set or change it for testing</h2>
+  <p>You can't set it from page JavaScript: <code>Referer</code> is a forbidden header, so <code>fetch(url, { headers: { Referer: "..." } })</code> is silently ignored. The <code>referrer</code> option of <code>fetch</code> only accepts a URL on your own origin. Your options:</p>
+  <h3>From the command line</h3>
+  <pre><code>curl -e "https://partner.example.com/" https://api.example.com/image.png
+curl -H "Referer: https://partner.example.com/" https://api.example.com/image.png</code></pre>
+  <h3>In your browser, for the sites you choose</h3>
+  <p>A header extension can set, replace or remove <code>Referer</code> on requests to one site, which is how you test hotlink protection, a partner-only embed, or an analytics filter in a real browser session.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Set, replace or remove any request header, <code>Referer</code> included, for all sites or only for URL patterns you pick, and switch it off with one click. It tells you whether the rule actually fired. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <h2 id="server">If your server checks it</h2>
+  <p>Referer is fine for analytics and for casual hotlink protection. It is <b>not</b> a security check: anyone can send any value from curl, and many real visitors send none at all because of the policies above. For access control, use a token. For protecting forms against cross-site requests, use <code>SameSite</code> cookies and a CSRF token, and check the <code>Origin</code> header, which browsers send on cross-site <code>POST</code>s and which pages can't fake.</p>
+  <p>Related: <a href="add-request-header-chrome.html">add any custom header to requests in Chrome</a> · <a href="change-user-agent-chrome.html">change your user agent</a> · <a href="x-frame-options.html">X-Frame-Options and "refused to connect"</a> · <a href="what-is-cors.html">what CORS is</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
