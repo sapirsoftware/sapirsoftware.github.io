@@ -76,7 +76,7 @@ Access-Control-Max-Age: 7200</code></pre>
     <tr><th>Trigger</th><th>Example</th></tr>
     <tr><td>Method other than GET, HEAD, POST</td><td><code>PUT</code>, <code>PATCH</code>, <code>DELETE</code></td></tr>
     <tr><td>Content-Type other than the three form types</td><td><code>application/json</code></td></tr>
-    <tr><td>Any non-safelisted header</td><td><code>Authorization</code>, <code>X-Api-Key</code>, <code>X-Requested-With</code></td></tr>
+    <tr><td>Any non-safelisted header (the safelist is <code>Accept</code>, <code>Accept-Language</code>, <code>Content-Language</code>, <code>Content-Type</code> with a form value, and a single-range <code>Range</code>)</td><td><code>Authorization</code>, <code>X-Api-Key</code>, <code>X-Requested-With</code></td></tr>
     <tr><td>An upload listener or a ReadableStream body</td><td><code>xhr.upload.onprogress</code></td></tr>
   </table>
   <p>So nearly every modern API call, JSON plus a token, gets a preflight. That's normal. Same-origin requests never get one.</p>
@@ -97,7 +97,7 @@ app.use(requireAuth);                                                // runs aft
   <p>The exact wording of each browser error is on <a href="blocked-by-cors-policy.html">"has been blocked by CORS policy": every variant</a>.</p>
 
   <h2 id="cache">Caching it with Access-Control-Max-Age</h2>
-  <p>Without it, browsers repeat the preflight often, adding a round trip to every call. <code>Access-Control-Max-Age: 7200</code> lets the browser reuse the answer. Chrome caps it at 2 hours and Firefox at 24 hours; a larger value is simply cut to the cap.</p>
+  <p>Without it, the browser keeps a preflight answer for only 5 seconds, so almost every call pays an extra round trip. <code>Access-Control-Max-Age: 7200</code> lets the browser reuse the answer. Chrome caps it at 2 hours and Firefox at 24 hours; a larger value is simply cut to the cap.</p>
 
   <h2 id="debug">Seeing it in DevTools</h2>
   <p>In the Network tab, Chrome lists the preflight as a separate row with type <code>preflight</code>; clear any filter to see it. Click it to read what the server answered. To check a URL from outside your app, the <a href="cors-tester.html">CORS tester</a> sends the request and shows which header is missing.</p>

@@ -66,7 +66,7 @@ content must be served over HTTPS.</code></pre>
   <table>
     <tr><th>Resource</th><th>What Chrome does</th></tr>
     <tr><td>Scripts, stylesheets, iframes, <code>fetch</code>/XHR, WebSockets (<code>ws://</code>), fonts</td><td><b>Blocked.</b> The console shows the Mixed Content error above.</td></tr>
-    <tr><td>Images, audio, video</td><td><b>Upgraded</b> to https:// automatically; blocked if the server doesn't answer on HTTPS.</td></tr>
+    <tr><td>Images, audio, video</td><td><b>Upgraded</b> to https:// automatically; blocked if the server doesn't answer on HTTPS. Two exceptions are blocked, not upgraded: a URL whose host is an IP address, and images loaded through <code>srcset</code> or <code>&lt;picture&gt;</code>.</td></tr>
     <tr><td>Form posting to http://</td><td>Warning before submitting.</td></tr>
     <tr><td>Downloads over http:// from an https:// page</td><td>Blocked or warned, depending on file type and version.</td></tr>
   </table>
