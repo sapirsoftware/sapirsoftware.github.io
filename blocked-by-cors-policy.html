@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>“Has been blocked by CORS policy”: every variant and its fix</title>
+  <meta name="description" content="The exact text after “blocked by CORS policy” tells you what is wrong. Each Chrome and Firefox variant of the message, what it means, and the one-line server fix.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/blocked-by-cors-policy.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="“Has been blocked by CORS policy”: every variant and its fix">
+  <meta property="og:description" content="The exact text after “blocked by CORS policy” tells you what is wrong. Each Chrome and Firefox variant of the message, what it means, and the one-line server fix.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/blocked-by-cors-policy.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"“Has been blocked by CORS policy”: every variant and its fix","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does 'has been blocked by CORS policy' mean?", "acceptedAnswer": {"@type": "Answer", "text": "Your page asked the browser to read a response from another origin, and the server's reply did not include the Access-Control-Allow-* headers that permit it. The request usually reached the server; the browser just refused to hand your code the answer. The text after the colon says which header was missing or wrong."}}, {"@type": "Question", "name": "How do I fix 'No Access-Control-Allow-Origin header is present on the requested resource'?", "acceptedAnswer": {"@type": "Answer", "text": "Make the server send Access-Control-Allow-Origin with your page's exact origin (for example http://localhost:3000) on every response to that route, including error responses. If the error only appears on failures, your error handler is skipping the CORS middleware."}}, {"@type": "Question", "name": "How do I fix 'Response to preflight request doesn't pass access control check: It does not have HTTP ok status'?", "acceptedAnswer": {"@type": "Answer", "text": "The server answered the browser's OPTIONS preflight with a non-2xx status, usually 401 from an auth check or 404/405 because no OPTIONS route exists. Let OPTIONS requests through before authentication and answer them with 204 plus the Allow-Methods and Allow-Headers the real request needs."}}, {"@type": "Question", "name": "Why can't Access-Control-Allow-Origin be * with credentials?", "acceptedAnswer": {"@type": "Answer", "text": "When a request sends cookies or HTTP auth (fetch with credentials: 'include', or axios withCredentials: true), the browser requires the server to name the exact origin and also send Access-Control-Allow-Credentials: true. A wildcard is refused so that a site cannot be read with your cookies by every other site on the web."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>“Has been blocked by CORS policy”: what your exact message means</h1>
+  <p class="lede">Every CORS error starts the same way, but the part after the colon is different, and it tells you precisely which header is missing or wrong. Find your ending below. Each one has its own fix.</p>
+  <pre><code>Access to fetch at 'https://api.example.com/users' from origin 'http://localhost:3000'
+has been blocked by CORS policy: <b>&lt;this part is what matters&gt;</b></code></pre>
+  <div class="toc"><b>Find your message</b><ol>
+    <li><a href="#no-acao">No 'Access-Control-Allow-Origin' header is present</a></li>
+    <li><a href="#preflight-status">Response to preflight request &hellip; does not have HTTP ok status</a></li>
+    <li><a href="#wildcard">must not be the wildcard '*' when the request's credentials mode is 'include'</a></li>
+    <li><a href="#allow-headers">Request header field &hellip; is not allowed by Access-Control-Allow-Headers</a></li>
+    <li><a href="#allow-methods">Method &hellip; is not allowed by Access-Control-Allow-Methods</a></li>
+    <li><a href="#multiple">The 'Access-Control-Allow-Origin' header contains multiple values</a></li>
+    <li><a href="#not-equal">&hellip; has a value that is not equal to the supplied origin</a></li>
+    <li><a href="#credentials">The value of 'Access-Control-Allow-Credentials' &hellip; must be 'true'</a></li>
+    <li><a href="#redirect">Redirect is not allowed for a preflight request</a></li>
+    <li><a href="#file">Cross origin requests are only supported for protocol schemes&hellip;</a></li>
+    <li><a href="#firefox">The Firefox wording</a></li>
+  </ol></div>
+  <p>First, one thing that applies to all of them: <b>CORS is enforced by the browser, not the server.</b> The request usually reached your API and it may even have run. The browser just won't let your JavaScript read the reply. That's why the same call works in curl or Postman. The fix almost always goes on the server that answered.</p>
+
+  <h2 id="no-acao">No 'Access-Control-Allow-Origin' header is present on the requested resource</h2>
+  <p>The most common one. The response had no <code>Access-Control-Allow-Origin</code> at all. The server has to send it:</p>
+  <pre><code>Access-Control-Allow-Origin: http://localhost:3000</code></pre>
+  <p>If you already set it and still see this, check three things:</p>
+  <ul>
+    <li><b>Does it only happen on errors?</b> Many frameworks skip middleware on a 500 or a 404, so the error response goes out without the header, and the browser reports CORS instead of the real error. Look at the status code in the Network tab.</li>
+    <li><b>Is a proxy or CDN in front?</b> nginx, Cloudflare or an API gateway can strip or cache headers. Check the headers of the response that reached the browser, not what your code sets.</li>
+    <li><b>Is the URL right?</b> A typo that hits a different server, or <code>http</code> instead of <code>https</code>, gives you a response from something that never heard of your CORS settings.</li>
+  </ul>
+
+  <h2 id="preflight-status">Response to preflight request doesn't pass access control check: It does not have HTTP ok status</h2>
+  <p>Before a request with a JSON body, an <code>Authorization</code> header, or a method like <code>PUT</code> or <code>DELETE</code>, the browser sends an <code>OPTIONS</code> request to ask permission. Your server answered that with an error, usually:</p>
+  <ul>
+    <li><b>401 or 403</b>: your login check ran on the <code>OPTIONS</code> request. Preflights never carry your token, so they always fail it.</li>
+    <li><b>404 or 405</b>: there's no route for <code>OPTIONS</code>.</li>
+  </ul>
+  <p>Fix: let <code>OPTIONS</code> through before authentication and answer it with <code>204</code>. In Express, register CORS before the auth middleware:</p>
+  <pre><code>app.use(cors({ origin: "http://localhost:3000" }));  // answers OPTIONS itself
+app.use(requireLogin);</code></pre>
+  <p>This is the one no browser extension can fix, because the failure is the status code, not a missing header.</p>
+
+  <h2 id="wildcard">The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'</h2>
+  <p>Your request sends cookies (<code>credentials: "include"</code> in fetch, <code>withCredentials: true</code> in axios) and the server said <code>*</code>. With cookies, the browser insists on the exact origin:</p>
+  <pre><code>Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+Vary: Origin</code></pre>
+  <p>If you need several origins, check the request's <code>Origin</code> against an allow-list and echo it back. Never echo any origin you receive, because that lets any website read your users' data with their cookies.</p>
+
+  <h2 id="allow-headers">Request header field authorization is not allowed by Access-Control-Allow-Headers in preflight response</h2>
+  <p>Your request sends a header (here <code>Authorization</code>, often <code>Content-Type</code> or an <code>X-</code> header) that the preflight answer didn't list. Add it:</p>
+  <pre><code>Access-Control-Allow-Headers: Content-Type, Authorization</code></pre>
+
+  <h2 id="allow-methods">Method PUT is not allowed by Access-Control-Allow-Methods in preflight response</h2>
+  <p>Same idea for the method. List every method the front end uses:</p>
+  <pre><code>Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE</code></pre>
+
+  <h2 id="multiple">The 'Access-Control-Allow-Origin' header contains multiple values '&hellip;, &hellip;', but only one is allowed</h2>
+  <p>Two layers are each adding the header: typically your app <em>and</em> nginx, or your app and a CDN rule. The browser sees two values and rejects both. Set it in exactly one place. You can't list several origins in one header either; echo the one that matched.</p>
+
+  <h2 id="not-equal">The 'Access-Control-Allow-Origin' header has a value 'https://example.com' that is not equal to the supplied origin</h2>
+  <p>The server allows a different origin from the one you're on. Common causes: <code>localhost</code> vs <code>127.0.0.1</code>, a missing port, <code>http</code> vs <code>https</code>, <code>www.</code> vs no <code>www.</code>, or a trailing slash (<code>https://example.com/</code> never matches, since origins have no path). Or a CDN cached a response that was made for another origin: add <code>Vary: Origin</code>.</p>
+
+  <h2 id="credentials">The value of the 'Access-Control-Allow-Credentials' header in the response is '' which must be 'true' when the request's credentials mode is 'include'</h2>
+  <p>You're sending cookies and the server allowed the origin but didn't say credentials are fine. Add <code>Access-Control-Allow-Credentials: true</code>, or stop sending credentials if the call doesn't need them.</p>
+
+  <h2 id="redirect">Redirect is not allowed for a preflight request</h2>
+  <p>The <code>OPTIONS</code> request got a 301 or 302, usually from <code>http</code> to <code>https</code>, or from adding or removing a trailing slash. Call the final URL directly so there is no redirect.</p>
+
+  <h2 id="file">Cross origin requests are only supported for protocol schemes: http, data, &hellip; https</h2>
+  <p>You opened your page as a file (<code>file:///C:/project/index.html</code>). Browsers won't let file pages fetch other files. Serve the folder instead:</p>
+  <pre><code>npx serve .        # or
+python3 -m http.server 8000</code></pre>
+
+  <h2 id="firefox">The Firefox wording</h2>
+  <p>Firefox says the same things differently, with a reason code in brackets:</p>
+  <table>
+    <tr><th>Firefox says</th><th>Same as</th></tr>
+    <tr><td><code>CORS header 'Access-Control-Allow-Origin' missing</code></td><td><a href="#no-acao">No 'Access-Control-Allow-Origin' header</a></td></tr>
+    <tr><td><code>CORS preflight response did not succeed</code></td><td><a href="#preflight-status">Preflight does not have HTTP ok status</a></td></tr>
+    <tr><td><code>Credential is not supported if the CORS header 'Access-Control-Allow-Origin' is '*'</code></td><td><a href="#wildcard">Wildcard with credentials</a></td></tr>
+    <tr><td><code>missing token 'authorization' in CORS header 'Access-Control-Allow-Headers'</code></td><td><a href="#allow-headers">Header not allowed</a></td></tr>
+    <tr><td><code>CORS header 'Access-Control-Allow-Origin' does not match</code></td><td><a href="#not-equal">Not equal to the supplied origin</a></td></tr>
+    <tr><td><code>Multiple CORS header 'Access-Control-Allow-Origin' not allowed</code></td><td><a href="#multiple">Multiple values</a></td></tr>
+  </table>
+
+  <h2>When you can't change the server</h2>
+  <p>A third-party API, a staging server someone else runs, or you just want to confirm CORS is the only problem before you file a ticket. You can add the missing headers to responses in <em>your own</em> browser, for one site only. Your users still need the server fix.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>When a request on the current tab is blocked by CORS, HeaderForge names the server that refused it and offers to allow CORS for that site in one click, and says plainly when the failure is a rejected preflight that headers can't fix. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+  <p>To see exactly what a URL sends back to a cross-origin request, paste it into the free <a href="cors-tester.html">CORS tester</a>. For the background, see <a href="what-is-cors.html">what CORS is</a> and the longer <a href="cors-error.html">CORS error guide</a>. On Firefox, see <a href="disable-cors-firefox.html">how to disable CORS in Firefox</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

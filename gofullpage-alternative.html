@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GoFullPage alternatives: when to use something else (2026)</title>
+  <meta name="description" content="GoFullPage is a good default screenshot extension. When an alternative fits better: blacking out private data, scrolling panels, batch captures, or nothing installed.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #5536c9; --tint: #ece7fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #b3a4f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/gofullpage-alternative.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="GoFullPage alternatives: when to use something else (2026)">
+  <meta property="og:description" content="GoFullPage is a good default screenshot extension. When an alternative fits better: blacking out private data, scrolling panels, batch captures, or nothing installed.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/gofullpage-alternative.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"GoFullPage alternatives: when to use something else (2026)","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is GoFullPage free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. GoFullPage captures and downloads full-page screenshots as images or PDF for free. Its Premium plan, $1 a month with a 7-day trial according to its site, adds editing: cropping, annotations, date and URL stamps, and smart PDF page breaks."}}, {"@type": "Question", "name": "What is a good GoFullPage alternative?", "acceptedAnswer": {"@type": "Answer", "text": "Chrome's own DevTools command (Capture full size screenshot) if you only need an occasional capture. FireShot if you want heavy annotation. Full Page Screenshot if the page shows private data you need to black out before sharing, or if you need to capture an inner scrolling panel such as Gmail or a dashboard."}}, {"@type": "Question", "name": "Can GoFullPage capture a scrolling div?", "acceptedAnswer": {"@type": "Answer", "text": "GoFullPage is built to capture the whole page. For pages where the content scrolls inside a panel rather than the page itself (web mail, chat apps, admin dashboards), use an extension that can capture one scrolling element, such as Full Page Screenshot."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>GoFullPage alternatives</h1>
+  <p class="lede">GoFullPage is the most popular full-page screenshot extension for a reason: one click, a clean capture, no fuss. We make a competing extension, so weigh this accordingly. If GoFullPage already does what you need, keep it. Here is when something else is a better fit.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#what">What GoFullPage does, and what Premium adds</a></li>
+    <li><a href="#none">Alternative 1: nothing installed (Chrome DevTools)</a></li>
+    <li><a href="#redact">Alternative 2: if the page shows private data</a></li>
+    <li><a href="#panel">Alternative 3: if the content scrolls inside a panel</a></li>
+    <li><a href="#edit">Alternative 4: if you want heavy editing</a></li>
+    <li><a href="#table">Side by side</a></li>
+  </ol></div>
+
+  <h2 id="what">What GoFullPage does, and what Premium adds</h2>
+  <p>The free version captures the whole page and lets you download it as PNG, JPEG or PDF, with no limit on the number of captures. Premium, which GoFullPage lists at $1 a month with a 7-day trial, adds editing: crop, text, shapes and emoji, a date and URL stamp, and smarter PDF page breaks. It has about 10 million users and a 4.9 rating on the Chrome Web Store.</p>
+  <p>So the reasons to switch aren't about price. They're about pages GoFullPage isn't built for.</p>
+
+  <h2 id="none">Alternative 1: nothing installed (Chrome DevTools)</h2>
+  <p>If you need a full-page capture once a month, you don't need an extension. Press <kbd>F12</kbd>, then <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on a Mac), type <code>full size</code>, and pick <b>Capture full size screenshot</b>. It struggles with lazy-loaded images and repeats sticky headers, but it's free and built in. <a href="screenshot-whole-page.html">Step by step here.</a></p>
+
+  <h2 id="redact">Alternative 2: if the page shows private data</h2>
+  <p>Support tickets, bug reports, dashboards: pages full of customer emails, card numbers and API keys. With any capture-then-edit tool, the unredacted image exists first, and it's one wrong drag-and-drop from being shared. <b>Full Page Screenshot</b> finds those details and blacks them out <em>while</em> the image is being built, so an uncensored copy never exists. <a href="screenshot-redact.html">How that works.</a></p>
+
+  <h2 id="panel">Alternative 3: if the content scrolls inside a panel</h2>
+  <p>In Gmail, Slack, Notion, Jira and most admin dashboards, the page itself doesn't scroll; a panel inside it does. Whole-page tools capture the frame and one screenful of the panel. Full Page Screenshot lets you pick the scrolling panel and captures all of it.</p>
+
+  <h2 id="edit">Alternative 4: if you want heavy editing</h2>
+  <p>If you annotate every capture with arrows, callouts and blur, <b>FireShot</b> has the deepest editor of the popular options. Its paid version is $39.95 a year or $99.95 once, per its site.</p>
+
+  <h2 id="table">Side by side</h2>
+  <table>
+    <tr><th></th><th>GoFullPage</th><th>Full Page Screenshot</th><th>DevTools</th></tr>
+    <tr><td>Whole page to PNG / PDF</td><td>Free</td><td>Free</td><td>PNG only</td></tr>
+    <tr><td>Crop and annotate</td><td>Premium</td><td>No</td><td>No</td></tr>
+    <tr><td>Black out emails, cards, keys before capture</td><td>No</td><td>3 a month free, unlimited in Pro</td><td>No</td></tr>
+    <tr><td>Capture an inner scrolling panel</td><td>No</td><td>Free</td><td>No</td></tr>
+    <tr><td>Capture a list of pages in one run</td><td>No</td><td>Pro</td><td>No</td></tr>
+    <tr><td>Paid plan</td><td>$1/month</td><td>$3/month, $19/year or $39 once</td><td>Free</td></tr>
+    <tr><td>Users</td><td>~10 million</td><td>New (about 20)</td><td>Built in</td></tr>
+  </table>
+  <p>GoFullPage details from its website and Chrome Web Store listing, checked 28 September 2026. If anything here is out of date, email us and we'll fix it.</p>
+  <div class="tool">
+    <b>Full Page Screenshot</b> (Chrome, free)
+    <p>Whole page, part of a page or a scrolling panel, as PNG, JPEG or PDF. Blacks out private details before the file is written. Everything runs on your computer: no account, no analytics, nothing uploaded.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/mmnagdplojeknlbdcpmiakebcfmhcloh">Get Full Page Screenshot</a>
+  </div>
+  <p>More: <a href="screenshot-extension-comparison.html">all the popular screenshot extensions compared</a> · <a href="scrolling-screenshot.html">scrolling screenshots on any device</a> · <a href="firefox-full-page-screenshot.html">full-page screenshots in Firefox</a>.</p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>
