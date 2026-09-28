@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Access-Control-Allow-Origin: values, multiple origins and server examples</title>
+  <meta name="description" content="What Access-Control-Allow-Origin allows, why * fails with cookies, how to allow several origins, and setups for Express, nginx, Apache, Flask, Django, Spring and .NET.">
+  <style>
+    :root { --ink: #1d1b26; --muted: #5f6b76; --line: #e3e1ec; --accent: #1d5fc4; --tint: #eaf1fd; --bg: #fff; --code: #f4f3f8; }
+    @media (prefers-color-scheme: dark) { :root { --ink: #ebe9f4; --muted: #a8a4b8; --line: #2f2c3d; --accent: #8fb6f5; --tint: #22203a; --bg: #141219; --code: #1e1c28; } }
+    * { box-sizing: border-box; }
+    nav.top { font-size: 14px; margin-bottom: 18px; }
+    nav.top a { margin-right: 14px; }
+    body { font: 16px/1.7 -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); max-width: 740px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+    h2 { font-size: 22px; margin: 36px 0 8px; }
+    h3 { font-size: 17px; margin: 22px 0 6px; }
+    .lede { color: var(--muted); font-size: 17px; }
+    .toc { background: var(--tint); border-radius: 12px; padding: 12px 18px; font-size: 15px; }
+    .toc ol { margin: 6px 0 0; padding-left: 20px; }
+    pre { background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font-size: 14px; line-height: 1.5; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+    p code, li code { background: var(--code); padding: 1px 5px; border-radius: 5px; }
+    .note { border-left: 4px solid var(--accent); background: var(--tint); padding: 10px 14px; border-radius: 0 10px 10px 0; }
+    .tool { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin: 18px 0; }
+    .cta { display: inline-block; background: var(--accent); color: #fff; padding: 9px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 6px; }
+    @media (prefers-color-scheme: dark) { .cta { color: #141219; } }
+    table { width: 100%; border-collapse: collapse; font-size: 15px; display: block; overflow-x: auto; }
+    code { overflow-wrap: anywhere; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+    kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; font-size: 0.9em; }
+    a { color: var(--accent); }
+    footer { margin-top: 44px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  </style>
+  <link rel="canonical" href="https://sapirsoftware.github.io/access-control-allow-origin.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Sapir Software">
+  <meta property="og:title" content="Access-Control-Allow-Origin: values, multiple origins and server examples">
+  <meta property="og:description" content="What Access-Control-Allow-Origin allows, why * fails with cookies, how to allow several origins, and setups for Express, nginx, Apache, Flask, Django, Spring and .NET.">
+  <meta property="og:url" content="https://sapirsoftware.github.io/access-control-allow-origin.html">
+  <meta property="og:image" content="https://sapirsoftware.github.io/og-headerforge.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Access-Control-Allow-Origin: values, multiple origins and server examples","datePublished":"2026-09-19","dateModified":"2026-09-20","author":{"@type":"Organization","name":"Sapir Software"},"publisher":{"@type":"Organization","name":"Sapir Software"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does Access-Control-Allow-Origin do?", "acceptedAnswer": {"@type": "Answer", "text": "It is a response header in which a server says which other origin may read the response in a browser. Without it, a page on one origin can send a request to another origin but cannot read the answer. Its value is a single origin, such as https://app.example.com, or *."}}, {"@type": "Question", "name": "How do I allow multiple origins in Access-Control-Allow-Origin?", "acceptedAnswer": {"@type": "Answer", "text": "The header takes one origin only; a comma-separated list is rejected. Keep an allow-list on the server, compare the request's Origin header against it, and if it matches, send that exact origin back in Access-Control-Allow-Origin along with Vary: Origin."}}, {"@type": "Question", "name": "Is Access-Control-Allow-Origin: * safe?", "acceptedAnswer": {"@type": "Answer", "text": "For public data that needs no login, yes: any site can read what any visitor could fetch anyway. It cannot be used with cookies or HTTP authentication, and it should never be combined with reflecting the request's origin on responses that carry private data."}}, {"@type": "Question", "name": "Why do I get 'The Access-Control-Allow-Origin header contains multiple values'?", "acceptedAnswer": {"@type": "Answer", "text": "Two layers are both adding the header, usually your application and a proxy such as nginx or a CDN. Remove it from one of them so the browser receives exactly one value."}}]}</script>
+</head>
+<body>
+  <nav class="top"><a href="index.html">Sapir Software</a><a href="guides.html">Guides</a><a href="what-is-my-user-agent.html">User agent</a><a href="cors-tester.html">CORS tester</a></nav>
+  <h1>Access-Control-Allow-Origin, explained</h1>
+  <p class="lede"><code>Access-Control-Allow-Origin</code> is the response header that tells a browser which <em>other</em> website may read the response. It's the header nearly every <a href="cors-error.html">CORS error</a> is about. Here are the values it accepts, the two rules that trip everyone up, and working setups for the common servers.</p>
+  <div class="toc"><b>On this page</b><ol>
+    <li><a href="#values">The values it accepts</a></li>
+    <li><a href="#multiple">Allowing more than one origin</a></li>
+    <li><a href="#credentials">With cookies or logins</a></li>
+    <li><a href="#servers">Server examples</a></li>
+    <li><a href="#check">Checking what you actually send</a></li>
+  </ol></div>
+
+  <h2 id="values">The values it accepts</h2>
+  <table>
+    <tr><th>Value</th><th>Meaning</th></tr>
+    <tr><td><code>https://app.example.com</code></td><td>Only this exact origin: scheme, host and port. No path, no trailing slash.</td></tr>
+    <tr><td><code>*</code></td><td>Any origin, but only for requests <b>without</b> cookies or HTTP auth.</td></tr>
+    <tr><td><code>null</code></td><td>Matches sandboxed iframes and <code>file://</code> pages. Don't use it: anyone can create a <code>null</code> origin.</td></tr>
+  </table>
+  <p>Not accepted: lists (<code>https://a.com, https://b.com</code>), wildcards inside a name (<code>https://*.example.com</code>), or a value with a path. Browsers reject all of them.</p>
+
+  <h2 id="multiple">Allowing more than one origin</h2>
+  <p>Since the header holds one origin, the server picks it per request: read the request's <code>Origin</code> header, check it against an allow-list, and echo it back when it matches.</p>
+  <pre><code>const ALLOWED = new Set(["https://app.example.com", "https://admin.example.com", "http://localhost:3000"]);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (ALLOWED.has(origin)) res.set("Access-Control-Allow-Origin", origin);
+  res.append("Vary", "Origin");   // caches must keep one copy per origin
+  next();
+});</code></pre>
+  <p>Two things matter here. <b>Compare exact strings</b>: checks like <code>origin.endsWith("example.com")</code> also match <code>evilexample.com</code>. And <b>always send <code>Vary: Origin</code></b>, or a CDN may serve one origin's answer to another and you'll see <a href="blocked-by-cors-policy.html#not-equal">"not equal to the supplied origin"</a> at random.</p>
+
+  <h2 id="credentials">With cookies or logins</h2>
+  <p>If the browser sends cookies or HTTP auth (<code>fetch(url, { credentials: "include" })</code>, or <code>withCredentials: true</code> in axios), the response needs the exact origin and a second header:</p>
+  <pre><code>Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Credentials: true
+Vary: Origin</code></pre>
+  <p><code>*</code> is refused here on purpose, so that no site can read another site's logged-in pages with your visitors' cookies. Never "fix" this by echoing back every origin you receive; that does exactly what the rule prevents.</p>
+
+  <h2 id="servers">Server examples</h2>
+  <h3>Express (Node)</h3>
+  <pre><code>import cors from "cors";
+app.use(cors({ origin: ["https://app.example.com", "http://localhost:3000"], credentials: true }));</code></pre>
+  <h3>nginx</h3>
+  <pre><code>map $http_origin $cors_origin {
+  default "";
+  "https://app.example.com" $http_origin;
+  "http://localhost:3000"   $http_origin;
+}
+server {
+  location /api/ {
+    add_header Access-Control-Allow-Origin $cors_origin always;
+    add_header Vary Origin always;
+    if ($request_method = OPTIONS) {
+      add_header Access-Control-Allow-Origin $cors_origin always;
+      add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE" always;
+      add_header Access-Control-Allow-Headers "Content-Type, Authorization" always;
+      return 204;
+    }
+  }
+}</code></pre>
+  <p><code>always</code> makes nginx add the header to error responses too, so a 500 doesn't show up as a CORS error.</p>
+  <h3>Apache (.htaccess)</h3>
+  <pre><code>SetEnvIf Origin "^(https://(app|admin)\.example\.com)$" CORS_OK=$1
+Header always set Access-Control-Allow-Origin "%{CORS_OK}e" env=CORS_OK
+Header always merge Vary Origin</code></pre>
+  <h3>Flask (Python)</h3>
+  <pre><code>from flask_cors import CORS
+CORS(app, origins=["https://app.example.com"], supports_credentials=True)</code></pre>
+  <h3>Django</h3>
+  <pre><code># pip install django-cors-headers; add "corsheaders" to INSTALLED_APPS and
+# "corsheaders.middleware.CorsMiddleware" near the top of MIDDLEWARE
+CORS_ALLOWED_ORIGINS = ["https://app.example.com"]
+CORS_ALLOW_CREDENTIALS = True</code></pre>
+  <h3>Spring Boot</h3>
+  <pre><code>@Configuration
+public class Cors implements WebMvcConfigurer {
+  public void addCorsMappings(CorsRegistry r) {
+    r.addMapping("/api/**").allowedOrigins("https://app.example.com").allowCredentials(true);
+  }
+}</code></pre>
+  <h3>ASP.NET Core</h3>
+  <pre><code>builder.Services.AddCors(o => o.AddPolicy("app", p =>
+    p.WithOrigins("https://app.example.com").AllowAnyHeader().AllowAnyMethod().AllowCredentials()));
+app.UseCors("app");   // before UseAuthorization</code></pre>
+  <p>For files on Amazon S3 or Google Cloud Storage, CORS is a bucket setting (a JSON rule list), not a header you add in code.</p>
+
+  <h2 id="check">Checking what you actually send</h2>
+  <p>What your code sets and what reaches the browser can differ: proxies strip headers, and error pages skip middleware. Check the real response:</p>
+  <pre><code>curl -si -H "Origin: https://app.example.com" https://api.example.com/users | grep -i "access-control\|vary"</code></pre>
+  <p>Or paste the URL into the <a href="cors-tester.html">CORS tester</a>, which sends a real cross-origin request from your browser and says which header is missing. Preflight requests have their own rules: <a href="preflight-request.html">preflight requests explained</a>.</p>
+  <div class="tool">
+    <b>HeaderForge</b> (Chrome, free)
+    <p>Waiting on someone else's server? Add <code>Access-Control-Allow-Origin</code> and the other CORS headers to one site's responses in your own browser, so you can keep building while the real fix is made. It says so plainly when a failed preflight can't be fixed that way. No account, no tracking.</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/pbeicicjoakomplogkjbkbmggidmmlcd">Get HeaderForge for Chrome</a>
+  </div>
+
+  <p class="more"><b>More on this topic:</b> <a href="what-is-cors.html">What is CORS? Cross-Origin Resource Sharing, in plain words</a> · <a href="disable-cors-chrome.html">How to disable CORS in Chrome (and the safer way to test)</a> · <a href="disable-cors-firefox.html">How to disable CORS in Firefox (and why content.cors.disable makes it worse)</a> · <a href="failed-to-fetch.html">TypeError: Failed to fetch — what it actually means, and how to tell which cause</a></p>
+
+  <footer><a href="index.html">Sapir Software</a> · <a href="guides.html">More guides</a> · <a href="pricing.html">Pricing</a> · <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a> · Last updated September 19, 2026</footer>
+</body>
+</html>

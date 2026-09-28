@@ -43,6 +43,7 @@
 - [Requestly alternatives](https://sapirsoftware.github.io/requestly-alternative.html)
 - [GoFullPage alternatives](https://sapirsoftware.github.io/gofullpage-alternative.html)
 - [The Referer header and Referrer-Policy](https://sapirsoftware.github.io/referer-header.html)
+- [Access-Control-Allow-Origin explained, with server examples](https://sapirsoftware.github.io/access-control-allow-origin.html)
 - [CORS preflight (OPTIONS) requests](https://sapirsoftware.github.io/preflight-request.html)
 - [The Cache-Control header](https://sapirsoftware.github.io/cache-control-header.html)
 - [HTTP headers list](https://sapirsoftware.github.io/http-headers-list.html)
