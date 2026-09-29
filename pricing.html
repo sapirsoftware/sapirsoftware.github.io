@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pricing — Sapir Software</title>
-  <meta name="description" content="Pro pricing for Full Page Screenshot and HeaderForge: monthly, yearly or once. Everything runs on your own computer.">
+  <meta name="description" content="Pro pricing for Full Page Screenshot, HeaderForge and ContrastForge. Every extension is free to use; Pro removes the limits. Everything runs on your computer.">
   <style>
     :root { --ink: #1a1a2e; --muted: #5f6b76; --line: #e2e2ea; --accent: #4f46e5; --tint: #eef0ff; --bg: #fff; --card: #fff; --ok: #0f7a3d; }
     @media (prefers-color-scheme: dark) {
@@ -34,6 +34,7 @@
     @media (prefers-color-scheme: dark) { .btn { color: #14151c; } }
     .plan:not(.best) .btn { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
     .fine { color: var(--muted); font-size: 13.5px; }
+    .soon { text-align: center; border: 1.5px dashed var(--line); border-radius: 10px; padding: 9px 12px; font-weight: 600; font-size: 14px; color: var(--muted); }
     a { color: var(--accent); }
     [hidden] { display: none !important; }
     @media (max-width: 640px) { .split, .plans { grid-template-columns: 1fr; } }
@@ -43,7 +44,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Sapir Software">
   <meta property="og:title" content="Pricing — Sapir Software">
-  <meta property="og:description" content="Pro pricing for Full Page Screenshot and HeaderForge: monthly, yearly or once. Everything runs on your own computer.">
+  <meta property="og:description" content="Pro pricing for Full Page Screenshot, HeaderForge and ContrastForge. Every extension is free to use; Pro removes the limits. Everything runs on your computer.">
   <meta property="og:url" content="https://sapirsoftware.github.io/pricing.html">
   <meta property="og:image" content="https://sapirsoftware.github.io/og-fullpageshot.png">
   <meta property="og:image:width" content="1280">
@@ -53,7 +54,7 @@
 </head>
 <body>
   <h1>Pricing</h1>
-  <p class="lede">Both extensions are useful free, for good. Pro removes the monthly limits and adds a few tools for people who use them every week. Pay monthly, yearly, or once.</p>
+  <p class="lede">Every extension is useful free, for good. Pro removes the monthly limits and adds a few tools for people who use them every week. Each extension has its own licence: buy only the one you use.</p>
 
   <section class="product" id="fullpageshot">
     <h2>Full Page Screenshot</h2>
@@ -106,11 +107,33 @@
     <div class="plans" data-product="headerforge"></div>
   </section>
 
-  <section class="product" id="bundle">
-    <h2>Sapir Software Pro: every extension, one key</h2>
-    <p class="what">Pro in Full Page Screenshot, HeaderForge, ContrastForge, SnippetForge and every extension we release next. Cheaper than buying them one by one, and one click switches all of them on.</p>
-    <p class="what">ContrastForge has no licence of its own yet, so this is the way to turn its Pro on &mdash; one key, and it works in the others too.</p>
-    <div class="plans" data-product="bundle"></div>
+  <section class="product" id="contrastforge">
+    <h2>ContrastForge</h2>
+    <p class="what">Check every piece of text on a page against WCAG 2.2 colour contrast rules, and hand the client a report.</p>
+    <div class="split">
+      <div>
+        <h3>Free</h3>
+        <ul>
+          <li>Two-colour checker and eyedropper, with all four WCAG 2.2 verdicts</li>
+          <li>The nearest accessible colour for any failing pair</li>
+          <li>5 full-page scans a month, with click-to-highlight</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Pro</h3>
+        <ul>
+          <li>Unlimited full-page scans</li>
+          <li>Audit reports as PDF or CSV, carrying your own logo</li>
+          <li>Saved palettes and scan history</li>
+        </ul>
+      </div>
+    </div>
+    <div class="plans" data-product="contrastforge"></div>
+  </section>
+
+  <section class="product" id="snippetforge">
+    <h2>SnippetForge</h2>
+    <p class="what">A text expander: unlimited snippets and canned responses, plus 25 smart expansions a month. It is free, and there is nothing to buy.</p>
   </section>
 
   <p class="fine">Pay with Google Pay, Apple Pay, PayPal or a card. Payments are handled by Lemon Squeezy, which also handles sales tax. After checkout, click <b>Activate Pro</b> and the extension switches on by itself; your licence key is also in the receipt email. Monthly and yearly plans can be cancelled any time and stay on until the end of the period. A lifetime licence is one payment and never expires. Questions or refunds: <a href="mailto:sapirsoftware@gmail.com">sapirsoftware@gmail.com</a>.</p>
@@ -137,13 +160,9 @@
         { id: "lifetime", name: "Lifetime", price: "$59", per: " once",  note: "One payment, yours for good.",
           url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/f63a4763-2ea3-4c35-a08d-4477e9be2c5c?enabled=2136785" }
       ],
-      bundle: [
-        { id: "year",     name: "Yearly",   price: "$49", per: "/year",  note: "All extensions. $58/year if bought separately.", best: true,
-          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/488324e3-da6d-4c8d-8ff4-893144b3e891?enabled=2146514" },
-        { id: "month",    name: "Monthly",  price: "$7",  per: "/month", note: "All extensions. Cancel any time.",
-          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/a23e9c15-188a-4715-aba3-c7f5440740b0?enabled=2146520" },
-        { id: "lifetime", name: "Lifetime", price: "$79", per: " once",  note: "All current and future extensions, for good.",
-          url: "https://sapirsoftware.lemonsqueezy.com/checkout/buy/ca08898f-d462-4897-85b9-aa7cc5550502?enabled=2146519" }
+      contrastforge: [
+        { id: "year", name: "Yearly", price: "$149", per: "/year", note: "One licence, one year of unlimited scans and reports.",
+          soon: "On sale when ContrastForge launches" }
       ]
     };
 
@@ -155,10 +174,13 @@
     }
 
     for (const box of document.querySelectorAll(".plans")) {
-      const plans = PLANS[box.dataset.product].filter(p => p.url);
+      // A plan with no checkout yet is shown with its price but no button, so the
+      // page states what it will cost without offering something that can't be bought.
+      const plans = PLANS[box.dataset.product].filter(p => p.url || p.soon);
       // If only one plan is buyable, it is simply "the" plan; no "best value" label.
       const single = plans.length === 1;
-      box.style.gridTemplateColumns = window.matchMedia("(max-width: 640px)").matches ? "1fr" : `repeat(${plans.length}, 1fr)`;
+      box.style.gridTemplateColumns = window.matchMedia("(max-width: 640px)").matches ? "1fr"
+        : single ? "minmax(0, 300px)" : `repeat(${plans.length}, 1fr)`;
       for (const p of plans) {
         const card = el("div", "plan" + (p.best || single ? " best" : ""));
         if (p.best && !single) card.appendChild(el("span", "badge", "Best value"));
@@ -167,6 +189,7 @@
         price.appendChild(el("small", null, p.per));
         card.appendChild(price);
         card.appendChild(el("div", "note", p.note));
+        if (!p.url) { card.appendChild(el("div", "soon", p.soon)); box.appendChild(card); continue; }
         const a = el("a", "btn lemonsqueezy-button", "Get Pro " + p.name.toLowerCase());
         // embed=1 opens Lemon Squeezy's checkout on top of this page (lemon.js
         // below); without the script the same link simply opens the checkout.
